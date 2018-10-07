@@ -35,6 +35,18 @@ export enum ElementTypeClass{
      */
     List_Complex,
 
+    /**
+     * Elements of that type have a variable ElementType, which depends on an other config entry.
+     * For example Reward or Price use this type, because a Reward can for example be a numerical number, an item list, etc.
+     * 
+     * The ConfigEdit panel uses the concretely defined relative config key to find the dependency-text.
+     * Next it determines the actual ElementType via contained the text-to-ElementTypenName map.
+     * 
+     * The QuickEdit panel does not have to bother with this ElementType: It directly gets real ElementType, 
+     * which is determined by the ConfigEdit panel.
+     */
+    Dependent,
+
 }
 
 //Every ElementType implements this interface.
@@ -52,6 +64,7 @@ export interface IElementTypeSimpleAutocomplete extends IElementTypeSimple{
 export interface IElementTypeProperty{
     configKey: string
     type: IElementType
+    optional: boolean
 }
 
 export interface IElementTypeComplex extends IElementType{
@@ -62,6 +75,11 @@ export interface IElementTypeComplexList extends IElementType{
     type: IElementTypeComplex
     defaultElement: object //default element which is created when "add element" action is executed on list
     getElementDisplayInformation(config: object, configKey: string): string //raw text to display. In future maybe name of icon to display.
+}
+
+export interface IElementTypeDependent extends IElementType{
+    dependencyConfigKey: string
+    dependencyToElementTypeName: Map<string, string>
 }
 
 
@@ -111,5 +129,18 @@ export class ElementTypeComplexList implements IElementTypeComplexList{
 
     getElementDisplayInformation(config: object, configKey: string): string{
         return this.elementInfoFunction.call(config, configKey);
+    }
+}
+
+export class ElementTypeDependent implements IElementTypeDependent{
+    name: string
+    class: ElementTypeClass = ElementTypeClass.Dependent
+    dependencyConfigKey: string
+    dependencyToElementTypeName: Map<string, string>
+
+    constructor(name: string, dependencyConfigKey: string, dependencyToElementTypeName: Map<string, string>){
+        this.name = name;
+        this.dependencyConfigKey = dependencyConfigKey;
+        this.dependencyToElementTypeName = dependencyToElementTypeName;
     }
 }
