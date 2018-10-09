@@ -8,7 +8,7 @@
         <sui-grid divided style="height: calc(100% - 40px);">
             <sui-grid-row>
                 <sui-grid-column style="flex-grow:1;">
-                    LEFT
+                    <config-edit></config-edit>
                 </sui-grid-column>
                 <sui-grid-column style="flex-grow:1;">
                     <quick-edit></quick-edit>
@@ -22,10 +22,12 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import QuickEdit from "./quickEdit/QuickEdit.vue";
+import ConfigEdit from "./configEdit/ConfigEdit.vue";
 
 @Component({
     components: {
-        "quick-edit": QuickEdit
+        "quick-edit": QuickEdit,
+        "config-edit": ConfigEdit
     }
 })
 export default class App extends Vue {
