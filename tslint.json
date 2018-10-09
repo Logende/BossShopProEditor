@@ -15,6 +15,10 @@
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     "no-consecutive-blank-lines": false,
-    "trailing-comma": false
+    "trailing-comma": false,
+    "max-line-length": false,
+    "max-classes-per-file": false,
+    "no-console": false,
+    "member-access": false
   }
 }

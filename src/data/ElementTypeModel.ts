@@ -1,22 +1,22 @@
-export enum ElementTypeClass{
+export enum ElementTypeClass {
 
-    /** 
-     * Simple ElementTypes can be directly modified in the QuickEdit panel. 
+    /**
+     * Simple ElementTypes can be directly modified in the QuickEdit panel.
      * Examples are String, Double, List<String>, Material, PotionEffect, etc.
-     * 
+     *
      * They are hardcoded in the tool.
      * There are two kinds of simple ElementTypes: ElementTypeSimple and ElementTypeSimpleAutocomplete.
      * The second type additionally provides a list of possible options (probably just used for a TextField),
      * which are used by QuickEdit to provide autocompletion suggestions.
-     * 
-     * */
+     *
+     */
     Simple,
 
     /**
      * Complex ElementTypes consist of an array of sub-ElementTypes.
-     * For example a shop is a complex ElementType, consisting of for example 
+     * For example a shop is a complex ElementType, consisting of for example
      * ShopName (Simple ElementType), Shopitems (List_Complex ElementType), etc.
-     * 
+     *
      * The QuickEdit panel provides a general solution to handle any complex ElementType.
      * All sub-elements are listed in the QuickEdit window:
      * - Simple sub-elements can directly be modified in the same window (String, Double, List<String>)
@@ -29,7 +29,7 @@ export enum ElementTypeClass{
     /**
      * Elements of that type consist of a list of elements of a defined complex ElementType.
      * For example the ShopItem list of every shop uses this type (list of Shopitems).
-     * 
+     *
      * The QuickEdit panel provides a general solution to handle any complex ElementType list.
      * It shows a plain list/grid of all existing elements (showing their name / id).
      * Elements can be removed from the list and new elements added to the list via QuickEdit GUI.
@@ -39,11 +39,11 @@ export enum ElementTypeClass{
     /**
      * Elements of that type have a variable ElementType, which depends on an other config entry.
      * For example Reward or Price use this type, because a Reward can for example be a numerical number, an item list, etc.
-     * 
+     *
      * The ConfigEdit panel uses the concretely defined relative config key to find the dependency-text.
      * Next it determines the actual ElementType via contained the text-to-ElementTypenName map.
-     * 
-     * The QuickEdit panel does not have to bother with this ElementTypeClass: It directly gets the real ElementType, 
+     *
+     * The QuickEdit panel does not have to bother with this ElementTypeClass: It directly gets the real ElementType,
      * which is determined by the ConfigEdit panel.
      */
     Dependent,
@@ -51,101 +51,102 @@ export enum ElementTypeClass{
 }
 
 //
-//Interfaces beginning here are relevant for QuickEdit
+// Interfaces beginning here are relevant for QuickEdit
 //
-export interface IElementType{ //Relevant for QuickEdit
+export interface IElementType { // Relevant for QuickEdit
     name: string;
-    class: ElementTypeClass
+    class: ElementTypeClass;
 }
 
-export interface IElementTypeSimple extends IElementType{
+// tslint:disable-next-line:no-empty-interface
+export interface IElementTypeSimple extends IElementType {
 }
 
-export interface IElementTypeSimpleAutocomplete extends IElementTypeSimple{
-    possibilities: string[]
+export interface IElementTypeSimpleAutocomplete extends IElementTypeSimple {
+    possibilities: string[];
 }
 
-export interface IElementTypeProperty{
-    configKey: string
-    type: IElementType
-    optional: boolean
+export interface IElementTypeProperty {
+    configKey: string;
+    type: IElementType;
+    optional: boolean;
 }
 
-export interface IElementTypeComplex extends IElementType{
-    properties: IElementTypeProperty[]
+export interface IElementTypeComplex extends IElementType {
+    properties: IElementTypeProperty[];
 }
 
-export interface IElementTypeComplexList extends IElementType{
-    type: IElementTypeComplex
-    defaultElement: object //default element which is created when "add element" action is executed on list
-    getElementDisplayInformation(config: object, configKey: string): string //raw text to display. In future maybe name of icon to display.
+export interface IElementTypeComplexList extends IElementType {
+    type: IElementTypeComplex;
+    defaultElement: object; // default element which is created when "add element" action is executed on list
+    getElementDisplayInformation(config: object, configKey: string): string; // raw text to display. In future maybe name of icon to display.
 }
 
 //
-//Everything below is not relevant for QuickEdit
+// Everything below is not relevant for QuickEdit
 //
-export interface IElementTypeDependent extends IElementType{
-    dependencyConfigKey: string
-    dependencyToElementTypeName: Map<string, string>
+export interface IElementTypeDependent extends IElementType {
+    dependencyConfigKey: string;
+    dependencyToElementTypeName: Map<string, string>;
 }
 
 
-export class ElementTypeSimple implements IElementTypeSimple{
-    name: string
-    class: ElementTypeClass = ElementTypeClass.Simple
+export class ElementTypeSimple implements IElementTypeSimple {
+    public name: string;
+    public class: ElementTypeClass = ElementTypeClass.Simple;
 
-    constructor(name: string){
+    constructor(name: string) {
         this.name = name;
     }
 }
 
-export class ElementTypeSimpleAutocomplete extends ElementTypeSimple implements IElementTypeSimpleAutocomplete{
-    possibilities: string[]
+export class ElementTypeSimpleAutocomplete extends ElementTypeSimple implements IElementTypeSimpleAutocomplete {
+    public possibilities: string[];
 
-    constructor(name: string, possibilities: string[]){
+    constructor(name: string, possibilities: string[]) {
         super(name);
         this.possibilities = possibilities;
     }
 }
 
 
-export class ElementTypeComplex implements IElementType{
-    name: string
-    properties: IElementTypeProperty[]
-    class: ElementTypeClass = ElementTypeClass.Complex
+export class ElementTypeComplex implements IElementType {
+    public name: string;
+    public properties: IElementTypeProperty[];
+    public class: ElementTypeClass = ElementTypeClass.Complex;
 
-    constructor(name: string, properties: IElementTypeProperty[]){
+    constructor(name: string, properties: IElementTypeProperty[]) {
         this.name = name;
         this.properties = properties;
     }
 }
 
-export class ElementTypeComplexList implements IElementTypeComplexList{
-    name: string
-    class: ElementTypeClass = ElementTypeClass.List_Complex
-    type: IElementTypeComplex
-    defaultElement: object
-    elementInfoFunction: (config: object, configKey: string) => string
+export class ElementTypeComplexList implements IElementTypeComplexList {
+    public name: string;
+    public class: ElementTypeClass = ElementTypeClass.List_Complex;
+    public type: IElementTypeComplex;
+    public defaultElement: object;
+    public elementInfoFunction: (config: object, configKey: string) => string;
 
-    constructor(name: string, type: IElementTypeComplex, defaultElement: object, elementInfoFunction: (config: object, configKey: string) => string){
+    constructor(name: string, type: IElementTypeComplex, defaultElement: object, elementInfoFunction: (config: object, configKey: string) => string) {
         this.name = name;
         this.type = type;
         this.defaultElement = defaultElement;
         this.elementInfoFunction = elementInfoFunction;
     }
 
-    getElementDisplayInformation(config: object, configKey: string): string{
+    public getElementDisplayInformation(config: object, configKey: string): string {
         return this.elementInfoFunction.call(config, configKey);
     }
 }
 
-export class ElementTypeDependent implements IElementTypeDependent{
-    name: string
-    class: ElementTypeClass = ElementTypeClass.Dependent
-    dependencyConfigKey: string
-    dependencyToElementTypeName: Map<string, string>
+export class ElementTypeDependent implements IElementTypeDependent {
+    public name: string;
+    public class: ElementTypeClass = ElementTypeClass.Dependent;
+    public dependencyConfigKey: string;
+    public dependencyToElementTypeName: Map<string, string>;
 
-    constructor(name: string, dependencyConfigKey: string, dependencyToElementTypeName: Map<string, string>){
+    constructor(name: string, dependencyConfigKey: string, dependencyToElementTypeName: Map<string, string>) {
         this.name = name;
         this.dependencyConfigKey = dependencyConfigKey;
         this.dependencyToElementTypeName = dependencyToElementTypeName;
