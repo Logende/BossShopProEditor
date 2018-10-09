@@ -20,8 +20,9 @@ export enum ElementTypeClass{
      * The QuickEdit panel provides a general solution to handle any complex ElementType.
      * All sub-elements are listed in the QuickEdit window:
      * - Simple sub-elements can directly be modified in the same window (String, Double, List<String>)
-     * - Complex sub-elements can be clicked, to navigate one level down the hierarchy, to be able to modify the complex sub-element
-     * - Special sub-elements can be clicked, to navigate one level down the hierarchy, where a custom QuickEdit panel is shown
+     * - Complex sub-elements can be clicked to navigate one level down the hierarchy, to be able to modify the complex sub-element
+     * - Complex lists as sub-elements: All elements displayed, possibility to remove / add. Element ca be clicked to navigate one level down.
+     * - Special sub-elements can be clicked to navigate one level down the hierarchy, where a custom QuickEdit panel is shown
      */
     Complex,
 
@@ -42,15 +43,17 @@ export enum ElementTypeClass{
      * The ConfigEdit panel uses the concretely defined relative config key to find the dependency-text.
      * Next it determines the actual ElementType via contained the text-to-ElementTypenName map.
      * 
-     * The QuickEdit panel does not have to bother with this ElementType: It directly gets real ElementType, 
+     * The QuickEdit panel does not have to bother with this ElementTypeClass: It directly gets the real ElementType, 
      * which is determined by the ConfigEdit panel.
      */
     Dependent,
 
 }
 
-//Every ElementType implements this interface.
-export interface IElementType{
+//
+//Interfaces beginning here are relevant for QuickEdit
+//
+export interface IElementType{ //Relevant for QuickEdit
     name: string;
     class: ElementTypeClass
 }
@@ -59,6 +62,7 @@ export interface IElementTypeSimple extends IElementType{
 }
 
 export interface IElementTypeSimpleAutocomplete extends IElementTypeSimple{
+    possibilities: string[]
 }
 
 export interface IElementTypeProperty{
@@ -77,6 +81,9 @@ export interface IElementTypeComplexList extends IElementType{
     getElementDisplayInformation(config: object, configKey: string): string //raw text to display. In future maybe name of icon to display.
 }
 
+//
+//Everything below is not relevant for QuickEdit
+//
 export interface IElementTypeDependent extends IElementType{
     dependencyConfigKey: string
     dependencyToElementTypeName: Map<string, string>
