@@ -20,8 +20,9 @@ export enum ElementTypeClass{
      * The QuickEdit panel provides a general solution to handle any complex ElementType.
      * All sub-elements are listed in the QuickEdit window:
      * - Simple sub-elements can directly be modified in the same window (String, Double, List<String>)
-     * - Complex sub-elements can be clicked, to navigate one level down the hierarchy, to be able to modify the complex sub-element
-     * - Special sub-elements can be clicked, to navigate one level down the hierarchy, where a custom QuickEdit panel is shown
+     * - Complex sub-elements can be clicked to navigate one level down the hierarchy, to be able to modify the complex sub-element
+     * - Complex lists as sub-elements: All elements displayed, possibility to remove / add. Element ca be clicked to navigate one level down.
+     * - Special sub-elements can be clicked to navigate one level down the hierarchy, where a custom QuickEdit panel is shown
      */
     Complex,
 

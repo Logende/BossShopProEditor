@@ -7,6 +7,7 @@ import store from './store';
 import SemanticUI from 'semantic-ui-vue';
 Vue.use(SemanticUI);
 import 'semantic-ui-css/semantic.min.css';
+import YAMLJS from 'yamljs';
 
 Vue.config.productionTip = false;
 

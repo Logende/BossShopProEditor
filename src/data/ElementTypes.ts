@@ -1,58 +1,69 @@
 import "@/data/ElementTypeModel";
 import { IElementType, ElementTypeClass, IElementTypeSimple, ElementTypeSimple, ElementTypeSimpleAutocomplete, IElementTypeComplexList, ElementTypeComplex, ElementTypeComplexList, IElementTypeComplex, ElementTypeDependent } from '@/data/ElementTypeModel';
 
-export class ElementTypes {
+class ElementTypes {
 
-    private static elementTypes: Map<string, IElementType> = new Map<string, IElementType>()
-    public static elementTypeSpecialNames = ["item", "shopitemlist"]; //element types which should get custom QuickEdit support
+    private static _instance: ElementTypes = new ElementTypes();
 
-
-    private static register(elementType: IElementType){
-        ElementTypes.elementTypes.set(elementType.name.toLowerCase(), elementType);
+    public static getInstance(): ElementTypes{
+        return ElementTypes._instance;
     }
-    public static get(name: string): IElementType{
-        if(!ElementTypes.elementTypes.has(name.toLowerCase())){
+
+
+
+    private elementTypes: Map<string, IElementType> = new Map<string, IElementType>()
+    public elementTypeSpecialNames = ["item", "shopitemlist"]; //element types which should get custom QuickEdit support
+
+
+    private register(elementType: IElementType){
+        this.elementTypes.set(elementType.name.toLowerCase(), elementType);
+    }
+    public get(name: string): IElementType{
+        if(!this.elementTypes.has(name.toLowerCase())){
             throw new Error("ElementType with name '" + name + "' not found.");
         }
-        return ElementTypes.elementTypes.get(name.toLowerCase())!;
+        return this.elementTypes.get(name.toLowerCase())!;
     }
 
 
-    public static init(){
+    constructor(){
+        if(ElementTypes._instance){
+            throw new Error("Error: Instantiation failed: Use ElementTypes.getInstance() instead of new.");
+        }
         //
         //Init simple ElementTypes       
         // 
-        ElementTypes.register(new ElementTypeSimple("none"));
-        ElementTypes.register(new ElementTypeSimple("string"));
-        ElementTypes.register(new ElementTypeSimple("boolean"));
-        ElementTypes.register(new ElementTypeSimple("double"));
-        ElementTypes.register(new ElementTypeSimple("integer"));
-        ElementTypes.register(new ElementTypeSimple("list_string"));
+        this.register(new ElementTypeSimple("none"));
+        this.register(new ElementTypeSimple("string"));
+        this.register(new ElementTypeSimple("boolean"));
+        this.register(new ElementTypeSimple("double"));
+        this.register(new ElementTypeSimple("integer"));
+        this.register(new ElementTypeSimple("list_string"));
         //TODO: replace example names by actual lists of data names
-        ElementTypes.register(new ElementTypeSimpleAutocomplete("material", ["stone", "log"]));
-        ElementTypes.register(new ElementTypeSimpleAutocomplete("potioneffect", ["poison", "heal"]));
-        ElementTypes.register(new ElementTypeSimpleAutocomplete("enchantment", ["sharpness", "unbreaking"]));
-        ElementTypes.register(new ElementTypeSimpleAutocomplete("rewardtype", ["money", "item", "points", "enchantment", "permissions", "commands"]));
-        ElementTypes.register(new ElementTypeSimpleAutocomplete("pricetype", ["money", "item", "points"]));
+        this.register(new ElementTypeSimpleAutocomplete("material", ["stone", "log"]));
+        this.register(new ElementTypeSimpleAutocomplete("potioneffect", ["poison", "heal"]));
+        this.register(new ElementTypeSimpleAutocomplete("enchantment", ["sharpness", "unbreaking"]));
+        this.register(new ElementTypeSimpleAutocomplete("rewardtype", ["money", "item", "points", "enchantment", "permissions", "commands"]));
+        this.register(new ElementTypeSimpleAutocomplete("pricetype", ["money", "item", "points"]));
 
         //
         //Init special ElementTypes
         //
-        ElementTypes.register(new ElementTypeComplex("item", [
+        this.register(new ElementTypeComplex("item", [
             {
                 configKey: "",
-                type: ElementTypes.get("list_string"),
+                type: this.get("list_string"),
                 optional: false
             }
         ]));
-        ElementTypes.register(new ElementTypeComplexList("list_item", ElementTypes.get("item") as IElementTypeComplex, 
+        this.register(new ElementTypeComplexList("list_item", this.get("item") as IElementTypeComplex, 
         ["type:stone", "amount:1"], (config: object, configKey: string) => "todo"));
 
         
         //
         //Init shop ElementTypes (TODO: Automatically load via config file in the future, to make it possible, to modify those types)
         //
-        ElementTypes.register(new ElementTypeDependent("reward", "../RewardType", new Map([
+        this.register(new ElementTypeDependent("reward", "../RewardType", new Map([
             ["money", "double"],
             ["item", "list_item"],
             ["points", "double"],
@@ -61,87 +72,87 @@ export class ElementTypes {
             ["commands", "list_string"]
         ])));
 
-        ElementTypes.register(new ElementTypeDependent("price", "../PriceType", new Map([
+        this.register(new ElementTypeDependent("price", "../PriceType", new Map([
             ["money", "double"],
             ["item", "list_item"],
             ["points", "double"]
         ])));
 
-        ElementTypes.register(new ElementTypeComplex("shopitem", [
+        this.register(new ElementTypeComplex("shopitem", [
             {
                 configKey: "MenuItem",
-                type: ElementTypes.get("item"),
+                type: this.get("item"),
                 optional: false
             },
             {
                 configKey: "RewardType",
-                type: ElementTypes.get("rewardtype"),
+                type: this.get("rewardtype"),
                 optional: false,
             },
             {
                 configKey: "Reward",
-                type: ElementTypes.get("reward"),
+                type: this.get("reward"),
                 optional: false
             },
             {
                 configKey: "PriceType",
-                type: ElementTypes.get("pricetype"),
+                type: this.get("pricetype"),
                 optional: false
             },
             {
                 configKey: "Price",
-                type: ElementTypes.get("price"),
+                type: this.get("price"),
                 optional: false
             },
             {
                 configKey: "Message",
-                type: ElementTypes.get("string"),
+                type: this.get("string"),
                 optional: false
             },
             {
                 configKey: "InventoryLocation",
-                type: ElementTypes.get("integer"),
+                type: this.get("integer"),
                 optional: false
             },
             {
                 configKey: "ExtraPermission",
-                type: ElementTypes.get("string"),
+                type: this.get("string"),
                 optional: true
             }
         ]));
 
-        ElementTypes.register(new ElementTypeComplexList("shopitemlist", ElementTypes.get("shopitem") as IElementTypeComplex,
+        this.register(new ElementTypeComplexList("shopitemlist", this.get("shopitem") as IElementTypeComplex,
         {}, (config: object, configKey: string) => ""));
 
-        ElementTypes.register(new ElementTypeComplex("shop", [
+        this.register(new ElementTypeComplex("shop", [
             {
                 configKey: "ShopName",
-                type: ElementTypes.get("string"),
+                type: this.get("string"),
                 optional: false
             },
             {
                 configKey: "DisplayName",
-                type: ElementTypes.get("string"),
+                type: this.get("string"),
                 optional: false
             },
             {
                 configKey: "Command",
-                type: ElementTypes.get("string"),
+                type: this.get("string"),
                 optional: true
             },
             {
                 configKey: "signs/text",
-                type: ElementTypes.get("string"),
+                type: this.get("string"),
                 optional: false
             },
             {
                 configKey: "signs/NeedsPermissionToCreateSign",
-                type: ElementTypes.get("boolean"),
+                type: this.get("boolean"),
                 optional: false
             },
             {
                 configKey: "shop",
-                type: ElementTypes.get("shopitemlist"),
+                type: this.get("shopitemlist"),
                 optional: false
             }
         ]))
@@ -154,5 +165,3 @@ export class ElementTypes {
 
 
 }
-
-ElementTypes.init()
