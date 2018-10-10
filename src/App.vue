@@ -30,6 +30,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import QuickEdit from "./quickEdit/QuickEdit.vue";
 import ConfigEdit from "./configEdit/ConfigEdit.vue";
+import { IElementType } from '@/data/ElementTypeModel';
 
 @Component({
     components: {
@@ -39,8 +40,9 @@ import ConfigEdit from "./configEdit/ConfigEdit.vue";
 })
 export default class App extends Vue {
 
-    selectedPathChanged(newPath: string) {
-        this.$store.commit("setSelectedPath", newPath);
+    selectedPathChanged(data: { path: string, elementType: IElementType }) {
+        this.$store.commit("setSelectedPath", data.path);
+        //TODO: Handle new ElementType
     }
 
     changeRequest(data: { path: string, newValue: any }) {
