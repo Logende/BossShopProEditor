@@ -1,8 +1,5 @@
 <template>
-    <div>
-        <label>{{ name }}</label>
-        <input type="text" :placeholder="name"></input>
-    </div>
+    <v-text-field :label="name" v-model="value"></v-text-field>
 </template>
 
 <script lang="ts">
@@ -13,6 +10,8 @@ export default class StringProperty extends Vue {
 
     @Prop({ type: String })
     name!: string;
+
+    value = "";
 
 }
 </script>
