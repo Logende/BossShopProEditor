@@ -8,13 +8,15 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@types/yamljs": "^0.2.30",
     "semantic-ui-css": "^2.4.0",
     "semantic-ui-vue": "^0.4.1",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-typescript": "^3.0.4",
