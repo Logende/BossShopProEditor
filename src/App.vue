@@ -1,22 +1,29 @@
 <template>
-    <sui-container fluid style="height: 100%;">
+    <v-app>
 
-        <sui-menu inverted attached>
-            <sui-menu-item class="header">BossShopPro Editor</sui-menu-item>
-        </sui-menu>
+        <v-toolbar dark>
+            <v-toolbar-title>BossShopPro Editor</v-toolbar-title>
+        </v-toolbar>
 
-        <sui-grid divided style="height: calc(100% - 40px);">
-            <sui-grid-row>
-                <sui-grid-column style="flex-grow:1;">
-                    <config-edit></config-edit>
-                </sui-grid-column>
-                <sui-grid-column style="flex-grow:1;">
-                    <quick-edit></quick-edit>
-                </sui-grid-column>
-            </sui-grid-row>
-        </sui-grid>
+        <!-- style="height: calc(100% - 40px);" -->
+        <v-container fluid>
+            <v-layout row>
+                <v-flex xs6>
+                    <config-edit
+                        @selected-path-changed="selectedPathChanged"
+                        @change-request="changeRequest"
+                    ></config-edit>
+                </v-flex>
+                <v-flex xs6>
+                    <quick-edit
+                        @selected-path-changed="selectedPathChanged"
+                        @change-request="changeRequest"
+                    ></quick-edit>
+                </v-flex>
+            </v-layout>
+        </v-container>
 
-    </sui-container>
+    </v-app>
 </template>
 
 <script lang="ts">
@@ -31,6 +38,14 @@ import ConfigEdit from "./configEdit/ConfigEdit.vue";
     }
 })
 export default class App extends Vue {
+
+    selectedPathChanged(newPath: string) {
+        this.$store.commit("setSelectedPath", newPath);
+    }
+
+    changeRequest(data: { path: string, newValue: any }) {
+        this.$store.commit("applyConfig", data);
+    }
 
 }
 </script>

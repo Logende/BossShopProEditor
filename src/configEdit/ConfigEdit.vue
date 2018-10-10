@@ -20,12 +20,12 @@ import YAML from 'yamljs';
 import Component from 'vue-class-component';
 
 @Component
-export default class ConfigEdit extends Vue{
+export default class ConfigEdit extends Vue {
 
     private configText: string = "";
     private configObject: object = {};
 
-    private convertToYaml(){
+    private convertToYaml() {
         this.configObject = YAML.parse(this.configText);
         console.log(this.configObject);
     }
