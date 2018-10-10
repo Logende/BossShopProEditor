@@ -40,7 +40,11 @@ import ConfigEdit from "./configEdit/ConfigEdit.vue";
 export default class App extends Vue {
 
     selectedPathChanged(newPath: string) {
-        this.$store.
+        this.$store.commit("setSelectedPath", newPath);
+    }
+
+    changeRequest(data: { path: string, newValue: any }) {
+        this.$store.commit("applyConfig", data);
     }
 
 }
