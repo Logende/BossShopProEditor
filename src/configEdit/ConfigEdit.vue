@@ -21,7 +21,7 @@ import Component from 'vue-class-component';
 import _ from 'lodash';
 
 @Component
-export default class ConfigEdit extends Vue{
+export default class ConfigEdit extends Vue {
 
     private configText: string = "";
     private configObject: object = {};
@@ -29,12 +29,12 @@ export default class ConfigEdit extends Vue{
     private functionUpdateSelectionSlow = _.debounce(this.updateSelection, 1000);
     private functionUpdateSelectionFast = _.throttle(this.updateSelection, 600);
 
-    private convertToYaml(){
+    private convertToYaml() {
         this.configObject = YAML.parse(this.configText);
         console.log(this.configObject);
     }
 
-    private updateSelectionSafe(slowUpdate: boolean){
+    private updateSelectionSafe(slowUpdate: boolean) {
         if(slowUpdate){            
             this.functionUpdateSelectionSlow.call(this);
         }else{
@@ -43,7 +43,7 @@ export default class ConfigEdit extends Vue{
     }
 
 
-    private updateSelection(){
+    private updateSelection() {
         let element = this.$refs.configTextArea as HTMLTextAreaElement;
         let endPosition = element.selectionEnd;
         console.log("selection end: " + endPosition)
