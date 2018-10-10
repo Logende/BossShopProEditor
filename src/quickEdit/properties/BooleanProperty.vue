@@ -1,5 +1,5 @@
 <template>
-    <sui-checkbox>{{ name }}</sui-checkbox>
+    <v-checkbox :label="name"></v-checkbox>
 </template>
 
 <script lang="ts">

@@ -1,22 +1,23 @@
 <template>
-    <sui-container fluid style="height: 100%;">
+    <v-app>
 
-        <sui-menu inverted attached>
-            <sui-menu-item class="header">BossShopPro Editor</sui-menu-item>
-        </sui-menu>
+        <v-toolbar dark>
+            <v-toolbar-title>BossShopPro Editor</v-toolbar-title>
+        </v-toolbar>
 
-        <sui-grid divided style="height: calc(100% - 40px);">
-            <sui-grid-row>
-                <sui-grid-column style="flex-grow:1;">
+        <!-- style="height: calc(100% - 40px);" -->
+        <v-container fluid>
+            <v-layout row>
+                <v-flex xs6>
                     <config-edit></config-edit>
-                </sui-grid-column>
-                <sui-grid-column style="flex-grow:1;">
+                </v-flex>
+                <v-flex xs6>
                     <quick-edit></quick-edit>
-                </sui-grid-column>
-            </sui-grid-row>
-        </sui-grid>
+                </v-flex>
+            </v-layout>
+        </v-container>
 
-    </sui-container>
+    </v-app>
 </template>
 
 <script lang="ts">

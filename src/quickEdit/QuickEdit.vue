@@ -1,18 +1,15 @@
 <template>
     <div>
-        <h1>QuickEdit Section</h1>
+        <h1 class="mb-3">QuickEdit Section</h1>
 
-        <sui-form>
-            <sui-form-field
+        <v-form>
+            <qe-property
                 v-for="p in editableProperties"
                 :key="p.configKey"
-            >
-                <qe-property            
-                    :type="p.type"
-                    :name="p.configKey"
-                ></qe-property>
-            </sui-form-field>
-        </sui-form>
+                :type="p.type"
+                :name="p.configKey"
+            ></qe-property>
+        </v-form>
 
     </div>
 </template>
