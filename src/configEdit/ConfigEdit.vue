@@ -19,6 +19,7 @@ import Vue from 'vue';
 import YAML from 'yamljs';
 import Component from 'vue-class-component';
 import _ from 'lodash';
+import { manipulator } from "@/configEdit/ConfigManipulator";
 
 @Component
 export default class ConfigEdit extends Vue {
@@ -46,8 +47,22 @@ export default class ConfigEdit extends Vue {
     private updateSelection() {
         let element = this.$refs.configTextArea as HTMLTextAreaElement;
         let endPosition = element.selectionEnd;
-        console.log("selection end: " + endPosition)
+        let path = manipulator.getPath(this.configText, endPosition);
+        let elementType = manipulator.getElementType(path);
+        this.$emit("selectedPathChanged", {"path": path, "elementType": elementType})
+        
     }
+
+
+    public selectPath(path: string) {
+        let element = this.$refs.configTextArea as HTMLTextAreaElement;
+        let index = manipulator.getIndex(this.configText, path);
+        element.selectionEnd = index;
+        element.selectionStart = index;
+
+    }
+
+
 
 }
 </script>
