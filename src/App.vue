@@ -9,10 +9,16 @@
         <v-container fluid>
             <v-layout row>
                 <v-flex xs6>
-                    <config-edit></config-edit>
+                    <config-edit
+                        @selected-path-changed="selectedPathChanged"
+                        @change-request="changeRequest"
+                    ></config-edit>
                 </v-flex>
                 <v-flex xs6>
-                    <quick-edit></quick-edit>
+                    <quick-edit
+                        @selected-path-changed="selectedPathChanged"
+                        @change-request="changeRequest"
+                    ></quick-edit>
                 </v-flex>
             </v-layout>
         </v-container>
@@ -32,6 +38,10 @@ import ConfigEdit from "./configEdit/ConfigEdit.vue";
     }
 })
 export default class App extends Vue {
+
+    selectedPathChanged(newPath: string) {
+        this.$store.
+    }
 
 }
 </script>
