@@ -32,3 +32,5 @@ This event is emitted, when the user selects a different path in the config,
 either by moving the cursor in the `ConfigEdit` component or by navigating in the `QuickEdit` component.
 
 Payload: `string`, specifying the new path.
+
+Comment by Felix: Doesn't it make sense to also add the ElementType to the event payload? Selecting a new path will result in a new (identical or different) ElementType aswell.

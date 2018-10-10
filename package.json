@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0-rc.1",
+    "@types/lodash": "^4.14.117",
     "@types/yamljs": "^0.2.30",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
