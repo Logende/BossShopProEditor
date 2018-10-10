@@ -27,7 +27,7 @@ import Property from "./properties/Property";
 })
 export default class QuickEdit extends Vue {
 
-    bt = elementTypes.get("shop");
+    bt = elementTypes.get("shopitem");
 
     get editableProperties() {
         return (this.bt.class === ElementTypeClass.Complex) ?

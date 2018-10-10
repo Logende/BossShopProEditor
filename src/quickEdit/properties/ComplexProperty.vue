@@ -1,5 +1,5 @@
 <template>
-    <a href="javascript:void()">{{ name }}</a>
+    <p><v-btn flat color="primary">{{ name }}</v-btn></p>
 </template>
 
 <script lang="ts">
