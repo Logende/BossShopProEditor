@@ -17,7 +17,7 @@ Changes to this store are only allowed by a special event handler in the `App` c
 To reduce tight coupling as much as possible, the components communicate via events.
 The events are being handled by an eventHandler in the `App` component.
 
-### changeRequest
+### change-request
 This event is emitted, when a value in the config has been changed by the user.
 
 Payload:
@@ -27,7 +27,7 @@ Payload:
     newValue: "" //this can be any data type
 }
 ```
-### selectedPathChanged
+### selected-path-changed
 This event is emitted, when the user selects a different path in the config,
 either by moving the cursor in the `ConfigEdit` component or by navigating in the `QuickEdit` component.
 
