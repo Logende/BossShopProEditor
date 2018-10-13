@@ -69,7 +69,7 @@ export default class QuickEdit extends Vue {
         this.$emit("change-request", { path, newValue });
     }
 
-    changePath(base: string, payload: string|string[]) {
+    changePath(base: string, payload: string[]) {
         const p = [base];
         if (payload) { p.push(...payload); }
         this.$store.commit("setSelectedPath", this.$store.state.selectedPath.concat(p));
