@@ -1,5 +1,5 @@
 <template>
-    <v-text-field :label="name" v-model="value"></v-text-field>
+    <v-text-field :label="name" :value="value" @input="$emit('input', $event)"></v-text-field>
 </template>
 
 <script lang="ts">
@@ -11,7 +11,8 @@ export default class StringProperty extends Vue {
     @Prop({ type: String })
     name!: string;
 
-    value = "";
+    @Prop({ type: String })
+    value!: string;
 
 }
 </script>
