@@ -6,29 +6,14 @@ The Vuex store is used as a single source of truth. Its state is defined as foll
 ```javascript
 {
     config: {} // Configuration object
-    selectedPath: "shop.shop[0]" // Currently selected path
-    selectedType: null // IElementType or name of the type of the currently selected path?
+    selectedPath: ["shop", "1", "MenuItem", 0] // Currently selected path
 }
 ```
 
-Changes to this store are only allowed by a special event handler in the `App` component.
+Additionally, the store provides getters, which are like computed properties:
+- `pathString`: The currently selected path in a lodash-compatible string form (`"shop.1.MenuItem[0]"`)
+- `selectedType`: The type for the currently selected path
 
-## Events
-To reduce tight coupling as much as possible, the components communicate via events.
-The events are being handled by an eventHandler in the `App` component.
-
-### change-request
-This event is emitted, when a value in the config has been changed by the user.
-
-Payload:
-```javascript
-{
-    path: "" //describes the path in the configEdit object on which the change was made
-    newValue: "" //this can be any data type
-}
-```
-### selected-path-changed
-This event is emitted, when the user selects a different path in the config,
-either by moving the cursor in the `ConfigEdit` component or by navigating in the `QuickEdit` component.
-
-Payload: `string`, specifying the new path.
+To change the state, the following mutations have been implemented:
+- `applyConfig({ path: Array<string|number>, newValue: any })`: Call this mutation to change the config object. If path is an empty array, the entire config object is replaced with `newValue`. Otherwise, only the value at `path` will be changed.
+- `setSelectedPath(path: Array<string|number>)`: This mutation allows to set the selected path.
