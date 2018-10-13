@@ -47,7 +47,6 @@ export default class App extends Vue {
 
     selectedPathChanged(data: { path: string, elementType: IElementType }) {
         this.$store.commit("setSelectedPath", data.path);
-        //TODO: Handle new ElementType
     }
 
     changeRequest(data: { path: string, newValue: any }) {

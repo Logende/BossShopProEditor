@@ -26,9 +26,16 @@ export default class ConfigEdit extends Vue {
 
     private configText: string = "";
     private configObject: object = {};
-
     private functionUpdateSelectionSlow = _.debounce(this.updateSelection, 1000);
     private functionUpdateSelectionFast = _.throttle(this.updateSelection, 600);
+
+    public selectPath(path: string) {
+        const element = this.$refs.configTextArea as HTMLTextAreaElement;
+        const index = manipulator.getIndex(this.configText, path);
+        element.selectionEnd = index;
+        element.selectionStart = index;
+
+    }
 
     private convertToYaml() {
         this.configObject = YAML.parse(this.configText);
@@ -36,32 +43,23 @@ export default class ConfigEdit extends Vue {
     }
 
     private updateSelectionSafe(slowUpdate: boolean) {
-        if(slowUpdate){            
+        if (slowUpdate) {
             this.functionUpdateSelectionSlow.call(this);
-        }else{
+        } else {
             this.functionUpdateSelectionFast.call(this);
         }
     }
 
-
     private updateSelection() {
-        let element = this.$refs.configTextArea as HTMLTextAreaElement;
-        let endPosition = element.selectionEnd;
-        let path = manipulator.getPath(this.configText, endPosition);
-        let elementType = manipulator.getElementType(path);
-        this.$emit("selectedPathChanged", {"path": path, "elementType": elementType})
-        
+        const element = this.$refs.configTextArea as HTMLTextAreaElement;
+        const endPosition = element.selectionEnd;
+        const path = manipulator.getPath(this.configText, endPosition);
+        if (path != null) {
+        console.log("selected path: " + path);
+        const elementType = manipulator.getElementType(path);
+        this.$emit("selected-path-changed", path);
+        }
     }
-
-
-    public selectPath(path: string) {
-        let element = this.$refs.configTextArea as HTMLTextAreaElement;
-        let index = manipulator.getIndex(this.configText, path);
-        element.selectionEnd = index;
-        element.selectionStart = index;
-
-    }
-
 
 
 }
