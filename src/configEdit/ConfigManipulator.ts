@@ -1,34 +1,42 @@
-import { IElementType } from '@/data/ElementTypeModel';
+import { IElementType, ElementTypeClass, IElementTypeComplex, IElementTypeProperty, IElementTypeComplexList } from '@/data/ElementTypeModel';
 import { elementTypes } from '@/data/ElementTypes';
+import { editorData } from '@/data/EditorData';
 
 class ConfigManipulator {
 
-    public getPath(configText: string, indexLine: number): string|null {
+    public getPath(configText: string, indexLine: number): Array<string> {
         const line = this.getLine(configText, indexLine);
-        const linePathText = this.cutPathText(line);
-        if (configText.length === 0) {
-            return null;
+
+        // If empty line is selected no path is returned.
+        if (line.length === 0) {
+            return [];
         }
-        if (linePathText.startsWith("-")) { // part of list. Now first of all find actual path start.
+
+        // linePathText is the key of the selected line (without whitespaces on left and value on right)
+        const linePathText = this.cutPathText(line);
+        
+        // If the line is part of an array, the path of the array is determined and returned
+        if (linePathText.startsWith("-")) {
             const entryAbove = this.getEntryAbove(configText, indexLine);
             return this.getPath(configText, entryAbove.indexLine);
         }
 
+        // If the selected line does not have parents: Directly return it
         if (this.getLevel(line) === 0) {
-            return linePathText;
+            return [linePathText];
+            
         } else {
+            // If it has parents, calculate the parent path and return parent + child path
             const entryParent = this.getEntryParent(configText, indexLine);
             if (entryParent.indexLine === -1) {
                 throw new Error("Line '" + line + "' with index '" + indexLine + "' is not at level 0 but does not have parent.");
             }
-            return this.getPath(configText, entryParent.indexLine) + "/" + linePathText;
+            const path = this.getPath(configText, entryParent.indexLine);
+            path.push(linePathText);
+            return path;
         }
     }
 
-    public getElementType(path: string): IElementType {
-        // TODO: Use ElementType tree to determine ElementType via path
-        return elementTypes.get("string");
-    }
 
     public getIndex(configText: string, path: string): number {
         // TODO
@@ -53,7 +61,7 @@ class ConfigManipulator {
         return line.search(/\S/) / 2; // indention / 2
     }
 
-    private cutPathText(line: string) {
+    private cutPathText(line: string): string {
         const level = this.getLevel(line);
         const indexColon = line.indexOf(":");
         if (indexColon === -1) {

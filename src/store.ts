@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import _ from "lodash";
 import { pathToString } from "@/pathHelper";
+import { editorData } from '@/data/EditorData';
 
 Vue.use(Vuex);
 
@@ -13,7 +14,7 @@ export default new Vuex.Store({
     getters: {
         pathString: (state) => pathToString(state.selectedPath),
         selectedType: (state) => {
-            // TODO: Determine type from state.selectedPath and state.config
+            editorData.getElementType(state.selectedPath, editorData.shopRoot);
         }
     },
     mutations: {
