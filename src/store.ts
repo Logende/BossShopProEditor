@@ -13,9 +13,7 @@ export default new Vuex.Store({
     },
     getters: {
         pathString: (state) => pathToString(state.selectedPath),
-        selectedType: (state) => {
-            editorData.getElementType(state.selectedPath, editorData.shopRoot);
-        }
+        selectedType: (state) => editorData.getElementType(state.selectedPath)
     },
     mutations: {
         applyConfig(state, { path, newValue }) {
