@@ -76,8 +76,35 @@ export interface IElementTypeComplex extends IElementType {
     properties: IElementTypeProperty[];
 }
 
+    /**
+     * Not an array!
+     * 
+     * Traditional array:
+     * item:
+     * - "name:my name"
+     * - "material:gold_ingot"
+     * - "amount:4
+     * 
+     * Complex list:
+     * shop:
+     *   shopitem_stone:
+     *     PriceType: money
+     *     Price: 1
+     *     RewardType: item
+     *     [...]
+     *   shopitem_diamond
+     *     PriceType: money
+     *     Price: 1400
+     *     RewardType: item
+     *     [...]
+     * 
+     * -> each element of the list has an unique key and 
+     * the value corresponding to the key is the element of the list,
+     * like the elements "shopitem_stone" and "shopitem_diamond" in the example.
+     */
 export interface IElementTypeComplexList extends IElementType {
     type: IElementTypeComplex;
+
     defaultElement: object; // default element which is created when "add element" action is executed on list
     getElementDisplayInformation(config: object, configKey: string): string; // raw text to display. In future maybe name of icon to display.
 }
