@@ -119,12 +119,12 @@ class ElementTypes {
                 optional: true
             },
             {
-                configKey: "signs/text",
+                configKey: "signs.text",
                 type: this.get("string"),
                 optional: false
             },
             {
-                configKey: "signs/NeedsPermissionToCreateSign",
+                configKey: "signs.NeedsPermissionToCreateSign",
                 type: this.get("boolean"),
                 optional: false
             },

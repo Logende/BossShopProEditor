@@ -11,7 +11,7 @@
                 :name="p.configKey"
                 :value="getValue(p.configKey)"
                 @input="update(p.configKey, $event)"
-                @change-path="changePath(p.configKey)"
+                @change-path="changePath(p.configKey, $event)"
             ></qe-property>
         </v-form>
 
@@ -25,7 +25,9 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import _ from "lodash";
 import { IElementType, ElementTypeClass, IElementTypeComplex } from "@/data/ElementTypeModel";
 import { elementTypes } from "@/data/ElementTypes";
+import exampleConfig from "@/data/exampleConfig";
 import Property from "./properties/Property";
+import { pathToString } from "@/pathHelper";
 
 @Component({
     components: {
@@ -43,32 +45,37 @@ export default class QuickEdit extends Vue {
     }
 
     get selectedPath(): string {
-        return this.$store.state.selectedPath;
+        return this.$store.getters.pathString;
     }
 
     mounted(): void {
         this.$store.commit("applyConfig", {
-            path: "/",
-            newValue: {
-                ShopName: "TestShop",
-                DisplayName: "Shop 156",
-                Command: "!#",
-            }
+            path: [],
+            newValue: exampleConfig
         });
-        this.$store.commit("setSelectedPath", "/");
+        this.$store.commit("setSelectedPath", []);
     }
 
     getValue(key: string): any {
-        let basePath = this.$store.state.selectedPath;
-        if (basePath === "/") { basePath = ""; }
-        return _.at(this.$store.state.config, [basePath + key])[0];
+        const path = pathToString(this.$store.state.selectedPath.concat([key])) || "";
+        return _.at(this.$store.state.config, [path])[0];
     }
 
     update(path: string, newValue: any): void {
+        this.$store.commit("applyConfig", {
+            path: this.$store.state.selectedPath.concat([path]),
+            newValue
+        })
         this.$emit("change-request", { path, newValue });
     }
 
-
+    changePath(base: string, payload: string[]) {
+        const p = [base];
+        if (payload) { p.push(...payload); }
+        this.$store.commit("setSelectedPath", this.$store.state.selectedPath.concat(p));
+        // TODO: Remove after debug
+        this.bt = elementTypes.get("shopitem");
+    }
 
 }
 </script>

@@ -9,16 +9,10 @@
         <v-container fluid>
             <v-layout row>
                 <v-flex xs6>
-                    <config-edit
-                        @selected-path-changed="selectedPathChanged"
-                        @change-request="changeRequest"
-                    ></config-edit>
+                    <config-edit></config-edit>
                 </v-flex>
                 <v-flex xs6>
-                    <quick-edit
-                        @selected-path-changed="selectedPathChanged"
-                        @change-request="changeRequest"
-                    ></quick-edit>
+                    <quick-edit></quick-edit>
                 </v-flex>
             </v-layout>
         </v-container>
@@ -44,14 +38,6 @@ import { IElementType } from '@/data/ElementTypeModel';
     }
 })
 export default class App extends Vue {
-
-    selectedPathChanged(data: { path: string, elementType: IElementType }) {
-        this.$store.commit("setSelectedPath", data.path);
-    }
-
-    changeRequest(data: { path: string, newValue: any }) {
-        this.$store.commit("applyConfig", data);
-    }
 
 }
 </script>
