@@ -1,9 +1,9 @@
 <template>
     <div>
         <h1 class="mb-3">QuickEdit Section</h1>
+        <h3 class="mb-2">Path: {{ selectedPath }}</h3>
 
         <v-form v-if="editableProperties.length > 0">
-            <h3 class="mb-2">Path: {{ selectedPath }}</h3>
             <qe-property
                 v-for="p in editableProperties"
                 :key="p.configKey"
@@ -28,6 +28,7 @@ import { elementTypes } from "@/data/ElementTypes";
 import exampleConfig from "@/data/exampleConfig";
 import Property from "./properties/Property";
 import { pathToString } from "@/pathHelper";
+import { editorData } from '@/data/EditorData';
 
 @Component({
     components: {
@@ -36,24 +37,21 @@ import { pathToString } from "@/pathHelper";
 })
 export default class QuickEdit extends Vue {
 
-    bt = elementTypes.get("shop");
-
     get editableProperties() {
-        return (this.bt && this.bt.class === ElementTypeClass.Complex) ?
-            (this.bt as IElementTypeComplex).properties :
+        let type = this.$store.getters.selectedType;
+        if (!type) { return []; }
+
+        if (type.class === ElementTypeClass.Simple) {
+            type = editorData.getElementType(this.$store.state.selectedPath.slice(0, -1));
+        }
+
+        return (type && type.class === ElementTypeClass.Complex) ?
+            (type as IElementTypeComplex).properties :
             [];
     }
 
     get selectedPath(): string {
         return this.$store.getters.pathString;
-    }
-
-    mounted(): void {
-        this.$store.commit("applyConfig", {
-            path: [],
-            newValue: exampleConfig
-        });
-        this.$store.commit("setSelectedPath", []);
     }
 
     getValue(key: string): any {
@@ -65,7 +63,7 @@ export default class QuickEdit extends Vue {
         this.$store.commit("applyConfig", {
             path: this.$store.state.selectedPath.concat([path]),
             newValue
-        })
+        });
         this.$emit("change-request", { path, newValue });
     }
 
@@ -73,8 +71,6 @@ export default class QuickEdit extends Vue {
         const p = [base];
         if (payload) { p.push(...payload); }
         this.$store.commit("setSelectedPath", this.$store.state.selectedPath.concat(p));
-        // TODO: Remove after debug
-        this.bt = elementTypes.get("shopitem");
     }
 
 }
