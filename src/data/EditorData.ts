@@ -7,10 +7,13 @@ class EditorData {
     // TODO: Manage enum values here and provide user a choice between different versions
     // TODO: Also load data from relative text / config files, rather than hardcoding them
 
-    
-    public getElementType(path: Array<string>, subtreeRoot: IElementType): IElementType {
+    public getElementType(path: Array<string|number>): IElementType {
+        return this.getElementTypeStep(path, this.shopRoot);
+    }
+
+    public getElementTypeStep(path: Array<string|number>, subtreeRoot: IElementType): IElementType {
         // If the last step of the path is reached: Return the selected ElementType
-        if (path.length == 0) {
+        if (path.length === 0) {
             return subtreeRoot;
         }
 
@@ -23,12 +26,12 @@ class EditorData {
                 return elementTypes.get("none");
 
             // Complex ElementType. Find property which matches path section and continue search.
-            case ElementTypeClass.Complex:            
+            case ElementTypeClass.Complex:
                 const elementTypeComplex = subtreeRoot as IElementTypeComplex;
                 const pathSection = path[0];
-                for (let property of elementTypeComplex.properties) {
-                    if (property.configKey === pathSection){
-                        return this.getElementType(path.slice(1), property.type);
+                for (const property of elementTypeComplex.properties) {
+                    if (property.configKey === pathSection) {
+                        return this.getElementTypeStep(path.slice(1), property.type);
                     }
                 }
                 console.log("No property of the selected complex ElementType matches the selected path section '" + pathSection + "'.");
@@ -38,8 +41,7 @@ class EditorData {
             case ElementTypeClass.List_Complex:
                 const elementTypeListComplex = subtreeRoot as IElementTypeComplexList;
                 // Path section does not matter: Anything allowed
-                return this.getElementType(path.slice(1), elementTypeListComplex.type);
-                
+                return this.getElementTypeStep(path.slice(1), elementTypeListComplex.type);
 
             // ElementType depends on other config values.
             case ElementTypeClass.Dependent:
@@ -49,8 +51,6 @@ class EditorData {
 
         throw new Error("Unknown ElementTypeClass: '" + subtreeRoot.class + "'.");
     }
-
-
 
 }
 

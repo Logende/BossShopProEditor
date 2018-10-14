@@ -4,7 +4,7 @@ import { editorData } from '@/data/EditorData';
 
 class ConfigManipulator {
 
-    public getPath(configText: string, indexLine: number): Array<string> {
+    public getPath(configText: string, indexLine: number): Array<string|number> {
         const line = this.getLine(configText, indexLine);
 
         // If empty line is selected no path is returned.
@@ -14,17 +14,18 @@ class ConfigManipulator {
 
         // linePathText is the key of the selected line (without whitespaces on left and value on right)
         const linePathText = this.cutPathText(line);
-        
+
         // If the line is part of an array, the path of the array is determined and returned
         if (linePathText.startsWith("-")) {
             const entryAbove = this.getEntryAbove(configText, indexLine);
             return this.getPath(configText, entryAbove.indexLine);
+            // TODO: allow directly selecting an array element (maybe only in the case of an array which contains elements of type array)
         }
 
         // If the selected line does not have parents: Directly return it
         if (this.getLevel(line) === 0) {
             return [linePathText];
-            
+
         } else {
             // If it has parents, calculate the parent path and return parent + child path
             const entryParent = this.getEntryParent(configText, indexLine);
