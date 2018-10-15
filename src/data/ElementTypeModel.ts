@@ -106,7 +106,13 @@ export interface IElementTypeComplexList extends IElementType {
     type: IElementTypeComplex;
 
     defaultElement: object; // default element which is created when "add element" action is executed on list
-    getElementDisplayInformation(config: object, configKey: string): string; // raw text to display. In future maybe name of icon to display.
+
+    /**
+     * Returns raw text to display. In future maybe name of icon to display.
+     * @param configSection Configuration section of the list.
+     * @param configKey Key of the corresponding element (IElementTypeComplex).
+     */
+    getElementDisplayInformation(configSection: object, configKey: string): string;
 }
 
 //
@@ -155,15 +161,15 @@ export class ElementTypeComplexList implements IElementTypeComplexList {
     public defaultElement: object;
     public elementInfoFunction: (config: object, configKey: string) => string;
 
-    constructor(name: string, type: IElementTypeComplex, defaultElement: object, elementInfoFunction: (config: object, configKey: string) => string) {
+    constructor(name: string, type: IElementTypeComplex, defaultElement: object, elementInfoFunction: (configSection: object, configKey: string) => string) {
         this.name = name;
         this.type = type;
         this.defaultElement = defaultElement;
         this.elementInfoFunction = elementInfoFunction;
     }
 
-    public getElementDisplayInformation(config: object, configKey: string): string {
-        return this.elementInfoFunction.call(config, configKey);
+    public getElementDisplayInformation(configSection: object, configKey: string): string {
+        return this.elementInfoFunction.call(configSection, configKey);
     }
 }
 
