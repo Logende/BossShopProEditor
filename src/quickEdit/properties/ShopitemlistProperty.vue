@@ -14,6 +14,7 @@
                         </v-card>
                     </v-layout>
                 </v-layout>
+                <div class="mb-4"></div>
             </v-card-text>
         </v-card>
 
@@ -22,6 +23,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { elementTypes } from '@/data/ElementTypes';
+import { IElementTypeComplexList } from '@/data/ElementTypeModel';
 
 @Component
 export default class ShopitemlistProperty extends Vue {
@@ -33,6 +36,7 @@ export default class ShopitemlistProperty extends Vue {
     value!: any;
 
     open = false;
+    silType = elementTypes.get("shopitemlist") as IElementTypeComplexList;
 
     get existingItems() {
         return this.value ?
