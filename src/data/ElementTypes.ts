@@ -100,7 +100,9 @@ class ElementTypes {
         ]));
 
         this.register(new ElementTypeComplexList("shopitemlist", this.get("shopitem") as IElementTypeComplex,
-        {}, (config: object, configKey: string) => ""));
+        {}, (config: object, configKey: string) => {
+            return configKey; // Note: just a temporary solution to have something displayed
+        }));
 
         this.register(new ElementTypeComplex("shop", [
             {
