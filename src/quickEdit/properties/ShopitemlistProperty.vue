@@ -8,8 +8,13 @@
             <v-card-text>
                 <v-layout v-for="row in 4" :key="row" row>
                     <v-layout align-center justify-center>
-                        <v-card v-for="x in 9" :key="x" class="ma-2 qe-shopitem"
-                                :color="existingItems.includes(((row - 1) * 9 + x).toString()) ? 'primary' : 'secondary'">
+                        <v-card
+                            v-for="x in 9"
+                            :key="x"
+                            class="ma-2 qe-shopitem"
+                            :color="existingItems.includes(((row - 1) * 9 + x).toString()) ? 'primary' : 'secondary'"
+                            @click.native="navigate((row - 1) * 9 + x)"
+                        >
                             <v-card-text>{{ (row - 1) * 9 + x }}</v-card-text>
                         </v-card>
                     </v-layout>
@@ -52,13 +57,19 @@ export default class ShopitemlistProperty extends Vue {
         }
     }
 
+    navigate(position: number) {
+        this.open = false;
+        this.$emit("change-path", [position.toString()]);
+    }
+
 }
 </script>
 
 <style>
 .qe-shopitem {
     width:50px;
-    height:50px
+    height:50px;
+    cursor: pointer;
 }
 </style>
 
