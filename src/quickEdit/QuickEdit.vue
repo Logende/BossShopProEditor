@@ -37,12 +37,23 @@ import { editorData } from '@/data/EditorData';
 })
 export default class QuickEdit extends Vue {
 
+    isParentPath = false;
+
+    get basePath() {
+        return (this.isParentPath) ?
+            this.$store.state.selectedPath.slice(0, -1) :
+            this.$store.state.selectedPath;
+    }
+
     get editableProperties() {
         let type = this.$store.getters.selectedType;
         if (!type) { return []; }
 
         if (type.class === ElementTypeClass.Simple) {
             type = editorData.getElementType(this.$store.state.selectedPath.slice(0, -1));
+            this.isParentPath = true;
+        } else {
+            this.isParentPath = false;
         }
 
         return (type && type.class === ElementTypeClass.Complex) ?
@@ -55,13 +66,13 @@ export default class QuickEdit extends Vue {
     }
 
     getValue(key: string): any {
-        const path = pathToString(this.$store.state.selectedPath.concat([key])) || "";
+        const path = pathToString(this.basePath.concat([key])) || "";
         return _.at(this.$store.state.config, [path])[0];
     }
 
     update(path: string, newValue: any): void {
         this.$store.commit("applyConfig", {
-            path: this.$store.state.selectedPath.concat([path]),
+            path: this.basePath.concat([path]),
             newValue
         });
         this.$emit("change-request", { path, newValue });

@@ -41,6 +41,7 @@ export default class ConfigEdit extends Vue {
     private convertToYaml() {
         this.configObject = YAML.parse(this.configText);
         console.log(this.configObject);
+        this.$store.commit("applyConfig", { path: [], newValue: this.configObject });
     }
 
     private updateSelectionSafe(slowUpdate: boolean) {
