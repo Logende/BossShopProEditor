@@ -8,7 +8,7 @@
         </div>
         <div class="column">
             <div class="field">
-              <textarea @click="updateSelectionSafe(false)" @select="updateSelectionSafe(false)" @keydown="updateSelectionSafe(true)" ref="configTextArea" v-model="configText"></textarea>
+              <textarea style="width:100%;" @click="updateSelectionSafe(false)" @select="updateSelectionSafe(false)" @keydown="updateSelectionSafe(true)" ref="configTextArea" v-model="configText"></textarea>
             </div>
         </div>
     </div>
