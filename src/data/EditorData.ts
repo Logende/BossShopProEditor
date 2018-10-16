@@ -28,13 +28,17 @@ class EditorData {
             // Complex ElementType. Find property which matches path section and continue search.
             case ElementTypeClass.Complex:
                 const elementTypeComplex = subtreeRoot as IElementTypeComplex;
-                const pathSection = path[0];
-                for (const property of elementTypeComplex.properties) {
-                    if (property.configKey === pathSection) {
-                        return this.getElementTypeStep(path.slice(1), config, property.type);
+
+                //The key of a property could be multiple path sections combined. Therefor all possible paths are tried, starting with one path section, up to the complete path.
+                for(let i = 0; i < path.length; i++){
+                    const pathSection = path.slice(0, i+1).join(".");
+                    for (const property of elementTypeComplex.properties) {
+                        if (property.configKey === pathSection) {
+                            return this.getElementTypeStep(path.slice(1), config, property.type);
+                        }
                     }
                 }
-                console.log("No property of the selected complex ElementType matches the selected path section '" + pathSection + "'.");
+                console.log("No property of the selected complex ElementType matches the selected path '" + path.join(".") + "'.");
                 return elementTypes.get("none");
 
             // Complex list. Every path section results in the same ElementType.
