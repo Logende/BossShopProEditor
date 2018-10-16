@@ -5,6 +5,10 @@ import { editorData } from '@/data/EditorData';
 class ConfigManipulator {
 
     public getPath(configText: string, indexLine: number): Array<string|number> {
+        if (indexLine === undefined) {
+            throw new Error("Unable to get path: indexLine undefined.");
+        }
+
         const line = this.getLine(configText, indexLine);
 
         // If empty line is selected no path is returned.

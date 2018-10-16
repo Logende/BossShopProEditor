@@ -18,6 +18,7 @@ class ElementTypes {
         this.register(new ElementTypeSimple("double"));
         this.register(new ElementTypeSimple("integer"));
         this.register(new ElementTypeSimple("list_string"));
+        this.register(new ElementTypeSimple("item"));
         // TODO: replace example names by actual lists of data names
         this.register(new ElementTypeSimpleAutocomplete("material", ["stone", "log"]));
         this.register(new ElementTypeSimpleAutocomplete("potioneffect", ["poison", "heal"]));
@@ -28,20 +29,13 @@ class ElementTypes {
         //
         // Init special ElementTypes
         //
-        this.register(new ElementTypeComplex("item", [
-            {
-                configKey: "",
-                type: this.get("list_string"),
-                optional: false
-            }
-        ]));
-        this.register(new ElementTypeComplexList("list_item", this.get("item") as IElementTypeComplex,
+        this.register(new ElementTypeComplexList("list_item", this.get("item"),
         ["type:stone", "amount:1"], (config: object, configKey: string) => "todo"));
 
         //
         // Init shop ElementTypes (TODO: Automatically load via config file in the future, to make it possible, to modify those types)
         //
-        this.register(new ElementTypeDependent("reward", "../RewardType", new Map([
+        this.register(new ElementTypeDependent("reward", "RewardType", new Map([
             ["money", "double"],
             ["item", "list_item"],
             ["points", "double"],
@@ -50,7 +44,7 @@ class ElementTypes {
             ["commands", "list_string"]
         ])));
 
-        this.register(new ElementTypeDependent("price", "../PriceType", new Map([
+        this.register(new ElementTypeDependent("price", "PriceType", new Map([
             ["money", "double"],
             ["item", "list_item"],
             ["points", "double"]
@@ -59,7 +53,7 @@ class ElementTypes {
         this.register(new ElementTypeComplex("shopitem", [
             {
                 configKey: "MenuItem",
-                type: this.get("item"),
+                type: this.get("list_string"),
                 optional: false
             },
             {

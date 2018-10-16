@@ -4,6 +4,7 @@ import BooleanProperty from "./BooleanProperty.vue";
 import ComplexProperty from "./ComplexProperty.vue";
 import StringProperty from "./StringProperty.vue";
 import ShopitemlistProperty from "./ShopitemlistProperty.vue";
+import StringlistProperty from "./StringlistProperty.vue";
 
 export default Vue.extend({
     functional: true,
@@ -23,7 +24,14 @@ export default Vue.extend({
                     break;
             }
         } else if (type.class === ElementTypeClass.Complex) {
-            el = ComplexProperty;
+            switch (type.name) {
+                case "list_string":
+                    el = StringlistProperty;
+                    break;
+                default:
+                    el = ComplexProperty;
+                    break;
+            }
         } else if (type.class === ElementTypeClass.List_Complex) {
             switch (type.name) {
                 case "shopitemlist":

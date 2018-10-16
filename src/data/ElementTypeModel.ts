@@ -12,6 +12,12 @@ export enum ElementTypeClass {
      */
     Simple,
 
+    
+    /**
+     * TODO: Describe
+     */
+    Simple_Autocomplete,
+
     /**
      * Complex ElementTypes consist of an array of sub-ElementTypes.
      * For example a shop is a complex ElementType, consisting of for example
@@ -103,7 +109,7 @@ export interface IElementTypeComplex extends IElementType {
      * like the elements "shopitem_stone" and "shopitem_diamond" in the example.
      */
 export interface IElementTypeComplexList extends IElementType {
-    type: IElementTypeComplex;
+    type: IElementType;
 
     defaultElement: object; // default element which is created when "add element" action is executed on list
 
@@ -138,6 +144,7 @@ export class ElementTypeSimpleAutocomplete extends ElementTypeSimple implements 
 
     constructor(name: string, possibilities: string[]) {
         super(name);
+        this.class = ElementTypeClass.Simple_Autocomplete;
         this.possibilities = possibilities;
     }
 }
@@ -157,11 +164,11 @@ export class ElementTypeComplex implements IElementType {
 export class ElementTypeComplexList implements IElementTypeComplexList {
     public name: string;
     public class: ElementTypeClass = ElementTypeClass.List_Complex;
-    public type: IElementTypeComplex;
+    public type: IElementType;
     public defaultElement: object;
     public elementInfoFunction: (config: object, configKey: string) => string;
 
-    constructor(name: string, type: IElementTypeComplex, defaultElement: object, elementInfoFunction: (configSection: object, configKey: string) => string) {
+    constructor(name: string, type: IElementType, defaultElement: object, elementInfoFunction: (configSection: object, configKey: string) => string) {
         this.name = name;
         this.type = type;
         this.defaultElement = defaultElement;

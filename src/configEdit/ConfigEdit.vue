@@ -1,14 +1,11 @@
 <template>
     <div class="ui container">
         <div class="column">
-            <h1>Raw Configuration</h1>
-        </div>
-        <div class="column">
-            <button @click="convertToYaml()">Convert (just for test reasons)</button>
+            <h1>Raw Shop Configuration</h1>
         </div>
         <div class="column">
             <div class="field">
-              <textarea @click="updateSelectionSafe(false)" @select="updateSelectionSafe(false)" @keydown="updateSelectionSafe(true)" ref="configTextArea" v-model="configText"></textarea>
+              <textarea outline auto-grow label="Paste your shop configuration file here or create a new shop" auto-focus style="width:100%;" @click="updateSelectionSafe()" @select="updateSelectionSafe()" @keydown="updateConfigSafe()" ref="configTextArea" v-model="configText"></textarea>
             </div>
         </div>
     </div>
@@ -21,34 +18,41 @@ import Component from 'vue-class-component';
 import _ from 'lodash';
 import { manipulator } from "@/configEdit/ConfigManipulator";
 import { editorData } from '@/data/EditorData';
+import exampleConfigText from '@/data/exampleConfigText';
+import { Watch } from 'vue-property-decorator';
 
 @Component
 export default class ConfigEdit extends Vue {
 
-    private configText: string = "";
+    private configText: string = exampleConfigText;
     private configObject: object = {};
-    private functionUpdateSelectionSlow = _.debounce(this.updateSelection, 1000);
-    private functionUpdateSelectionFast = _.throttle(this.updateSelection, 600);
+    private functionUpdateSelectionSlow = _.debounce(this.updateSelection, 300);
+    private functionUpdateSelectionFast = _.throttle(this.updateSelection, 200);
+    private functionUpdateConfig = _.debounce(this.updateConfig, 300);
+    private functionUpdateConfigText = _.debounce(this.updateConfigText, 300);
 
     public selectPath(path: string) {
         const element = this.$refs.configTextArea as HTMLTextAreaElement;
         const index = manipulator.getIndex(this.configText, path);
         element.selectionEnd = index;
         element.selectionStart = index;
-
     }
 
-    private convertToYaml() {
+
+    private updateSelectionSafe() {
+            this.functionUpdateSelectionFast.call(this);
+    }
+    
+    private updateConfigSafe() {
+            this.functionUpdateSelectionSlow.call(this);
+            this.functionUpdateConfig.call(this);
+    }
+    
+    private updateConfig() {
         this.configObject = YAML.parse(this.configText);
         console.log(this.configObject);
-    }
-
-    private updateSelectionSafe(slowUpdate: boolean) {
-        if (slowUpdate) {
-            this.functionUpdateSelectionSlow.call(this);
-        } else {
-            this.functionUpdateSelectionFast.call(this);
-        }
+        this.$store.commit("applyConfig", { path: [], newValue: this.configObject });
+        this.updateSelection();
     }
 
     private updateSelection() {
@@ -56,6 +60,15 @@ export default class ConfigEdit extends Vue {
         const endPosition = element.selectionEnd;
         const path = manipulator.getPath(this.configText, endPosition);
         this.$store.commit("setSelectedPath", path);
+    }
+
+    @Watch("$store.state.config")
+    private updateConfigTextSafe() {
+            this.functionUpdateConfigText.call(this);
+    }
+
+    private updateConfigText() {
+        this.configText = YAML.stringify(this.$store.state.config);
     }
 
 

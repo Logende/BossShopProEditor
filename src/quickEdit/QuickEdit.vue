@@ -1,7 +1,16 @@
 <template>
     <div>
         <h1 class="mb-3">QuickEdit Section</h1>
-        <h3 class="mb-2">Path: {{ selectedPath }}</h3>
+
+        <v-breadcrumbs>
+            <v-icon slot="divider">chevron_right</v-icon>
+            <v-breadcrumbs-item @click.native="navigate(0)">Root</v-breadcrumbs-item>
+            <v-breadcrumbs-item
+                v-for="(p, i) in basePath"
+                :key="i"
+                @click.native="navigate(i + 1)"
+            >{{ p }}</v-breadcrumbs-item>
+        </v-breadcrumbs>
 
         <v-form v-if="editableProperties.length > 0">
             <qe-property
@@ -37,12 +46,25 @@ import { editorData } from '@/data/EditorData';
 })
 export default class QuickEdit extends Vue {
 
+    isParentPath = false;
+
+    get basePath() {
+        return (this.isParentPath) ?
+            this.$store.state.selectedPath.slice(0, -1) :
+            this.$store.state.selectedPath;
+    }
+
     get editableProperties() {
         let type = this.$store.getters.selectedType;
         if (!type) { return []; }
 
         if (type.class === ElementTypeClass.Simple) {
-            type = editorData.getElementType(this.$store.state.selectedPath.slice(0, -1));
+            type = editorData.getElementType(
+                this.$store.state.selectedPath.slice(0, -1),
+                this.$store.state.config);
+            this.isParentPath = true;
+        } else {
+            this.isParentPath = false;
         }
 
         return (type && type.class === ElementTypeClass.Complex) ?
@@ -55,13 +77,13 @@ export default class QuickEdit extends Vue {
     }
 
     getValue(key: string): any {
-        const path = pathToString(this.$store.state.selectedPath.concat([key])) || "";
+        const path = pathToString(this.basePath.concat([key])) || "";
         return _.at(this.$store.state.config, [path])[0];
     }
 
     update(path: string, newValue: any): void {
         this.$store.commit("applyConfig", {
-            path: this.$store.state.selectedPath.concat([path]),
+            path: this.basePath.concat([path]),
             newValue
         });
         this.$emit("change-request", { path, newValue });
@@ -71,6 +93,11 @@ export default class QuickEdit extends Vue {
         const p = [base];
         if (payload) { p.push(...payload); }
         this.$store.commit("setSelectedPath", this.$store.state.selectedPath.concat(p));
+    }
+
+    navigate(index: number) {
+        const length = this.$store.state.selectedPath.length;
+        this.$store.commit("setSelectedPath", this.$store.state.selectedPath.slice(0, index - length));
     }
 
 }
