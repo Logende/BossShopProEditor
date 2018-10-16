@@ -29,7 +29,7 @@ export default class ConfigEdit extends Vue {
     private functionUpdateSelectionSlow = _.debounce(this.updateSelection, 300);
     private functionUpdateSelectionFast = _.throttle(this.updateSelection, 200);
     private functionUpdateConfig = _.debounce(this.updateConfig, 300);
-    private functionUpdateConfigText = _.debounce(this.updateConfigText, 6000);
+    private functionUpdateConfigText = _.debounce(this.updateConfigText, 1000);
 
     public selectPath(path: string) {
         const element = this.$refs.configTextArea as HTMLTextAreaElement;
@@ -73,7 +73,7 @@ export default class ConfigEdit extends Vue {
             console.log("not updating config text: same config object");
             return;
         }
-        const configText = YAML.stringify(this.$store.state.config);
+        const configText = YAML.stringify(this.$store.state.config, 100, 2);
         if (configText === this.configText) {
             console.log("not updating config text: same text");
             return;
