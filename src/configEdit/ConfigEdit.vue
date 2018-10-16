@@ -8,7 +8,7 @@
         </div>
         <div class="column">
             <div class="field">
-              <textarea @click="updateSelectionSafe(false)" @select="updateSelectionSafe(false)" @keydown="updateSelectionSafe(true)" ref="configTextArea" v-model="configText"></textarea>
+              <textarea style="width:100%;" @click="updateSelectionSafe(false)" @select="updateSelectionSafe(false)" @keydown="updateSelectionSafe(true)" ref="configTextArea" v-model="configText"></textarea>
             </div>
         </div>
     </div>
@@ -41,6 +41,7 @@ export default class ConfigEdit extends Vue {
     private convertToYaml() {
         this.configObject = YAML.parse(this.configText);
         console.log(this.configObject);
+        this.$store.commit("applyConfig", { path: [], newValue: this.configObject });
     }
 
     private updateSelectionSafe(slowUpdate: boolean) {
