@@ -92,7 +92,7 @@ export default class QuickEdit extends Vue {
     changePath(base: string, payload: string[]) {
         const p = [base];
         if (payload) { p.push(...payload); }
-        this.$store.commit("setSelectedPath", this.$store.state.selectedPath.concat(p));
+        this.$store.commit("setSelectedPath", this.basePath.concat(p));
     }
 
     navigate(index: number) {

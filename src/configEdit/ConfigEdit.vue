@@ -62,7 +62,7 @@ export default class ConfigEdit extends Vue {
         this.$store.commit("setSelectedPath", path);
     }
 
-    @Watch("$store.state.config")
+    @Watch("$store.state.config", { deep: true })
     private updateConfigTextSafe() {
         console.log("updated config. update config text safe");
         this.functionUpdateConfigText.call(this);
