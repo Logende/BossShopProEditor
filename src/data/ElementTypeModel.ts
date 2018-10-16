@@ -12,7 +12,6 @@ export enum ElementTypeClass {
      */
     Simple,
 
-    
     /**
      * TODO: Describe
      */
