@@ -1,8 +1,10 @@
 import Vue, { CreateElement, RenderContext } from "vue";
 import { IElementType, ElementTypeClass, IElementTypeSimpleAutocomplete } from '@/data/ElementTypeModel';
+
 import AutocompleteProperty from "./AutocompleteProperty.vue";
 import BooleanProperty from "./BooleanProperty.vue";
 import ComplexProperty from "./ComplexProperty.vue";
+import ItemProperty from "./ItemProperty.vue";
 import NumberProperty from "./NumberProperty.vue";
 import StringProperty from "./StringProperty.vue";
 import ShopitemlistProperty from "./ShopitemlistProperty.vue";
@@ -35,6 +37,9 @@ export default Vue.extend({
                     break;
                 case "list_string":
                     el = StringlistProperty;
+                    break;
+                case "item":
+                    el = ItemProperty;
                     break;
             }
         } else if (type.class === ElementTypeClass.Simple_Autocomplete) {

@@ -1,17 +1,17 @@
 <template>
-    <v-autocomplete
+    <v-combobox
         :label="name"
         :value="value"
         :items="possibilities"
-        @input="$emit('input', $event)"
-    ></v-autocomplete>
+        @change="$emit('input', $event)"
+    ></v-combobox>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 
 @Component
-export default class StringProperty extends Vue {
+export default class AutocompleteProperty extends Vue {
 
     @Prop({ type: String })
     name!: string;
