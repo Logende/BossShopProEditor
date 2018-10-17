@@ -1,9 +1,10 @@
 <template>
-    <v-text-field
+    <v-autocomplete
         :label="name"
         :value="value"
+        :items="possibilities"
         @input="$emit('input', $event)"
-    ></v-text-field>
+    ></v-autocomplete>
 </template>
 
 <script lang="ts">
@@ -17,6 +18,9 @@ export default class StringProperty extends Vue {
 
     @Prop({ type: String })
     value!: string;
+
+    @Prop({ type: Array })
+    possibilities!: string[];
 
 }
 </script>

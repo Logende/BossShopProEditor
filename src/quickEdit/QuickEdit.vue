@@ -6,7 +6,7 @@
             <v-icon slot="divider">chevron_right</v-icon>
             <v-breadcrumbs-item @click.native="navigate(0)">Root</v-breadcrumbs-item>
             <v-breadcrumbs-item
-                v-for="(p, i) in basePath"
+                v-for="(p, i) in path"
                 :key="i"
                 @click.native="navigate(i + 1)"
             >{{ p }}</v-breadcrumbs-item>
@@ -21,6 +21,7 @@
                 :value="getValue(p.configKey)"
                 @input="update(p.configKey, $event)"
                 @change-path="changePath(p.configKey, $event)"
+                class="mb-1"
             ></qe-property>
         </v-form>
 
@@ -46,29 +47,32 @@ import { editorData } from '@/data/EditorData';
 })
 export default class QuickEdit extends Vue {
 
-    isParentPath = false;
+    get path() {
 
-    get basePath() {
-        return (this.isParentPath) ?
-            this.$store.state.selectedPath.slice(0, -1) :
-            this.$store.state.selectedPath;
+        let p = this.$store.state.selectedPath;
+        const config = this.$store.state.config;
+        let foundValidPath = false;
+
+        while (!foundValidPath && p.length > 0) {
+            const type = editorData.getElementType(p, config);
+            if (type && type.class === ElementTypeClass.Complex) {
+                foundValidPath = true;
+            } else {
+                p = p.slice(0, -1);
+            }
+        }
+
+        return p;
+
+    }
+
+    get type() {
+        return editorData.getElementType(this.path, this.$store.state.config);
     }
 
     get editableProperties() {
-        let type = this.$store.getters.selectedType;
-        if (!type) { return []; }
-
-        if (type.class === ElementTypeClass.Simple) {
-            type = editorData.getElementType(
-                this.$store.state.selectedPath.slice(0, -1),
-                this.$store.state.config);
-            this.isParentPath = true;
-        } else {
-            this.isParentPath = false;
-        }
-
-        return (type && type.class === ElementTypeClass.Complex) ?
-            (type as IElementTypeComplex).properties :
+        return (this.type && this.type.class === ElementTypeClass.Complex) ?
+            (this.type as IElementTypeComplex).properties :
             [];
     }
 
@@ -77,13 +81,13 @@ export default class QuickEdit extends Vue {
     }
 
     getValue(key: string): any {
-        const path = pathToString(this.basePath.concat([key])) || "";
+        const path = pathToString(this.path.concat([key])) || "";
         return _.at(this.$store.state.config, [path])[0];
     }
 
     update(path: string, newValue: any): void {
         this.$store.commit("applyConfig", {
-            path: this.basePath.concat([path]),
+            path: this.path.concat([path]),
             newValue
         });
         this.$emit("change-request", { path, newValue });
@@ -92,12 +96,12 @@ export default class QuickEdit extends Vue {
     changePath(base: string, payload: string[]) {
         const p = [base];
         if (payload) { p.push(...payload); }
-        this.$store.commit("setSelectedPath", this.basePath.concat(p));
+        this.$store.commit("setSelectedPath", this.path.concat(p));
     }
 
     navigate(index: number) {
-        const length = this.$store.state.selectedPath.length;
-        this.$store.commit("setSelectedPath", this.$store.state.selectedPath.slice(0, index - length));
+        const length = this.path.length;
+        this.$store.commit("setSelectedPath", this.path.slice(0, index - length));
     }
 
 }
