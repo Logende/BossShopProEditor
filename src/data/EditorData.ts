@@ -16,7 +16,32 @@ class EditorData {
     private getElementTypeStep(pathCurrent: Array<string|number>, pathNext: Array<string|number>, config: object, subtreeRoot: IElementType): IElementType {
         // If the last step of the path is reached: Return the selected ElementType
         if (pathNext.length === 0) {
-            return subtreeRoot;
+
+            switch(subtreeRoot.class){
+                case ElementTypeClass.Simple:
+                case ElementTypeClass.Simple_Autocomplete:
+                case ElementTypeClass.Complex:
+                case ElementTypeClass.List_Complex:
+                    return subtreeRoot;
+
+                case ElementTypeClass.Dependent:                
+                    const elementTypeDependent = subtreeRoot as IElementTypeDependent;
+                    const pathText = pathToString(pathCurrent.slice(0, - 1).concat([elementTypeDependent.dependencyConfigKey])) || "";
+                    const dependentString = _.at(config as any, [pathText])[0];
+                    const elementTypeName = elementTypeDependent.dependencyToElementTypeName.get(dependentString);
+                    if (elementTypeName === undefined) {
+                        console.log("elementtype defined in dependency with name " + elementTypeName + " does not exist in schema");
+                        return elementTypes.get("none");
+                    }
+                    if (! elementTypes.has(elementTypeName)) {
+                        console.log("elementtype defined in dependency with name " + elementTypeName + " does exist in schema but is not a known elementtype");
+                        return elementTypes.get("none");
+                    }
+                    return elementTypes.get(elementTypeName);
+
+
+            }
+            throw new Error("Unknown ElementTypeClass: '" + subtreeRoot.class + "'.");
         }
 
         // Handle the different ElementTypes properly
@@ -51,22 +76,6 @@ class EditorData {
 
             // ElementType depends on other config values.
             case ElementTypeClass.Dependent:
-                const elementTypeDependent = subtreeRoot as IElementTypeDependent;
-
-                // NOTE: The following two lines have not been tested yet!
-                const pathText = pathToString(pathCurrent.slice(0, - 1).concat([elementTypeDependent.dependencyConfigKey])) || "";
-                const dependentString = _.at(config as any, [pathText])[0];
-
-                const elementTypeName = elementTypeDependent.dependencyToElementTypeName.get(dependentString);
-                if (elementTypeName === undefined) {
-                    console.log("elementtype defined in dependency with name " + elementTypeName + " does not exist in schema");
-                    return elementTypes.get("none");
-                }
-                if (! elementTypes.has(elementTypeName)) {
-                    console.log("elementtype defined in dependency with name " + elementTypeName + " does exist in schema but is not a known elementtype");
-                    return elementTypes.get("none");
-                }
-                return elementTypes.get(elementTypeName);
         }
 
         throw new Error("Unknown ElementTypeClass: '" + subtreeRoot.class + "'.");
