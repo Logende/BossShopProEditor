@@ -1,7 +1,7 @@
 export default `ShopName: shop
 signs:
   text: '[shop]'
-  NeedPermissionToCreateSign: true
+  NeedsPermissionToCreateSign: true
 DisplayName: '&9&l&nExample Shop'
 shop:
   1:
