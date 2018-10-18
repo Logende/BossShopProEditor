@@ -133,6 +133,10 @@ class ElementTypes {
 
     }
 
+    public has(name: string): boolean {
+        return this.elementTypes.has(name.toLowerCase());
+    }
+
     public get(name: string): IElementType {
         if (!this.elementTypes.has(name.toLowerCase())) {
             throw new Error("ElementType with name '" + name + "' not found.");
