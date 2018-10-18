@@ -39,7 +39,6 @@ export default class ConfigEdit extends Vue {
 
     private pushConfig() {
         this.configObject = YAML.parse(this.configText);
-        console.log("updated config. apply config");
         this.$store.commit("applyConfig", { path: [], newValue: this.configObject });
         this.pushSelection();
     }
