@@ -29,12 +29,12 @@ class EditorData {
             case ElementTypeClass.Complex:
                 const elementTypeComplex = subtreeRoot as IElementTypeComplex;
 
-                //The key of a property could be multiple path sections combined. Therefor all possible paths are tried, starting with one path section, up to the complete path.
-                for(let i = 0; i < path.length; i++){
-                    const pathSection = path.slice(0, i+1).join(".");
+                // The key of a property could be multiple path sections combined. Therefor all possible paths are tried, starting with one path section, up to the complete path.
+                for (let i = 0; i < path.length; i++) {
+                    const pathSection = path.slice(0, i + 1).join(".");
                     for (const property of elementTypeComplex.properties) {
                         if (property.configKey === pathSection) {
-                            return this.getElementTypeStep(path.slice(1), config, property.type);
+                            return this.getElementTypeStep(path.slice(i + 1), config, property.type);
                         }
                     }
                 }
