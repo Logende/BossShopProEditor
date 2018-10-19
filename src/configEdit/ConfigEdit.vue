@@ -4,6 +4,14 @@
             <h1>Raw Shop Configuration</h1>
         </div>
         <div class="column">
+            <v-progress-linear
+             :color="color"
+             height="20"
+             value="100"
+            >Text</v-progress-linear>
+            <b v-if="!this.validYaml">Invalid YAML.</b>
+        </div>
+        <div class="column">
             <div class="field">
               <textarea outline auto-grow label="Paste your shop configuration file here or create a new shop" auto-focus style="width:100%;" @click="pushSelectionSafe()" @select="pushSelectionSafe()" @keydown="pushConfigSafe()" ref="configTextArea" v-model="configText"></textarea>
             </div>
@@ -33,6 +41,15 @@ export default class ConfigEdit extends Vue {
     private functionPullConfig = _.debounce(this.pullConfig, 700);
     private functionPullSelection = _.debounce(this.pullSelection, 50);
 
+    private validYaml: boolean = true;
+
+
+    private get color(): string {
+        return this.validYaml ? "success" : "error";
+    }
+
+
+
     
     private mounted(){
         const element = this.$refs.configTextArea as HTMLTextAreaElement;
@@ -46,10 +63,19 @@ export default class ConfigEdit extends Vue {
     }
 
     private pushConfig() {
-        this.configObject = YAML.parse(this.configText);
-        const configObjectCopy = JSON.parse(JSON.stringify(this.configObject));
-        this.$store.commit("applyConfig", { path: [], newValue: configObjectCopy });
-        this.pushSelection();
+        console.log("push config 1");
+        try{
+            this.configObject = YAML.parse(this.configText);
+            this.validYaml = true;
+            console.log("push config 2");
+            const configObjectCopy = JSON.parse(JSON.stringify(this.configObject));
+            this.$store.commit("applyConfig", { path: [], newValue: configObjectCopy });
+            console.log("push config finished");
+            this.pushSelection();
+        }catch(error){
+            this.validYaml = false;
+            return;
+        }
     }
 
     private pushConfigSafe() {
@@ -70,9 +96,11 @@ export default class ConfigEdit extends Vue {
     }
 
     private pullConfig() {
+        console.log("pull config 1");
         if (this.$store.state.config === this.configObject) {
             return;
         }
+        console.log("pull config 2");
         const configObjectCopy = JSON.parse(JSON.stringify(this.$store.state.config));
         this.configObject = configObjectCopy;
         const configText = YAML.stringify(this.configObject, 100, 2);
@@ -80,6 +108,7 @@ export default class ConfigEdit extends Vue {
             return;
         }
         this.configText = configText;
+        console.log("pull config finished");
     }
 
     @Watch("$store.state.selectedPath")
