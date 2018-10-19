@@ -1,5 +1,5 @@
 <template>
-    <v-checkbox :label="name" :value="value" @input="$emit('input', $event)"></v-checkbox>
+    <v-checkbox :label="name" :value="boolValue" @change="$emit('input', !!$event)"></v-checkbox>
 </template>
 
 <script lang="ts">
@@ -11,8 +11,12 @@ export default class BooleanProperty extends Vue {
     @Prop({ type: String })
     name!: string;
 
-    @Prop({ type: Boolean })
-    value!: boolean;
+    @Prop({ type: [String, Boolean] })
+    value!: string|boolean;
+
+    get boolValue() {
+        return typeof(this.value) === "boolean" ? this.value : this.value === "true";
+    }
 
 }
 </script>
