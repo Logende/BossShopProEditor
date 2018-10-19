@@ -5,7 +5,7 @@
         </div>
         <div class="column">
             <div class="field">
-              <textarea outline auto-grow label="Paste your shop configuration file here or create a new shop" auto-focus style="width:100%;" @click="updateSelectionSafe()" @select="updateSelectionSafe()" @keydown="updateConfigSafe()" ref="configTextArea" v-model="configText"></textarea>
+              <textarea outline auto-grow label="Paste your shop configuration file here or create a new shop" auto-focus style="width:100%;" @click="pushSelectionSafe()" @select="pushSelectionSafe()" @keydown="pushConfigSafe()" ref="configTextArea" v-model="configText"></textarea>
             </div>
         </div>
     </div>
@@ -26,62 +26,68 @@ export default class ConfigEdit extends Vue {
 
     private configText: string = exampleConfigText;
     private configObject: object = {};
-    private functionUpdateSelectionSlow = _.debounce(this.updateSelection, 300);
-    private functionUpdateSelectionFast = _.throttle(this.updateSelection, 200);
-    private functionUpdateConfig = _.debounce(this.updateConfig, 300);
-    private functionUpdateConfigText = _.debounce(this.updateConfigText, 1000);
+    private selectedPath: Array<string|number> = [];
+    private functionUpdateSelectionSlow = _.debounce(this.pushSelection, 300);
+    private functionUpdateSelectionFast = _.throttle(this.pushSelection, 200);
+    private functionUpdateConfig = _.debounce(this.pushConfig, 300);
+    private functionPullConfig = _.debounce(this.pullConfig, 700);
+    private functionPullSelection = _.debounce(this.pullSelection, 50);
 
-    public selectPath(path: string) {
-        const element = this.$refs.configTextArea as HTMLTextAreaElement;
-        const index = manipulator.getIndex(this.configText, path);
-        element.selectionEnd = index;
-        element.selectionStart = index;
-    }
-
-
-    private updateSelectionSafe() {
+    private pushSelectionSafe() {
             this.functionUpdateSelectionFast.call(this);
     }
-    
-    private updateConfigSafe() {
+
+    private pushConfig() {
+        this.configObject = YAML.parse(this.configText);
+        this.$store.commit("applyConfig", { path: [], newValue: this.configObject });
+        this.pushSelection();
+    }
+
+    private pushConfigSafe() {
             this.functionUpdateSelectionSlow.call(this);
             this.functionUpdateConfig.call(this);
     }
-    
-    private updateConfig() {
-        this.configObject = YAML.parse(this.configText);
-        console.log("updated config. apply config");
-        this.$store.commit("applyConfig", { path: [], newValue: this.configObject });
-        this.updateSelection();
-    }
 
-    private updateSelection() {
+    private pushSelection() {
         const element = this.$refs.configTextArea as HTMLTextAreaElement;
         const endPosition = element.selectionEnd;
-        const path = manipulator.getPath(this.configText, endPosition);
-        this.$store.commit("setSelectedPath", path);
+        this.selectedPath = manipulator.getPath(this.configText, endPosition);
+        this.$store.commit("setSelectedPath", this.selectedPath);
     }
 
     @Watch("$store.state.config", { deep: true })
-    private updateConfigTextSafe() {
-        console.log("updated config. update config text safe");
-        this.functionUpdateConfigText.call(this);
+    private pullConfigSafe() {
+        this.pullConfig.call(this);
     }
 
-    private updateConfigText() {
+    private pullConfig() {
         if (this.$store.state.config === this.configObject) {
-            console.log("not updating config text: same config object");
             return;
         }
         const configText = YAML.stringify(this.$store.state.config, 100, 2);
         if (configText === this.configText) {
-            console.log("not updating config text: same text");
             return;
         }
-        console.log("new config text");
         this.configText = configText;
     }
 
+    @Watch("$store.state.selectedPath")
+    private pullSelectionSafe() {
+        this.functionPullSelection.call(this);
+    }
+
+    private pullSelection() {
+        if (this.$store.state.selectedPath === this.selectedPath) {
+            return;
+        }
+        const indexLine = manipulator.getIndex(this.configText, this.$store.state.selectedPath);
+        if (indexLine !== -1) {
+            this.selectedPath = this.$store.state.selectedPath;
+            const element = this.$refs.configTextArea as HTMLTextAreaElement;
+            element.selectionEnd = indexLine;
+            element.selectionStart = indexLine;
+        }
+    }
 
 }
 </script>
