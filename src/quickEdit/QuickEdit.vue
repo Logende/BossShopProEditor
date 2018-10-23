@@ -31,9 +31,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import _ from "lodash";
-import { IElementType, ElementTypeClass, IElementTypeComplex } from "@/data/ElementTypeModel";
+import { IElementType, ElementTypeClass, IElementTypeComplex, IElementTypeProperty } from "@/data/ElementTypeModel";
 import { elementTypes } from "@/data/ElementTypes";
 import exampleConfig from "@/data/exampleConfig";
 import Property from "./properties/Property";
@@ -46,6 +46,8 @@ import { editorData } from '@/data/EditorData';
     }
 })
 export default class QuickEdit extends Vue {
+
+    editableProperties: IElementTypeProperty[] = [];
 
     get path() {
 
@@ -70,14 +72,24 @@ export default class QuickEdit extends Vue {
         return editorData.getElementType(this.path, this.$store.state.config);
     }
 
-    get editableProperties() {
-        return (this.type && this.type.class === ElementTypeClass.Complex) ?
-            (this.type as IElementTypeComplex).properties :
-            [];
-    }
-
     get selectedPath(): string {
         return this.$store.getters.pathString;
+    }
+
+    @Watch("type", { immediate: true })
+    @Watch("$store.state.config", { deep: true })
+    updateEditableProperties() {
+        console.log("Update");
+        if (this.type && this.type.class === ElementTypeClass.Complex) {
+            const config = this.$store.state.config;
+            this.editableProperties = (this.type as IElementTypeComplex).properties
+                .map((prop) => {
+                    prop.type = editorData.getElementType(this.path.concat([prop.configKey]), config);
+                    return prop;
+                });
+        } else {
+            this.editableProperties = [];
+        }
     }
 
     getValue(key: string): any {

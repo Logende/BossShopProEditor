@@ -33,13 +33,22 @@ export default class ConfigEdit extends Vue {
     private functionPullConfig = _.debounce(this.pullConfig, 700);
     private functionPullSelection = _.debounce(this.pullSelection, 50);
 
+    
+    private mounted(){
+        const element = this.$refs.configTextArea as HTMLTextAreaElement;
+        element.selectionStart = 0;
+        element.selectionEnd = 0;
+        this.pushConfig();
+    }
+
     private pushSelectionSafe() {
             this.functionUpdateSelectionFast.call(this);
     }
 
     private pushConfig() {
         this.configObject = YAML.parse(this.configText);
-        this.$store.commit("applyConfig", { path: [], newValue: this.configObject });
+        const configObjectCopy = JSON.parse(JSON.stringify(this.configObject));
+        this.$store.commit("applyConfig", { path: [], newValue: configObjectCopy });
         this.pushSelection();
     }
 
@@ -57,6 +66,7 @@ export default class ConfigEdit extends Vue {
 
     @Watch("$store.state.config", { deep: true })
     private pullConfigSafe() {
+        console.log("Watcher fired");
         this.pullConfig.call(this);
     }
 
@@ -64,7 +74,9 @@ export default class ConfigEdit extends Vue {
         if (this.$store.state.config === this.configObject) {
             return;
         }
-        const configText = YAML.stringify(this.$store.state.config, 100, 2);
+        const configObjectCopy = JSON.parse(JSON.stringify(this.$store.state.config));
+        this.configObject = configObjectCopy;
+        const configText = YAML.stringify(this.configObject, 100, 2);
         if (configText === this.configText) {
             return;
         }
