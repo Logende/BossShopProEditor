@@ -63,14 +63,11 @@ export default class ConfigEdit extends Vue {
     }
 
     private pushConfig() {
-        console.log("push config 1");
         try{
             this.configObject = YAML.parse(this.configText);
             this.validYaml = true;
-            console.log("push config 2");
             const configObjectCopy = JSON.parse(JSON.stringify(this.configObject));
             this.$store.commit("applyConfig", { path: [], newValue: configObjectCopy });
-            console.log("push config finished");
             this.pushSelection();
         }catch(error){
             this.validYaml = false;
@@ -96,11 +93,9 @@ export default class ConfigEdit extends Vue {
     }
 
     private pullConfig() {
-        console.log("pull config 1");
         if (this.$store.state.config === this.configObject) {
             return;
         }
-        console.log("pull config 2");
         const configObjectCopy = JSON.parse(JSON.stringify(this.$store.state.config));
         this.configObject = configObjectCopy;
         const configText = YAML.stringify(this.configObject, 100, 2);
@@ -108,7 +103,6 @@ export default class ConfigEdit extends Vue {
             return;
         }
         this.configText = configText;
-        console.log("pull config finished");
     }
 
     @Watch("$store.state.selectedPath")
