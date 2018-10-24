@@ -76,6 +76,7 @@ class ConfigManipulator {
     }
 
     private cutPathText(line: string): string {
+        line = line.replace(/'|"/g, "");
         const level = this.getLevel(line);
         const indexColon = line.indexOf(":");
         if (indexColon === -1) {
