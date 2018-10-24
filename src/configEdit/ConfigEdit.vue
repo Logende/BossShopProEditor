@@ -93,7 +93,7 @@ export default class ConfigEdit extends Vue {
     }
 
     private pullConfig() {
-        if (this.$store.state.config === this.configObject) {
+        if (_.isEqual(this.$store.state.config, this.configObject)) {
             return;
         }
         const configObjectCopy = JSON.parse(JSON.stringify(this.$store.state.config));
