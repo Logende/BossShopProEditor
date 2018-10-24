@@ -4,6 +4,7 @@ import { IElementType, ElementTypeClass, IElementTypeSimpleAutocomplete } from '
 import AutocompleteProperty from "./AutocompleteProperty.vue";
 import BooleanProperty from "./BooleanProperty.vue";
 import ComplexProperty from "./ComplexProperty.vue";
+import ItemlistProperty from "./ItemlistProperty.vue";
 import ItemProperty from "./ItemProperty.vue";
 import NumberProperty from "./NumberProperty.vue";
 import StringProperty from "./StringProperty.vue";
@@ -55,6 +56,13 @@ export default Vue.extend({
             switch (type.name) {
                 case "shopitemlist":
                     el = ShopitemlistProperty;
+                    break;
+                case "list_item":
+                    if (Array.isArray(value) && value.some((v) => Array.isArray(v))) {
+                        el = ItemlistProperty;
+                    } else {
+                        el = ItemProperty;
+                    }
                     break;
             }
         }
