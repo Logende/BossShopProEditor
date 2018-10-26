@@ -38,6 +38,10 @@
                         <v-btn @click="window = 0">Back</v-btn>
                     </v-window-item>
 
+                    <v-window-item :value="2">
+                        
+                    </v-window-item>
+
                 </v-window>
 
             </v-card-text>
