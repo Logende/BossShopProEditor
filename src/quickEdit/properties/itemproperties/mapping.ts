@@ -2,22 +2,24 @@ import BooleanProperty from "../BooleanProperty.vue";
 import NumberProperty from "../NumberProperty.vue";
 import StringProperty from "../StringProperty.vue";
 
+const intConversion = (s: string) => Number.parseInt(s, 10);
+
 export default {
-    "Type": StringProperty,
-    "Amount": NumberProperty,
-    "Durability": NumberProperty,
-    "Name": StringProperty,
-    "Lore": StringProperty,
-    "Enchantment": StringProperty,
-    "Color": StringProperty,
-    "Potion": StringProperty,
-    "Potioneffect": StringProperty,
-    "Playerhead": StringProperty,
-    "Custom Skull": StringProperty,
-    "Mob Spawner": StringProperty,
-    "Monster Egg": StringProperty,
-    "Hide Flags": StringProperty,
-    "Unbreakable": BooleanProperty,
-    "Book": StringProperty,
-    "Book Page": StringProperty
+    type: StringProperty,
+    amount: { component: NumberProperty, conversion: intConversion },
+    durability: { component: NumberProperty, conversion: intConversion },
+    name: StringProperty,
+    lore: StringProperty,
+    enchantment: StringProperty,
+    color: StringProperty,
+    potion: StringProperty,
+    potioneffect: StringProperty,
+    playerhead: StringProperty,
+    customskull: StringProperty,
+    mobspawner: StringProperty,
+    monsteregg: StringProperty,
+    hideflags: StringProperty,
+    unbreakable: BooleanProperty,
+    book: StringProperty,
+    bookpage: StringProperty
 } as Record<string, any>;

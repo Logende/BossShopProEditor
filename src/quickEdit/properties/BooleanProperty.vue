@@ -15,7 +15,7 @@ export default class BooleanProperty extends Vue {
     value!: string|boolean;
 
     get boolValue() {
-        return typeof(this.value) === "boolean" ? this.value : this.value === "true";
+        return typeof(this.value) === "boolean" ? this.value : this.value == "true";
     }
 
 }

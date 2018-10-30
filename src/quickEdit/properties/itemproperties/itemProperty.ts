@@ -1,15 +1,33 @@
-import Vue, { CreateElement, RenderContext } from "vue";
+import Vue, { CreateElement } from "vue";
 import mapping from "./mapping";
+import _ from "lodash";
 
 export default Vue.extend({
-    functional: true,
-    render(h: CreateElement, context: RenderContext) {
-        const property = context.props.property as string;
-        let el;
-        if (typeof(mapping[property]) !== "undefined") {
-            h(el = mapping[property], { props: context.props });
+    props: {
+        property: {
+            type: String,
+            required: true
+        }
+    },
+    render(h: CreateElement) {
+        const property = this.property as string;
+        const m = mapping[property];
+        if (typeof(m) !== "undefined") {
+            let value = this.$attrs.value;
+            let component = m;
+            if (m.conversion) {
+                value = m.conversion(value);
+                component = m.component;
+            }
+            return h(component, {
+                props: {
+                    name: property,
+                    value
+                },
+                on: this.$listeners
+            });
         } else {
-            h("p", "Unknown property");
+            return h("p", "Unknown property");
         }
     }
-} as any);
+});
