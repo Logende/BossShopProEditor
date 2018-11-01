@@ -1,10 +1,11 @@
 import { IElementType, ElementTypeClass, IElementTypeComplex, IElementTypeProperty, IElementTypeComplexList } from '@/data/ElementTypeModel';
 import { elementTypes } from '@/data/ElementTypes';
 import { editorData } from '@/data/EditorData';
+import { pathToString } from "@/pathHelper";
 
 class ConfigManipulator {
 
-    public getPath(configText: string, indexLine: number): Array<string|number> {
+    public getPath(configText: string, indexLine: number, arrayIndex: number = -1): Array<string|number> {
         if (indexLine === undefined) {
             throw new Error("Unable to get path: indexLine undefined.");
         }
@@ -22,7 +23,7 @@ class ConfigManipulator {
         // If the line is part of an array, the path of the array is determined and returned
         if (linePathText.startsWith("-")) {
             const entryAbove = this.getEntryNeighbour(configText, indexLine, true);
-            return this.getPath(configText, entryAbove.indexLine);
+            return this.getPath(configText, entryAbove.indexLine, arrayIndex + 1);
             // TODO: allow directly selecting an array element (maybe only in the case of an array which contains elements of type array)
         }
 
@@ -38,6 +39,9 @@ class ConfigManipulator {
             }
             const path = this.getPath(configText, entryParent.indexLine);
             path.push(linePathText);
+            if (arrayIndex > -1) {
+                path.push(arrayIndex);
+            }
             return path;
         }
     }
@@ -55,6 +59,28 @@ class ConfigManipulator {
             }
         }
         return -1;
+    }
+    
+    /**
+     * Returns the first duplicated path name (name of a path that exists multiple times) found and undefined else.
+     * @param configText Configuration text
+     */
+    public getPathDuplicate(configText: string): string|undefined {    
+        const keys = [];    
+        let entry: {indexLine: number, line: string|undefined} = {indexLine: 0, line: this.getLine(configText, 0)};
+
+        while (entry.indexLine > -1) {
+
+            const path = this.getPath(configText, entry.indexLine);
+            const key: string = pathToString(path)!;
+            if (keys.indexOf(key) > -1) {
+                return key;
+            }
+            keys.push(key);
+            entry = this.getEntryNeighbour(configText, entry.indexLine, false);
+        }
+        
+        return undefined;
     }
 
     private getLine(configText: string, indexLine: number): string {
@@ -90,12 +116,12 @@ class ConfigManipulator {
      * @param configText Raw config text.
      * @param indexLine Index of the selected line to search the parent from.
      */
-    private getEntryParent(configText: string, indexLine: number): {indexLine: number, line: string|null} {
+    private getEntryParent(configText: string, indexLine: number): {indexLine: number, line: string|undefined} {
         const line = this.getLine(configText, indexLine);
         const levelLine = this.getLevel(line);
         const levelParentLine = levelLine - 1;
         if (levelParentLine < 0) { // invalid parent line level
-            return {indexLine: - 1, line: null};
+            return {indexLine: - 1, line: undefined};
         }
         const specificCheck: (indexLine: number, line: string|null) => boolean = (indexNeighbourLine, lineNeighbour) => {
             const levelNeighbourLine = this.getLevel(lineNeighbour!);
@@ -110,7 +136,7 @@ class ConfigManipulator {
      * @param indexLine Index of the current line to search the child of. Use -1 if there is no line selected yet and a root element is searched.
      * @param pathSection Configuration path section (key) of the child to find.
      */
-    private getEntryChild(configText: string, indexLine: number, pathSection: string): {indexLine: number, line: string|null} {
+    private getEntryChild(configText: string, indexLine: number, pathSection: string): {indexLine: number, line: string|undefined} {
         let levelChildLine = 0;
         if (indexLine !== - 1) {
             const line = this.getLine(configText, indexLine);
@@ -124,7 +150,7 @@ class ConfigManipulator {
         return this.getEntryNeighbourSpecific(configText, indexLine, false, specificCheck);
     }
 
-    private getEntryNeighbourSpecific(configText: string, indexLine: number, directionUp: boolean, specificCheck: (indexLine: number, line: string) => boolean): {indexLine: number, line: string|null} {
+    private getEntryNeighbourSpecific(configText: string, indexLine: number, directionUp: boolean, specificCheck: (indexLine: number, line: string) => boolean): {indexLine: number, line: string|undefined} {
         let entryNeighbour = this.getEntryNeighbour(configText, indexLine, directionUp);
         while (entryNeighbour.indexLine !== - 1) {
             if (specificCheck.call(this, entryNeighbour.indexLine, entryNeighbour.line)) {
@@ -132,10 +158,10 @@ class ConfigManipulator {
             }
             entryNeighbour = this.getEntryNeighbour(configText, entryNeighbour.indexLine, directionUp);
         }
-        return {indexLine: -1, line: null};
+        return {indexLine: -1, line: undefined};
     }
 
-    private getEntryNeighbour(configText: string, indexLine: number, directionUp: boolean): {indexLine: number, line: string|null} {
+    private getEntryNeighbour(configText: string, indexLine: number, directionUp: boolean): {indexLine: number, line: string|undefined} {
         if (directionUp) {
             const indexLineNeighbour = configText.substring(0, indexLine).lastIndexOf("\n") - 1;
             if (indexLineNeighbour !== - 1 - 1) {
@@ -147,7 +173,7 @@ class ConfigManipulator {
                 return {indexLine: indexLineNeighbour, line: this.getLine(configText, indexLineNeighbour)};
             }
         }
-        return {indexLine: -1, line: null};
+        return {indexLine: -1, line: undefined};
     }
 
 }
