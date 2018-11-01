@@ -24,7 +24,7 @@ class EditorData {
                 case ElementTypeClass.List_Complex:
                     return subtreeRoot;
 
-                case ElementTypeClass.Dependent:                
+                case ElementTypeClass.Dependent:
                     const elementTypeDependent = subtreeRoot as IElementTypeDependent;
                     const pathText = pathToString(pathCurrent.slice(0, - 1).concat([elementTypeDependent.dependencyConfigKey])) || "";
                     const dependentString = _.at(config as any, [pathText])[0];

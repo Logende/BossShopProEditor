@@ -89,6 +89,7 @@ export default class ConfigEdit extends Vue {
 
     @Watch("$store.state.config", { deep: true })
     private pullConfigSafe() {
+        console.log("Watcher fired");
         this.pullConfig.call(this);
     }
 
