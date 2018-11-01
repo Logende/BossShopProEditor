@@ -60,13 +60,13 @@ class ConfigManipulator {
         }
         return -1;
     }
-    
+
     /**
      * Returns the first duplicated path name (name of a path that exists multiple times) found and undefined else.
      * @param configText Configuration text
      */
-    public getPathDuplicate(configText: string): string|undefined {    
-        const keys = [];    
+    public getPathDuplicate(configText: string): string|undefined {
+        const keys = [];
         let entry: {indexLine: number, line: string|undefined} = {indexLine: 0, line: this.getLine(configText, 0)};
 
         while (entry.indexLine > -1) {
@@ -79,7 +79,6 @@ class ConfigManipulator {
             keys.push(key);
             entry = this.getEntryNeighbour(configText, entry.indexLine, false);
         }
-        
         return undefined;
     }
 
