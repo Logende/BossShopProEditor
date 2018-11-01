@@ -71,6 +71,10 @@ export interface IElementTypeSimpleAutocomplete extends IElementTypeSimple {
     possibilities: string[];
 }
 
+export interface IElementTypeSimpleAutocompleteDependency extends IElementTypeSimpleAutocomplete {
+    dependentConfigKey: string;
+}
+
 export interface IElementTypeProperty {
     configKey: string;
     type: IElementType;
@@ -145,6 +149,15 @@ export class ElementTypeSimpleAutocomplete extends ElementTypeSimple implements 
         super(name);
         this.class = ElementTypeClass.Simple_Autocomplete;
         this.possibilities = possibilities;
+    }
+}
+
+export class ElementTypeSimpleAutocompleteDependency extends ElementTypeSimpleAutocomplete implements IElementTypeSimpleAutocompleteDependency {
+    public dependentConfigKey: string;
+
+    constructor(name: string, possibilities: string[], dependentConfigKey: string) {
+        super(name, possibilities);
+        this.dependentConfigKey = dependentConfigKey;
     }
 }
 
