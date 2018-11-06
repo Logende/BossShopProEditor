@@ -48,10 +48,7 @@ export default class ConfigEdit extends Vue {
         return this.validYaml ? "success" : "error";
     }
 
-
-
-    
-    private mounted(){
+    private mounted() {
         const element = this.$refs.configTextArea as HTMLTextAreaElement;
         element.selectionStart = 0;
         element.selectionEnd = 0;
@@ -63,13 +60,24 @@ export default class ConfigEdit extends Vue {
     }
 
     private pushConfig() {
-        try{
+        try {
+            // check whether path duplicates exist
+            const pathDuplicate = manipulator.getPathDuplicate(this.configText);
+            if (pathDuplicate !== undefined) {
+                console.log("duplicate path: " + pathDuplicate);
+                this.validYaml = false;
+                return;
+            }
+
+            // check whether valid yaml
             this.configObject = YAML.parse(this.configText);
             this.validYaml = true;
+
+            // copy, commit and push
             const configObjectCopy = JSON.parse(JSON.stringify(this.configObject));
             this.$store.commit("applyConfig", { path: [], newValue: configObjectCopy });
             this.pushSelection();
-        }catch(error){
+        } catch (error) {
             this.validYaml = false;
             return;
         }
@@ -84,6 +92,7 @@ export default class ConfigEdit extends Vue {
         const element = this.$refs.configTextArea as HTMLTextAreaElement;
         const endPosition = element.selectionEnd;
         this.selectedPath = manipulator.getPath(this.configText, endPosition);
+        console.log("selected " + this.selectedPath);
         this.$store.commit("setSelectedPath", this.selectedPath);
     }
 
@@ -94,7 +103,7 @@ export default class ConfigEdit extends Vue {
     }
 
     private pullConfig() {
-        if (this.$store.state.config === this.configObject) {
+        if (_.isEqual(this.$store.state.config, this.configObject)) {
             return;
         }
         const configObjectCopy = JSON.parse(JSON.stringify(this.$store.state.config));

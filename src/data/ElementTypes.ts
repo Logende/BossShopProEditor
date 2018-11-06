@@ -1,4 +1,4 @@
-import { IElementType, ElementTypeClass, IElementTypeSimple, ElementTypeSimple, ElementTypeSimpleAutocomplete, IElementTypeComplexList, ElementTypeComplex, ElementTypeComplexList, IElementTypeComplex, ElementTypeDependent } from '@/data/ElementTypeModel';
+import { IElementType, ElementTypeClass, IElementTypeSimple, ElementTypeSimple, ElementTypeSimpleAutocomplete, IElementTypeComplexList, ElementTypeComplex, ElementTypeComplexList, IElementTypeComplex, ElementTypeDependent, ElementTypeSimpleAutocompleteDependency } from '@/data/ElementTypeModel';
 
 class ElementTypes {
 
@@ -23,8 +23,8 @@ class ElementTypes {
         this.register(new ElementTypeSimpleAutocomplete("material", ["stone", "log"]));
         this.register(new ElementTypeSimpleAutocomplete("potioneffect", ["poison", "heal"]));
         this.register(new ElementTypeSimpleAutocomplete("enchantment", ["sharpness", "unbreaking"]));
-        this.register(new ElementTypeSimpleAutocomplete("rewardtype", ["money", "item", "points", "enchantment", "permissions", "commands"]));
-        this.register(new ElementTypeSimpleAutocomplete("pricetype", ["money", "item", "points"]));
+        this.register(new ElementTypeSimpleAutocompleteDependency("rewardtype", ["money", "item", "points", "enchantment", "permissions", "commands"], "Reward"));
+        this.register(new ElementTypeSimpleAutocompleteDependency("pricetype", ["money", "item", "points"], "Price"));
 
         //
         // Init special ElementTypes

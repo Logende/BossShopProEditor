@@ -17,7 +17,7 @@ class EditorData {
         // If the last step of the path is reached: Return the selected ElementType
         if (pathNext.length === 0) {
 
-            switch(subtreeRoot.class){
+            switch (subtreeRoot.class) {
                 case ElementTypeClass.Simple:
                 case ElementTypeClass.Simple_Autocomplete:
                 case ElementTypeClass.Complex:
