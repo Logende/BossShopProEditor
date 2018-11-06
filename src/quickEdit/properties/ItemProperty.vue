@@ -107,7 +107,7 @@ export default class ItemProperty extends Vue {
 
     window = 0;
     open = false;
-    
+
     // for adding a custom property
     text = "";
 
