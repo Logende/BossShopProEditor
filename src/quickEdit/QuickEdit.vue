@@ -33,7 +33,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import _ from "lodash";
-import { IElementType, ElementTypeClass, IElementTypeComplex, IElementTypeProperty } from "@/data/ElementTypeModel";
+import { IElementType, ElementTypeClass, IElementTypeComplex, IElementTypeProperty, IElementTypeSimpleAutocompleteDependency } from "@/data/ElementTypeModel";
 import { elementTypes } from "@/data/ElementTypes";
 import exampleConfig from "@/data/exampleConfig";
 import Property from "./properties/Property";
@@ -98,11 +98,18 @@ export default class QuickEdit extends Vue {
     }
 
     update(path: string, newValue: any): void {
+        const propertyPath = this.path.concat([path]);
+        const type = editorData.getElementType(propertyPath, this.$store.state.config);
+        if (type && (type as any).dependentConfigKey) {
+            this.$store.commit("applyConfig", {
+                path: this.path.concat([ (type as IElementTypeSimpleAutocompleteDependency).dependentConfigKey ]),
+                newValue: undefined
+            });
+        }
         this.$store.commit("applyConfig", {
-            path: this.path.concat([path]),
+            path: propertyPath,
             newValue
         });
-        this.$emit("change-request", { path, newValue });
     }
 
     changePath(base: string, payload: string[]) {
