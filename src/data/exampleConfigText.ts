@@ -1,10 +1,16 @@
-export default `ShopName: shop
+export default `# This is an example BossShopPro shop.
+# You can use the the ConfigEdit panel to edit the raw configuration text
+# and the QuickEdit panel for helpful features, like material name auto-complete and many more.
+#
+# Wiki: https://www.spigotmc.org/wiki/bossshoppro/
+#
+ShopName: shop
 signs:
   text: '[shop]'
   NeedsPermissionToCreateSign: true
 DisplayName: '&9&l&nExample Shop'
 shop:
-  1:
+  '1':
     RewardType: item
     PriceType: money
     Price: 15
@@ -17,7 +23,7 @@ shop:
     Message: '&aYou''ve purchased &e%reward%&a for &e$%price%'
     InventoryLocation: 1
     ExtraPermission: ''
-  2:
+  '2':
     RewardType: item
     PriceType: money
     Price: 15

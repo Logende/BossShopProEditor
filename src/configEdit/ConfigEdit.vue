@@ -34,6 +34,7 @@ export default class ConfigEdit extends Vue {
 
     private configText: string = exampleConfigText;
     private configObject: object = {};
+    private commentLines = new Map<string, string[]>(); // Key: path; Value: Array of comments below that path
     private selectedPath: Array<string|number> = [];
     private functionUpdateSelectionSlow = _.debounce(this.pushSelection, 300);
     private functionUpdateSelectionFast = _.throttle(this.pushSelection, 200);
@@ -64,7 +65,6 @@ export default class ConfigEdit extends Vue {
             // check whether path duplicates exist
             const pathDuplicate = manipulator.getPathDuplicate(this.configText);
             if (pathDuplicate !== undefined) {
-                console.log("duplicate path: " + pathDuplicate);
                 this.validYaml = false;
                 return;
             }
@@ -75,6 +75,7 @@ export default class ConfigEdit extends Vue {
 
             // copy, commit and push
             const configObjectCopy = JSON.parse(JSON.stringify(this.configObject));
+            this.commentLines = manipulator.readCommentLines(this.configText);
             this.$store.commit("applyConfig", { path: [], newValue: configObjectCopy });
             this.pushSelection();
         } catch (error) {
@@ -92,13 +93,11 @@ export default class ConfigEdit extends Vue {
         const element = this.$refs.configTextArea as HTMLTextAreaElement;
         const endPosition = element.selectionEnd;
         this.selectedPath = manipulator.getPath(this.configText, endPosition);
-        console.log("selected " + this.selectedPath);
         this.$store.commit("setSelectedPath", this.selectedPath);
     }
 
     @Watch("$store.state.config", { deep: true })
     private pullConfigSafe() {
-        console.log("Watcher fired");
         this.pullConfig.call(this);
     }
 
@@ -112,7 +111,7 @@ export default class ConfigEdit extends Vue {
         if (configText === this.configText) {
             return;
         }
-        this.configText = configText;
+        this.configText = manipulator.writeCommentLines(configText, this.commentLines);
     }
 
     @Watch("$store.state.selectedPath")
