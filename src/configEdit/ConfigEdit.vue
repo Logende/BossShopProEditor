@@ -13,7 +13,14 @@
         </div>
         <div class="column">
             <div class="field">
-              <textarea outline auto-grow label="Paste your shop configuration file here or create a new shop" auto-focus style="width:100%;" @click="pushSelectionSafe()" @select="pushSelectionSafe()" @keydown="pushConfigSafe()" ref="configTextArea" v-model="configText"></textarea>
+              <textarea
+                class="editarea"
+                @click="pushSelectionSafe()"
+                @select="pushSelectionSafe()"
+                @keydown="pushConfigSafe()"
+                ref="configTextArea"
+                v-model="configText"
+              ></textarea>
             </div>
         </div>
     </div>
@@ -134,3 +141,11 @@ export default class ConfigEdit extends Vue {
 
 }
 </script>
+
+<style>
+.editarea {
+    font-family: monospace;
+    width: 100%;
+    min-height: 600px;
+}
+</style>
