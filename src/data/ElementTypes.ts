@@ -53,7 +53,7 @@ class ElementTypes {
         this.register(new ElementTypeComplex("shopitem", [
             {
                 configKey: "MenuItem",
-                type: this.get("list_string"),
+                type: this.get("item"),
                 optional: false
             },
             {
