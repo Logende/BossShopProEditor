@@ -146,6 +146,6 @@ export default class ConfigEdit extends Vue {
 .editarea {
     font-family: monospace;
     width: 100%;
-    min-height: 600px;
+    min-height: 800px;
 }
 </style>
