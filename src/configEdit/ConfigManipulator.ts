@@ -145,12 +145,14 @@ class ConfigManipulator {
 
         while (entry.indexLine > -1) {
 
-            const path = this.getPath(configText, entry.indexLine);
-            const key: string = pathToString(path)!;
-            if (keys.indexOf(key) > -1) {
-                return key;
+            if (!this.isCommentLine(entry.line!)) {
+                const path = this.getPath(configText, entry.indexLine);
+                const key: string = pathToString(path)!;
+                if (keys.indexOf(key) > -1) {
+                    return key;
+                }
+                keys.push(key);
             }
-            keys.push(key);
             entry = this.getEntryNeighbour(configText, entry.indexLine, false);
         }
         return undefined;
