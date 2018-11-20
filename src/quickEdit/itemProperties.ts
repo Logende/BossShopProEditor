@@ -21,7 +21,7 @@ export default [
     },
     {
         "name": "Name",
-        "config": "name",
+        "config": "name:SomeName",
         "definition": "name:<name>",
         "infotext": "The displayed name of the item."
     },
