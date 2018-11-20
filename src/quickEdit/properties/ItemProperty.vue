@@ -58,7 +58,7 @@
                             </v-list-tile>
                         </v-list>
 
-                        <v-btn @click="window = 0">Back</v-btn>
+                        <v-btn @click="window = 0" flat color="primary">Back</v-btn>
                     </v-window-item>
 
                     <v-window-item :value="2">
@@ -140,7 +140,8 @@ export default class ItemProperty extends Vue {
     }
 
     addProperty(i: number) {
-        this.$emit("input", this.value.concat([ this.availableProperties[i].config ]));
+        const p = this.availableProperties[i];
+        this.$emit("input", this.value.concat([ `${p.key}:${p.default}` ]));
         this.window = 0;
     }
 

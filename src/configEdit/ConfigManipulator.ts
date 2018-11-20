@@ -7,7 +7,7 @@ class ConfigManipulator {
 
 
 
-    public readCommentLines(configText: string): Map<string, string[]>{
+    public readCommentLines(configText: string): Map<string, string[]> {
         const commentLines = new Map<string, string[]>();
 
         let entry: {indexLine: number, line: string|undefined} = {indexLine: 0, line: this.getLine(configText, 0)};
@@ -18,7 +18,7 @@ class ConfigManipulator {
             if (this.isCommentLine(entry.line!)) {
                 // Is comment line -> store comment
                 currentCommentLines.push(entry.line!);
-            }else{
+            } else {
                 // Is config line -> push comment array and start with new comment array
                 commentLines.set(currentKey, currentCommentLines);
                 const path = this.getPath(configText, entry.indexLine);
@@ -40,7 +40,7 @@ class ConfigManipulator {
      */
     public writeCommentLines(configText: string, commentLines: Map<string, string[]>): string {
         let firstIndexLine = 0;
-        //add comments above first path
+        // add comments above first path
         let comments = commentLines.get("")!;
         if (comments.length > 0) {
             const commentsString = comments.join("\n");
@@ -48,7 +48,7 @@ class ConfigManipulator {
             firstIndexLine = commentsString.length;
         }
 
-        //add comments below path
+        // add comments below path
         let entry: {indexLine: number, line: string|undefined} = {indexLine: firstIndexLine, line: this.getLine(configText, 0)};
         while (entry.indexLine > -1) {
 
@@ -250,7 +250,7 @@ class ConfigManipulator {
     }
 
     private isCommentLine(line: string): boolean {
-        return (line.replace(/\s/g, "").length == 0 || line.replace(/\s/g, "").startsWith("#"));
+        return (line.replace(/\s/g, "").length === 0 || line.replace(/\s/g, "").startsWith("#"));
     }
 
 }
