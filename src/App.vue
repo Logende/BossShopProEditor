@@ -11,7 +11,9 @@
                 <v-flex xs6>
                     <config-edit></config-edit>
                 </v-flex>
-                <v-flex xs6>
+                <v-flex xs1>
+                </v-flex>
+                <v-flex xs5>
                     <quick-edit></quick-edit>
                 </v-flex>
             </v-layout>
