@@ -44,6 +44,7 @@ export default class ConfigEdit extends Vue {
 
     private validYaml: boolean = true;
     private errorMessage: string = "";
+    private externalChanges: boolean = false;
 
 
     private get color(): string {
@@ -105,10 +106,14 @@ export default class ConfigEdit extends Vue {
 
     private mounted() {
         const editor = this.editor;
+        editor.$blockScrolling = Infinity;
         editor.getSession().setMode('ace/mode/yaml');
         editor.setTheme('ace/theme/monokai');
         editor.setValue(exampleConfigText);
         const configEdit = this;
+        editor.on('focus', () => {
+            this.externalChanges = false;
+        });
         editor.getSession().on('change', () => {
             configEdit.pushConfigSafe();
         });
@@ -119,7 +124,9 @@ export default class ConfigEdit extends Vue {
     }
 
     private pushSelectionSafe() {
+        if (!this.externalChanges) {
             this.functionUpdateSelectionFast.call(this);
+        }
     }
 
     private pushConfig() {
@@ -150,8 +157,9 @@ export default class ConfigEdit extends Vue {
     }
 
     private pushConfigSafe() {
-            this.functionUpdateSelectionSlow.call(this);
+        if (!this.externalChanges) {
             this.functionUpdateConfig.call(this);
+        }
     }
 
     private pushSelection() {
@@ -175,6 +183,7 @@ export default class ConfigEdit extends Vue {
         if (configText === this.configText()) {
             return;
         }
+        this.externalChanges = true;
         this.editor.setValue(manipulator.writeCommentLines(configText, this.commentLines), -1);
     }
 
