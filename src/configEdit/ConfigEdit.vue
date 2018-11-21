@@ -170,11 +170,12 @@ export default class ConfigEdit extends Vue {
         }
         const configObjectCopy = JSON.parse(JSON.stringify(this.$store.state.config));
         this.configObject = configObjectCopy;
-        const configText = YAML.stringify(this.configObject, 100, 2);
+        let configText = YAML.stringify(this.configObject, 100, 2);
+        configText = configText.substring(0, configText.length - 1);
         if (configText === this.configText()) {
             return;
         }
-        this.editor.setValue(manipulator.writeCommentLines(configText, this.commentLines));
+        this.editor.setValue(manipulator.writeCommentLines(configText, this.commentLines), -1);
     }
 
     @Watch("$store.state.selectedPath")
@@ -189,9 +190,7 @@ export default class ConfigEdit extends Vue {
         const indexLine = manipulator.getIndex(this.configText(), this.$store.state.selectedPath);
         if (indexLine !== -1) {
             this.selectedPath = this.$store.state.selectedPath;
-            const element = this.$refs.configTextArea as HTMLTextAreaElement;
-            element.selectionEnd = indexLine;
-            element.selectionStart = indexLine;
+            // todo
         }
     }
 
