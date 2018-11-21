@@ -1,17 +1,10 @@
 <template>
-    <div class="ui container">
-        <div class="column">
-            <h1>Raw Shop Configuration</h1>
-        </div>
-        <div class="column">
-            <v-progress-linear
-             :color="color"
-             height="20"
-             value="100"
-            >Text</v-progress-linear>
-            <b v-if="!this.validYaml">Invalid YAML.</b>
-        </div>
-        <div class="column">
+<div>
+        <h1 class="mb-3">Shop Configuration</h1>
+            <v-alert
+             :type="color"
+             :value="!validYaml"
+            >{{errorMessage}}</v-alert>
             <div class="field">
               <textarea
                 class="editarea"
@@ -22,8 +15,8 @@
                 v-model="configText"
               ></textarea>
             </div>
-        </div>
-    </div>
+    
+</div>
 </template>
 
 <script lang="ts">
@@ -50,6 +43,7 @@ export default class ConfigEdit extends Vue {
     private functionPullSelection = _.debounce(this.pullSelection, 50);
 
     private validYaml: boolean = true;
+    private errorMessage: string = "";
 
 
     private get color(): string {
@@ -72,6 +66,7 @@ export default class ConfigEdit extends Vue {
             // check whether path duplicates exist
             const pathDuplicate = manipulator.getPathDuplicate(this.configText);
             if (pathDuplicate !== undefined) {
+                this.errorMessage = "Duplicate paths."
                 this.validYaml = false;
                 return;
             }
@@ -79,6 +74,7 @@ export default class ConfigEdit extends Vue {
             // check whether valid yaml
             this.configObject = YAML.parse(this.configText);
             this.validYaml = true;
+            this.errorMessage = "Your shop looks good."
 
             // copy, commit and push
             const configObjectCopy = JSON.parse(JSON.stringify(this.configObject));
@@ -86,6 +82,7 @@ export default class ConfigEdit extends Vue {
             this.$store.commit("applyConfig", { path: [], newValue: configObjectCopy });
             this.pushSelection();
         } catch (error) {
+            this.errorMessage = "Not valid YAML syntax."
             this.validYaml = false;
             return;
         }
@@ -146,6 +143,6 @@ export default class ConfigEdit extends Vue {
 .editarea {
     font-family: monospace;
     width: 100%;
-    min-height: 800px;
+    min-height: 600px;
 }
 </style>
