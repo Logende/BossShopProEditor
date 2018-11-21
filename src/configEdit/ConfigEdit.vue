@@ -1,21 +1,18 @@
 <template>
 <div>
-        <h1 class="mb-3">Shop Configuration</h1>
-            <v-alert
-             :type="color"
-             :value="!validYaml"
-            >{{errorMessage}}</v-alert>
-            <div class="field">
-              <textarea
-                class="editarea"
-                @click="pushSelectionSafe()"
-                @select="pushSelectionSafe()"
-                @keydown="pushConfigSafe()"
-                ref="configTextArea"
-                v-model="configText"
-              ></textarea>
-            </div>
-    
+    <h1 class="mb-3">Shop Configuration</h1>
+    <v-alert
+     :type="color"
+     :value="!validYaml"
+    >{{errorMessage}}</v-alert>
+    <div class="field">
+    <div id="editor" class="editor editarea"
+    @click="pushSelectionSafe()"
+    @select="pushSelectionSafe()"
+    @keydown="pushConfigSafe()"
+    ref="configTextArea"
+    >Test</div>
+    </div>
 </div>
 </template>
 
@@ -29,10 +26,13 @@ import { editorData } from '@/data/EditorData';
 import exampleConfigText from '@/data/exampleConfigText';
 import { Watch } from 'vue-property-decorator';
 
+import * as ace from 'brace';
+import 'brace/mode/yaml';
+import 'brace/theme/monokai';
+
 @Component
 export default class ConfigEdit extends Vue {
 
-    private configText: string = exampleConfigText;
     private configObject: object = {};
     private commentLines = new Map<string, string[]>(); // Key: path; Value: Array of comments below that path
     private selectedPath: Array<string|number> = [];
@@ -50,10 +50,71 @@ export default class ConfigEdit extends Vue {
         return this.validYaml ? "success" : "error";
     }
 
+    private get editor(): ace.Editor {
+        return ace.edit('editor');
+    }
+
+    private configText(): string {
+        return this.editor.getValue();
+    }
+
+
+    /**
+     * Due to the use of Ace editor, methods to access the current text selection need to be manually provided
+     * because BSP Editor works with character indices as selection start and end, while Ace editor works with rows and columns.
+     *
+     * Computed properties (Vue get) do not work here because they are never updated. Probably because of Ace magic?
+     *
+     * TODO: Adapt ConfigManipulator and ConfigEdit to the row/column system of Ace.
+     */
+    private selection(): {selectionStart: number, selectionEnd: number} {
+        const lines = this.editor.getSession().doc.getAllLines();
+        const range = this.editor.getSelectionRange();
+        let i: number;
+        let n1: number;
+        let n2: number;
+        let selectionStart = 0;
+        let selectionEnd = 0;
+
+        for (i = 0, n1 = lines.length, n2 = range.end.row; i < n1 && i <= n2; ++i ) {
+            // Selection Start
+            if ( i === range.start.row ) {
+                selectionStart += range.start.column;
+            } else {
+                selectionStart += lines[i].length + 1;
+            }
+            // Selection End
+            if ( i === range.end.row ) {
+                selectionEnd += range.end.column;
+            } else {
+                selectionEnd += lines[i].length + 1;
+            }
+        }
+        return {
+            selectionStart,
+            selectionEnd
+        };
+    }
+    private selectionStart(): number {
+        return this.selection().selectionStart;
+    }
+    private selectionEnd(): number {
+        return this.selection().selectionEnd;
+    }
+
+
     private mounted() {
-        const element = this.$refs.configTextArea as HTMLTextAreaElement;
-        element.selectionStart = 0;
-        element.selectionEnd = 0;
+        const editor = this.editor;
+        editor.getSession().setMode('ace/mode/yaml');
+        editor.setTheme('ace/theme/monokai');
+        editor.setValue(exampleConfigText);
+        const configEdit = this;
+        editor.getSession().on('change', () => {
+            configEdit.pushConfigSafe();
+        });
+        editor.on('mousedown', () => {
+            configEdit.pushSelectionSafe();
+        });
         this.pushConfig();
     }
 
@@ -64,25 +125,25 @@ export default class ConfigEdit extends Vue {
     private pushConfig() {
         try {
             // check whether path duplicates exist
-            const pathDuplicate = manipulator.getPathDuplicate(this.configText);
+            const pathDuplicate = manipulator.getPathDuplicate(this.configText());
             if (pathDuplicate !== undefined) {
-                this.errorMessage = "Duplicate paths."
+                this.errorMessage = "Duplicate paths.";
                 this.validYaml = false;
                 return;
             }
 
             // check whether valid yaml
-            this.configObject = YAML.parse(this.configText);
+            this.configObject = YAML.parse(this.configText());
             this.validYaml = true;
-            this.errorMessage = "Your shop looks good."
+            this.errorMessage = "Your shop looks good.";
 
             // copy, commit and push
             const configObjectCopy = JSON.parse(JSON.stringify(this.configObject));
-            this.commentLines = manipulator.readCommentLines(this.configText);
+            this.commentLines = manipulator.readCommentLines(this.configText());
             this.$store.commit("applyConfig", { path: [], newValue: configObjectCopy });
             this.pushSelection();
         } catch (error) {
-            this.errorMessage = "Not valid YAML syntax."
+            this.errorMessage = "Not valid YAML syntax.";
             this.validYaml = false;
             return;
         }
@@ -94,9 +155,7 @@ export default class ConfigEdit extends Vue {
     }
 
     private pushSelection() {
-        const element = this.$refs.configTextArea as HTMLTextAreaElement;
-        const endPosition = element.selectionEnd;
-        this.selectedPath = manipulator.getPath(this.configText, endPosition);
+        this.selectedPath = manipulator.getPath(this.configText(), this.selectionEnd());
         this.$store.commit("setSelectedPath", this.selectedPath);
     }
 
@@ -112,10 +171,10 @@ export default class ConfigEdit extends Vue {
         const configObjectCopy = JSON.parse(JSON.stringify(this.$store.state.config));
         this.configObject = configObjectCopy;
         const configText = YAML.stringify(this.configObject, 100, 2);
-        if (configText === this.configText) {
+        if (configText === this.configText()) {
             return;
         }
-        this.configText = manipulator.writeCommentLines(configText, this.commentLines);
+        this.editor.setValue(manipulator.writeCommentLines(configText, this.commentLines));
     }
 
     @Watch("$store.state.selectedPath")
@@ -127,7 +186,7 @@ export default class ConfigEdit extends Vue {
         if (this.$store.state.selectedPath === this.selectedPath) {
             return;
         }
-        const indexLine = manipulator.getIndex(this.configText, this.$store.state.selectedPath);
+        const indexLine = manipulator.getIndex(this.configText(), this.$store.state.selectedPath);
         if (indexLine !== -1) {
             this.selectedPath = this.$store.state.selectedPath;
             const element = this.$refs.configTextArea as HTMLTextAreaElement;
