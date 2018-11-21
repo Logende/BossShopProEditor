@@ -1,6 +1,3 @@
-import { IElementType, ElementTypeClass, IElementTypeComplex, IElementTypeProperty, IElementTypeComplexList } from '@/data/ElementTypeModel';
-import { elementTypes } from '@/data/ElementTypes';
-import { editorData } from '@/data/EditorData';
 import { pathToString } from "@/pathHelper";
 
 class ConfigManipulator {
@@ -11,7 +8,7 @@ class ConfigManipulator {
         const commentLines = new Map<string, string[]>();
 
         let entry: {indexLine: number, line: string|undefined} = {indexLine: 0, line: this.getLine(configText, 0)};
-        let currentKey = "";
+        let currentKey = "$firstLine";
         let currentCommentLines: string[] = [];
         while (entry.indexLine > -1) {
 
@@ -29,7 +26,6 @@ class ConfigManipulator {
             entry = this.getEntryNeighbour(configText, entry.indexLine, false);
         }
         commentLines.set(currentKey, currentCommentLines);
-
         return commentLines;
     }
 
@@ -41,7 +37,7 @@ class ConfigManipulator {
     public writeCommentLines(configText: string, commentLines: Map<string, string[]>): string {
         let firstIndexLine = 0;
         // add comments above first path
-        let comments = commentLines.get("")!;
+        let comments = commentLines.get("$firstLine")!;
         if (comments.length > 0) {
             const commentsString = comments.join("\n");
             configText = commentsString + "\n" + configText;
