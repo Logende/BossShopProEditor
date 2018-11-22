@@ -79,7 +79,6 @@ export default class QuickEdit extends Vue {
     @Watch("type", { immediate: true })
     @Watch("$store.state.config", { deep: true })
     updateEditableProperties() {
-        console.log("Update");
         if (this.type && this.type.class === ElementTypeClass.Complex) {
             const config = this.$store.state.config;
             this.editableProperties = (this.type as IElementTypeComplex).properties

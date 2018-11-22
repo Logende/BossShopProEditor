@@ -1,6 +1,7 @@
 import Vue, { CreateElement } from "vue";
 import mapping from "./mapping";
 import properties from "../../itemProperties";
+import StringProperty from "../StringProperty.vue";
 import _ from "lodash";
 
 export default Vue.extend({
@@ -37,7 +38,13 @@ export default Vue.extend({
 
             return h("div", elements);
         } else {
-            return h("p", "Unknown property");
+            return h(StringProperty, {
+                props: {
+                    name: property,
+                    value: this.$props.value
+                },
+                on: this.$listeners
+            });
         }
     }
 });

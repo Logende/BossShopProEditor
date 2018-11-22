@@ -1,7 +1,7 @@
 <template>
-    <v-app>
+    <v-app dark>
 
-        <v-toolbar dark>
+        <v-toolbar>
             <v-toolbar-title>BossShopPro Editor</v-toolbar-title>
         </v-toolbar>
 
