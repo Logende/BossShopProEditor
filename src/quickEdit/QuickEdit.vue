@@ -81,7 +81,7 @@ export default class QuickEdit extends Vue {
     updateEditableProperties() {
         if (this.type && this.type.class === ElementTypeClass.Complex) {
             const config = this.$store.state.config;
-            this.editableProperties = (this.type as IElementTypeComplex).properties
+            this.editableProperties = (JSON.parse(JSON.stringify((this.type as IElementTypeComplex).properties)) as IElementTypeProperty[])
                 .map((prop) => {
                     prop.type = editorData.getElementType(this.path.concat([prop.configKey]), config);
                     return prop;
