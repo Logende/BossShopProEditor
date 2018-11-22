@@ -10,12 +10,12 @@
                 <v-window v-model="window">
 
                     <v-window-item :value="0">
-                        <v-btn outline class="ml-0 mb-4" @click="window = 1">Add Item Property</v-btn>
+                        <v-btn outline class="ml-0 mb-4" @click="window = 1">Choose from available Item Properties</v-btn>
 
                         <v-text-field
                             v-model="text"
                             append-outer-icon="add"
-                            label="Add Property"
+                            label="Item Property To Add"
                             type="text"
                             @click:append-outer="addCustomProperty"
                         ></v-text-field>
@@ -139,10 +139,11 @@ export default class ItemProperty extends Vue {
         this.text = "";
     }
 
-    addProperty(i: number) {
+    async addProperty(i: number) {
         const p = this.availableProperties[i];
         this.$emit("input", this.value.concat([ `${p.key}:${p.default}` ]));
-        this.window = 0;
+        await this.$nextTick();
+        this.edit(this.value.length - 1);
     }
 
     edit(index: number) {

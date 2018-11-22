@@ -69,7 +69,26 @@ export default class ShopitemlistProperty extends Vue {
 
     navigate(position: number) {
         this.open = false;
-        this.$emit("change-path", [this.items[position]]);
+        if (!this.items[position]) {
+            // empty slot - create a new item
+            // TODO: This might result in duplicate keys
+            // if there is already an item with key "position"
+            this.$emit("input", {
+                ...this.value,
+                [position.toString()]: {
+                    RewardType: "item",
+                    PriceType: "item",
+                    Reward: ["type:STONE", "amount:1"],
+                    MenuItem: ["%rewarditem_1%", "lore:#&eClick to buy for &e$%price%"],
+                    Message: "&aYou''ve purchased &e%reward%&a for &e$%price%",
+                    InventoryLocation: position,
+                    ExtraPermission: ""
+                }
+            });
+            this.$emit("change-path", [position.toString()]);
+        } else {
+            this.$emit("change-path", [this.items[position]]);
+        }
     }
 
 }
