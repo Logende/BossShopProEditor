@@ -22,11 +22,11 @@ export default class NumberProperty extends Vue {
     @Prop({ type: Boolean })
     floating!: boolean;
 
-    input(newValue: number) {
+    input(newValue: string) {
         if (this.floating) {
-            this.$emit("input", newValue);
+            this.$emit("input", parseFloat(newValue));
         } else {
-            this.$emit("input", Math.trunc(newValue));
+            this.$emit("input", parseInt(newValue, 10));
         }
     }
 

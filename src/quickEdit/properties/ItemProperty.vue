@@ -118,6 +118,7 @@ export default class ItemProperty extends Vue {
     availableProperties = itemProperties;
 
     get entries() {
+        console.log(this.value);
         return this.value ?
             this.value.map((s) => {
                 const res = regex.exec(s);
@@ -141,9 +142,13 @@ export default class ItemProperty extends Vue {
 
     async addProperty(i: number) {
         const p = this.availableProperties[i];
-        this.$emit("input", this.value.concat([ `${p.key}:${p.default}` ]));
+        this.$emit("input", (this.value || []).concat([ `${p.key}:${p.default}` ]));
         await this.$nextTick();
-        this.edit(this.value.length - 1);
+        if (this.value && this.value.length) {
+            this.edit(this.value.length - 1);
+        } else {
+            this.window = 0;
+        }
     }
 
     edit(index: number) {

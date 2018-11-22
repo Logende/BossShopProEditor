@@ -2,21 +2,18 @@
     <div>
         <h1 class="mb-3">QuickEdit Section</h1>
 
-        <v-breadcrumbs>
+        <v-breadcrumbs :items="breadcrumbsItems" class="pl-0">
             <v-icon slot="divider">chevron_right</v-icon>
-            <v-breadcrumbs-item @click.native="navigate(0)">Root</v-breadcrumbs-item>
-            <v-breadcrumbs-item
-                v-for="(p, i) in path"
-                :key="i"
-                @click.native="navigate(i + 1)"
-            >{{ p }}</v-breadcrumbs-item>
+            <v-breadcrumbs-item slot="item" slot-scope="{ item }" @click.native="navigate(item.index)">
+                {{ item.name }}
+            </v-breadcrumbs-item>
         </v-breadcrumbs>
 
         <v-form v-if="editableProperties.length > 0">
             <qe-property
                 v-for="p in editableProperties"
                 :key="p.configKey"
-                :type="p.type"
+                :type="p.resolvedType"
                 :name="p.configKey"
                 :value="getValue(p.configKey)"
                 @input="update(p.configKey, $event)"
@@ -49,7 +46,7 @@ export default class QuickEdit extends Vue {
 
     editableProperties: IElementTypeProperty[] = [];
 
-    get path() {
+    get path(): Array<string|number> {
 
         let p = this.$store.state.selectedPath;
         const config = this.$store.state.config;
@@ -76,14 +73,19 @@ export default class QuickEdit extends Vue {
         return this.$store.getters.pathString;
     }
 
+    get breadcrumbsItems() {
+        return [{ name: "Root", index: 0 }]
+            .concat(this.path.map((p, i) => ({ name: p.toString(), index: i + 1 })));
+    }
+
     @Watch("type", { immediate: true })
     @Watch("$store.state.config", { deep: true })
     updateEditableProperties() {
         if (this.type && this.type.class === ElementTypeClass.Complex) {
             const config = this.$store.state.config;
-            this.editableProperties = (JSON.parse(JSON.stringify((this.type as IElementTypeComplex).properties)) as IElementTypeProperty[])
-                .map((prop) => {
-                    prop.type = editorData.getElementType(this.path.concat([prop.configKey]), config);
+            this.editableProperties = (this.type as IElementTypeComplex).properties
+                .map((prop: any) => {
+                    prop.resolvedType = editorData.getElementType(this.path.concat([prop.configKey]), config);
                     return prop;
                 });
         } else {
