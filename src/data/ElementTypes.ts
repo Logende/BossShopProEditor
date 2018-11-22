@@ -91,7 +91,7 @@ class ElementTypes {
                 type: this.get("string"),
                 optional: true
             }
-        ]));
+        ], true, true));
 
         this.register(new ElementTypeComplexList("shopitemlist", this.get("shopitem") as IElementTypeComplex,
         {}, (config: object, configKey: string) => {
