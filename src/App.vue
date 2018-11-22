@@ -12,6 +12,7 @@
                     <config-edit></config-edit>
                 </v-flex>
                 <v-flex xs1>
+                    <v-divider vertical style="margin-left:50%;margin-right:50%;"></v-divider>
                 </v-flex>
                 <v-flex xs5>
                     <quick-edit></quick-edit>

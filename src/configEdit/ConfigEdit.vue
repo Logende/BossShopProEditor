@@ -107,6 +107,7 @@ export default class ConfigEdit extends Vue {
     private mounted() {
         const editor = this.editor;
         editor.$blockScrolling = Infinity;
+        editor.setPrintMarginColumn(-1);
         editor.getSession().setMode('ace/mode/yaml');
         editor.setTheme('ace/theme/monokai');
         editor.setValue(exampleConfigText);
@@ -208,8 +209,15 @@ export default class ConfigEdit extends Vue {
 
 <style>
 .editarea {
-    font-family: monospace;
     width: 100%;
     min-height: 600px;
+}
+
+.ace-monokai .ace_gutter {
+    background-color: #191919 !important;
+}
+
+.ace-monokai {
+    background-color: #212121 !important;
 }
 </style>
