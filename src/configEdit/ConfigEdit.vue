@@ -135,7 +135,7 @@ export default class ConfigEdit extends Vue {
             // check whether path duplicates exist
             const pathDuplicate = manipulator.getPathDuplicate(this.configText());
             if (pathDuplicate !== undefined) {
-                this.errorMessage = "Duplicate paths.";
+                this.errorMessage = "Duplicate config keys: '" + pathDuplicate + "'.";
                 this.validYaml = false;
                 return;
             }

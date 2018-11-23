@@ -1,4 +1,5 @@
 import { IElementType, ElementTypeClass, IElementTypeSimple, ElementTypeSimple, ElementTypeSimpleAutocomplete, IElementTypeComplexList, ElementTypeComplex, ElementTypeComplexList, IElementTypeComplex, ElementTypeDependent, ElementTypeSimpleAutocompleteDependency } from '@/data/ElementTypeModel';
+import _ from "lodash";
 
 class ElementTypes {
 
@@ -6,6 +7,23 @@ class ElementTypes {
     public elementTypeSpecialNames = ["item", "shopitemlist"];
 
     private elementTypes: Map<string, IElementType> = new Map<string, IElementType>();
+
+
+
+    public loadElementTypes(config: any){
+        for (const key in Object.keys(config)) {
+            const type = _.at(config, ["type"])[0] as string;
+            if (type.startsWith("complex")) {
+
+            } else if (type.startsWith("existing")) {
+
+            } else if (type.startsWith("dependent")) {
+
+            } else if (type.startsWith("complexlist")) {
+
+            }
+        }
+    }
 
     constructor() {
 
