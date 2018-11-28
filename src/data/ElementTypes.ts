@@ -1,5 +1,7 @@
-import { IElementType, ElementTypeClass, IElementTypeSimple, ElementTypeSimple, ElementTypeSimpleAutocomplete, IElementTypeComplexList, ElementTypeComplex, ElementTypeComplexList, IElementTypeComplex, ElementTypeDependent, ElementTypeSimpleAutocompleteDependency } from '@/data/ElementTypeModel';
+import { IElementType, ElementTypeClass, IElementTypeSimple, ElementTypeSimple, ElementTypeSimpleAutocomplete, IElementTypeComplexList, ElementTypeComplex, ElementTypeComplexList, IElementTypeComplex, ElementTypeDependent, ElementTypeSimpleAutocompleteDependency, IElementTypeProperty } from '@/data/ElementTypeModel';
 import _ from "lodash";
+import YAML from 'yamljs';
+import exampleElementTypes from '@/data/exampleElementTypes';
 
 class ElementTypes {
 
@@ -10,23 +12,76 @@ class ElementTypes {
 
 
 
-    public loadElementTypes(config: any){
-        for (const key in Object.keys(config)) {
-            const type = _.at(config, ["type"])[0] as string;
-            if (type.startsWith("complex")) {
-
-            } else if (type.startsWith("existing")) {
-
-            } else if (type.startsWith("dependent")) {
-
-            } else if (type.startsWith("complexlist")) {
-
-            }
+    public loadElementTypes(config: any): IElementType[] {
+        const elementTypes: IElementType[] = [];
+        for (const key of Object.keys(config)) {
+            const elementType = this.loadElementType(_.at(config, [key])[0] as any, key);
+            this.register(elementType);
+            elementTypes.push(elementType);
         }
+        return elementTypes;
     }
 
-    constructor() {
+    private loadElementType(elementTypeConfig: any, key: string) : IElementType {
+        const type = _.at(elementTypeConfig, ["type"])[0] as string;
 
+        if (type === ("complex")) {
+            const properties: IElementTypeProperty[] = [];
+            const propertiesConfig = _.at(elementTypeConfig, ["properties"])[0] as any;
+            console.log("properties of " + key);
+            console.log(propertiesConfig);
+            for (const propertyKey of Object.keys(propertiesConfig)) {
+                const propertyElementType = this.loadElementType(_.at(propertiesConfig, [propertyKey])[0] as any, propertyKey);
+                this.register(propertyElementType);
+                const propertyConfig = _.at(propertiesConfig, [propertyKey])[0] as any;
+                const propertyOptional: boolean =  _.has(propertyConfig, ["optional"]) ? _.at(propertyConfig, ["optional"])[0] as boolean : false;
+                const configKey: string =  _.has(propertyConfig, ["configKey"]) ? _.at(propertyConfig, ["configKey"])[0] as string : propertyKey;
+                const property: IElementTypeProperty = {
+                    configKey: configKey,
+                    optional: propertyOptional,
+                    type: propertyElementType
+                }
+                properties.push(property);
+            }
+            const name =  _.has(elementTypeConfig, ["name"]) ?  _.at(elementTypeConfig, ["name"])[0] as string : key;
+            const renameable =  _.has(elementTypeConfig, ["renameable"]) ?  _.at(elementTypeConfig, ["renamable"])[0] as boolean : false;
+            const deleteable =  _.has(elementTypeConfig, ["deleteable"]) ?  _.at(elementTypeConfig, ["deleteable"])[0] as boolean : false;
+            return new ElementTypeComplex(name, properties, renameable, deleteable);
+
+        } else if (type.startsWith("existing:")) {
+            return this.get(type.split(":")[1])
+
+        } else if (type === ("dependent")) {    
+            const dependency = _.at(elementTypeConfig, ["dependency"])[0] as string;
+            const map: Map<string, string> = new Map<string, string>();
+            const mapConfig = _.at(elementTypeConfig, ["map"])[0] as any;
+            for (const mapKey of Object.keys(mapConfig)) {
+                const value =  _.at(mapConfig, [mapKey])[0] as string;
+                map.set(mapKey, value);
+            }
+            const name =  _.has(elementTypeConfig, ["name"]) ?  _.at(elementTypeConfig, ["name"])[0] as string : key;
+            const renameable =  _.has(elementTypeConfig, ["renameable"]) ?  _.at(elementTypeConfig, ["renamable"])[0] as boolean : false;
+            const deleteable =  _.has(elementTypeConfig, ["deleteable"]) ?  _.at(elementTypeConfig, ["deleteable"])[0] as boolean : false;
+            return new ElementTypeDependent(name, dependency, map, renameable, deleteable);
+
+        } else if (type === ("complexlist")) {
+            const elementsConfig = _.at(elementTypeConfig, ["elements"])[0] as any;
+            const elementTypeKey: string = Object.keys(elementsConfig)[0];
+            const elementType = this.loadElementType(_.at(elementsConfig, [elementTypeKey])[0] as any, elementTypeKey);
+            this.register(elementType);
+            const transformationFunction = (config: object, configKey: string) => {
+                return configKey; // Note: just a temporary solution to have something displayed
+            };
+            const name =  _.has(elementTypeConfig, ["name"]) ?  _.at(elementTypeConfig, ["name"])[0] as string : key;
+            const renameable =  _.has(elementTypeConfig, ["renameable"]) ?  _.at(elementTypeConfig, ["renamable"])[0] as boolean : false;
+            const deleteable =  _.has(elementTypeConfig, ["deleteable"]) ?  _.at(elementTypeConfig, ["deleteable"])[0] as boolean : false;
+            return new ElementTypeComplexList(name, elementType, {}, transformationFunction, renameable, deleteable);
+        }
+        throw Error("Unknown ElementType type: ' " + type + "'.");
+    }
+
+
+    constructor() {
         //
         // Init simple ElementTypes
         //
@@ -51,104 +106,9 @@ class ElementTypes {
         ["type:stone", "amount:1"], (config: object, configKey: string) => "todo"));
 
         //
-        // Init shop ElementTypes (TODO: Automatically load via config file in the future, to make it possible, to modify those types)
+        // Init shop ElementTypes 
         //
-        this.register(new ElementTypeDependent("reward", "RewardType", new Map([
-            ["money", "double"],
-            ["item", "list_item"],
-            ["points", "double"],
-            ["enchantment", "string"],
-            ["permissions", "list_string"],
-            ["commands", "list_string"]
-        ])));
-
-        this.register(new ElementTypeDependent("price", "PriceType", new Map([
-            ["money", "double"],
-            ["item", "list_item"],
-            ["points", "double"]
-        ])));
-
-        this.register(new ElementTypeComplex("shopitem", [
-            {
-                configKey: "MenuItem",
-                type: this.get("item"),
-                optional: false
-            },
-            {
-                configKey: "RewardType",
-                type: this.get("rewardtype"),
-                optional: false,
-            },
-            {
-                configKey: "Reward",
-                type: this.get("reward"),
-                optional: false
-            },
-            {
-                configKey: "PriceType",
-                type: this.get("pricetype"),
-                optional: false
-            },
-            {
-                configKey: "Price",
-                type: this.get("price"),
-                optional: false
-            },
-            {
-                configKey: "Message",
-                type: this.get("string"),
-                optional: false
-            },
-            {
-                configKey: "InventoryLocation",
-                type: this.get("integer"),
-                optional: false
-            },
-            {
-                configKey: "ExtraPermission",
-                type: this.get("string"),
-                optional: true
-            }
-        ], true, true));
-
-        this.register(new ElementTypeComplexList("shopitemlist", this.get("shopitem") as IElementTypeComplex,
-        {}, (config: object, configKey: string) => {
-            return configKey; // Note: just a temporary solution to have something displayed
-        }));
-
-        this.register(new ElementTypeComplex("shop", [
-            {
-                configKey: "ShopName",
-                type: this.get("string"),
-                optional: false
-            },
-            {
-                configKey: "DisplayName",
-                type: this.get("string"),
-                optional: false
-            },
-            {
-                configKey: "Command",
-                type: this.get("string"),
-                optional: true
-            },
-            {
-                configKey: "signs.text",
-                type: this.get("string"),
-                optional: false
-            },
-            {
-                configKey: "signs.NeedsPermissionToCreateSign",
-                type: this.get("boolean"),
-                optional: false
-            },
-            {
-                configKey: "shop",
-                type: this.get("shopitemlist"),
-                optional: false
-            }
-        ]));
-
+        this.loadElementTypes(YAML.parse(exampleElementTypes));
     }
 
     public has(name: string): boolean {

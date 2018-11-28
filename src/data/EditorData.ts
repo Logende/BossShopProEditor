@@ -78,7 +78,8 @@ class EditorData {
             case ElementTypeClass.Dependent:
         }
 
-        throw new Error("Unknown ElementTypeClass: '" + subtreeRoot.class + "'.");
+        console.log("Unknown ElementType. Probably Array element.");
+        return elementTypes.get("none");
     }
 
 }
