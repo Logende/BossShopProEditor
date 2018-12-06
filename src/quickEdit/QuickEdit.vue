@@ -9,18 +9,32 @@
             </v-breadcrumbs-item>
         </v-breadcrumbs>
 
-        <v-form v-if="editableProperties.length > 0">
-            <qe-property
-                v-for="p in editableProperties"
-                :key="p.configKey"
-                :type="p.resolvedType"
-                :name="p.configKey"
-                :value="getValue(p.configKey)"
-                @input="update(p.configKey, $event)"
-                @change-path="changePath(p.configKey, $event)"
-                class="mb-1"
-            ></qe-property>
-        </v-form>
+        <v-btn block color="red" class="ml-0 mb-3" v-show="type.deleteable" @click="remove">
+            <v-icon>delete</v-icon>
+            Delete
+        </v-btn>
+
+        <v-divider class="mb-3"></v-divider>
+
+        <v-card v-if="editableProperties.length > 0">
+            <v-card-title>
+                <h3 class="headline mb-0">Properties</h3>
+            </v-card-title>
+            <v-card-text>
+                <v-form>
+                    <qe-property
+                        v-for="p in editableProperties"
+                        :key="p.configKey"
+                        :type="p.resolvedType"
+                        :name="p.configKey"
+                        :value="getValue(p.configKey)"
+                        @input="update(p.configKey, $event)"
+                        @change-path="changePath(p.configKey, $event)"
+                        class="mb-1"
+                    ></qe-property>
+                </v-form>
+            </v-card-text>
+        </v-card>
 
         <v-alert v-else :value="true" type="info">This property is not supported.</v-alert>
 
@@ -122,6 +136,11 @@ export default class QuickEdit extends Vue {
     navigate(index: number) {
         const length = this.path.length;
         this.$store.commit("setSelectedPath", this.path.slice(0, index - length));
+    }
+
+    remove() {
+        this.$store.commit("deleteConfig", this.path);
+        this.navigate(-1);
     }
 
 }

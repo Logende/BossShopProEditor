@@ -25,6 +25,15 @@ export default new Vuex.Store({
                 state.config = _.set(state.config, p, newValue);
             }
         },
+        deleteConfig(state, path: string[]) {
+            const parr = path.slice();
+            const last = parr.pop()!;
+            const p = pathToString(parr);
+            if (p) {
+                // @ts-ignore
+                Vue.delete(_.at(state.config, p)[0], last);
+            }
+        },
         setSelectedPath(state, newPath) {
             state.selectedPath = newPath;
         }
