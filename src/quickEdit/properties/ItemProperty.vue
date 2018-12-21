@@ -1,81 +1,82 @@
 <template>
-    <v-dialog v-model="open" max-width="700px">
+    <div>
+        <v-btn block @click="open = true" color="primary" class="ml-0 mb-4">Edit {{ name }}</v-btn>
+        <v-dialog v-model="open" max-width="700px">
 
-        <v-btn slot="activator" color="primary" class="ml-0 mb-4">Edit {{ name }}</v-btn>
+            <v-card>
+                <v-card-title primary-title class="headline">Edit {{ name }}</v-card-title>
+                <v-card-text>
 
-        <v-card>
-            <v-card-title primary-title class="headline">Edit {{ name }}</v-card-title>
-            <v-card-text>
+                    <v-window v-model="window">
 
-                <v-window v-model="window">
+                        <v-window-item :value="0">
+                            <v-btn outline class="ml-0 mb-4" @click="window = 1">Choose from available Item Properties</v-btn>
 
-                    <v-window-item :value="0">
-                        <v-btn outline class="ml-0 mb-4" @click="window = 1">Choose from available Item Properties</v-btn>
+                            <v-text-field
+                                v-model="text"
+                                append-outer-icon="add"
+                                label="Item Property To Add"
+                                type="text"
+                                @click:append-outer="addCustomProperty"
+                            ></v-text-field>
 
-                        <v-text-field
-                            v-model="text"
-                            append-outer-icon="add"
-                            label="Item Property To Add"
-                            type="text"
-                            @click:append-outer="addCustomProperty"
-                        ></v-text-field>
+                            <v-list class="mb-4" two-line>
+                                <v-list-tile v-for="(x, i) in entries" :key="i">
 
-                        <v-list class="mb-4" two-line>
-                            <v-list-tile v-for="(x, i) in entries" :key="i">
+                                    <v-list-tile-content>
+                                        <v-list-tile-title>{{ x[0] }}</v-list-tile-title>
+                                        <v-list-tile-sub-title>{{ x[1] }}</v-list-tile-sub-title>
+                                    </v-list-tile-content>
 
-                                <v-list-tile-content>
-                                    <v-list-tile-title>{{ x[0] }}</v-list-tile-title>
-                                    <v-list-tile-sub-title>{{ x[1] }}</v-list-tile-sub-title>
-                                </v-list-tile-content>
+                                    <v-list-tile-action>
+                                        <div>
+                                            <v-btn class="mr-2" icon ripple @click="edit(i)">
+                                                <v-icon color="secondary">edit</v-icon>
+                                            </v-btn>
+                                            <v-btn icon ripple @click="remove(i)">
+                                                <v-icon color="secondary">delete</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-list-tile-action>
 
-                                <v-list-tile-action>
-                                    <div>
-                                        <v-btn class="mr-2" icon ripple @click="edit(i)">
-                                            <v-icon color="secondary">edit</v-icon>
-                                        </v-btn>
-                                        <v-btn icon ripple @click="remove(i)">
-                                            <v-icon color="secondary">delete</v-icon>
-                                        </v-btn>
-                                    </div>
-                                </v-list-tile-action>
+                                </v-list-tile>
+                            </v-list>
+                        </v-window-item>
 
-                            </v-list-tile>
-                        </v-list>
-                    </v-window-item>
+                        <v-window-item :value="1">
 
-                    <v-window-item :value="1">
+                            <v-list three-line>
+                                <v-list-tile
+                                    v-for="(p, i) in availableProperties"
+                                    :key="p.name"
+                                    @click="addProperty(i)"
+                                >
+                                    <v-list-tile-content>
+                                        <v-list-tile-title>{{ p.name }}</v-list-tile-title>
+                                        <v-list-tile-sub-title v-html="p.infotext"></v-list-tile-sub-title>
+                                    </v-list-tile-content>
+                                </v-list-tile>
+                            </v-list>
 
-                        <v-list three-line>
-                            <v-list-tile
-                                v-for="(p, i) in availableProperties"
-                                :key="p.name"
-                                @click="addProperty(i)"
-                            >
-                                <v-list-tile-content>
-                                    <v-list-tile-title>{{ p.name }}</v-list-tile-title>
-                                    <v-list-tile-sub-title v-html="p.infotext"></v-list-tile-sub-title>
-                                </v-list-tile-content>
-                            </v-list-tile>
-                        </v-list>
+                            <v-btn @click="window = 0" flat color="primary">Back</v-btn>
+                        </v-window-item>
 
-                        <v-btn @click="window = 0" flat color="primary">Back</v-btn>
-                    </v-window-item>
+                        <v-window-item :value="2">
+                            <item-property
+                                :key="editingIndex"
+                                :property="selectedProperty[1]"
+                                v-model="tempValue"
+                            ></item-property>
+                            <v-btn class="ml-0" color="primary" @click="save">Save</v-btn>
+                        </v-window-item>
 
-                    <v-window-item :value="2">
-                        <item-property
-                            :key="editingIndex"
-                            :property="selectedProperty[1]"
-                            v-model="tempValue"
-                        ></item-property>
-                        <v-btn class="ml-0" color="primary" @click="save">Save</v-btn>
-                    </v-window-item>
+                    </v-window>
 
-                </v-window>
+                </v-card-text>
+            </v-card>
 
-            </v-card-text>
-        </v-card>
-
-    </v-dialog>
+        </v-dialog>
+    </div>
 </template>
 
 <script lang="ts">
