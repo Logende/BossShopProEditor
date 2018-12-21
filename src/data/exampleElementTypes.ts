@@ -16,6 +16,19 @@ shop:
     shopitemlist:
       configKey: shop
       type: complexlist
+      default:
+        RewardType: item
+        PriceType: money
+        Price: 15
+        Reward:
+          - 'type:STONE'
+          - 'amount:1'
+        MenuItem:
+          - '%rewarditem_1%'
+          - 'lore:#&eClick to buy for &e$%price%'
+        Message: '&aYou''ve purchased &e%reward%&a for &e$%price%'
+        InventoryLocation: 1
+        ExtraPermission: ""
       elements:
         shopitem:
           type: complex

@@ -99,7 +99,8 @@ class ElementTypes {
             const name =  _.has(elementTypeConfig, ["name"]) ?  _.at(elementTypeConfig, ["name"])[0] as string : key;
             const renameable =  _.has(elementTypeConfig, ["renameable"]) ?  _.at(elementTypeConfig, ["renamable"])[0] as boolean : false;
             const deleteable =  _.has(elementTypeConfig, ["deleteable"]) ?  _.at(elementTypeConfig, ["deleteable"])[0] as boolean : false;
-            return new ElementTypeComplexList(name, elementType, {}, transformationFunction, renameable, deleteable);
+            const defaultElement = _.at(elementTypeConfig, ["default"])[0] as any;
+            return new ElementTypeComplexList(name, elementType, defaultElement, transformationFunction, renameable, deleteable);
         }
         throw Error("Unknown ElementType type: ' " + type + "'.");
     }
