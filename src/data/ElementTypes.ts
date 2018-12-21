@@ -2,6 +2,11 @@ import { IElementType, ElementTypeClass, IElementTypeSimple, ElementTypeSimple, 
 import _ from "lodash";
 import YAML from 'yamljs';
 import exampleElementTypes from '@/data/exampleElementTypes';
+import material_1_13 from '@/data/v1_13/material';
+import rewardtype_1_13 from '@/data/v1_13/rewardtype';
+import pricetype_1_13 from '@/data/v1_13/pricetype';
+import enchantment_1_13 from '@/data/v1_13/enchantment';
+import potioneffect_1_13 from '@/data/v1_13/potioneffect';
 
 class ElementTypes {
 
@@ -12,7 +17,28 @@ class ElementTypes {
 
 
 
-    public loadElementTypes(config: any): IElementType[] {
+    public loadElementTypes(config: any, version: string = "v1_13"): IElementType[] {
+        let material: string[] = [];
+        let rewardtype: string[] = [];
+        let pricetype: string[] = [];
+        let enchantment: string[] = [];
+        let potioneffect: string[] = [];
+
+        if (version == "v1_13") {
+            material = material_1_13.split("\n");
+            rewardtype = rewardtype_1_13.split("\n");
+            pricetype = pricetype_1_13.split("\n");
+            enchantment = enchantment_1_13.split("\n");
+            potioneffect = potioneffect_1_13.split("\n");
+        }
+
+        this.register(new ElementTypeSimpleAutocomplete("material", material));
+        this.register(new ElementTypeSimpleAutocomplete("potioneffect", potioneffect));
+        this.register(new ElementTypeSimpleAutocomplete("enchantment", enchantment));
+        this.register(new ElementTypeSimpleAutocompleteDependency("rewardtype", rewardtype, "Reward"));
+        this.register(new ElementTypeSimpleAutocompleteDependency("pricetype", pricetype, "Price"));
+
+
         const elementTypes: IElementType[] = [];
         for (const key of Object.keys(config)) {
             const elementType = this.loadElementType(_.at(config, [key])[0] as any, key);
@@ -28,8 +54,6 @@ class ElementTypes {
         if (type === ("complex")) {
             const properties: IElementTypeProperty[] = [];
             const propertiesConfig = _.at(elementTypeConfig, ["properties"])[0] as any;
-            console.log("properties of " + key);
-            console.log(propertiesConfig);
             for (const propertyKey of Object.keys(propertiesConfig)) {
                 const propertyElementType = this.loadElementType(_.at(propertiesConfig, [propertyKey])[0] as any, propertyKey);
                 this.register(propertyElementType);
@@ -93,11 +117,6 @@ class ElementTypes {
         this.register(new ElementTypeSimple("list_string"));
         this.register(new ElementTypeSimple("item"));
         // TODO: replace example names by actual lists of data names
-        this.register(new ElementTypeSimpleAutocomplete("material", ["stone", "log"]));
-        this.register(new ElementTypeSimpleAutocomplete("potioneffect", ["poison", "heal"]));
-        this.register(new ElementTypeSimpleAutocomplete("enchantment", ["sharpness", "unbreaking"]));
-        this.register(new ElementTypeSimpleAutocompleteDependency("rewardtype", ["money", "item", "points", "enchantment", "permissions", "commands"], "Reward"));
-        this.register(new ElementTypeSimpleAutocompleteDependency("pricetype", ["money", "item", "points"], "Price"));
 
         //
         // Init special ElementTypes

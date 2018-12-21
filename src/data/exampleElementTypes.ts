@@ -57,7 +57,6 @@ shop:
                 exp: integer
                 item: list_item
                 itemall: item
-                money: double
                 nothing: none
                 points: double
             Message:
