@@ -1,6 +1,20 @@
 <template>
 <div>
     <h1 class="mb-3">Shop Configuration</h1>
+    
+            <v-btn flat icon color="white" @click="undo()" v-if="true/*canUndo()*/">
+              <v-icon>undo</v-icon>
+            </v-btn>
+            <v-btn flat icon color="grey" v-else>
+              <v-icon>undo</v-icon>
+            </v-btn>
+
+            <v-btn flat icon color="white" @click="redo()" v-if="true/*canRedo()*/">
+              <v-icon>redo</v-icon>
+            </v-btn>
+            <v-btn flat icon color="grey" v-else>
+              <v-icon>redo</v-icon>
+            </v-btn>
     <v-alert
      :type="color"
      :value="!validYaml"
@@ -11,7 +25,7 @@
     @select="pushSelectionSafe()"
     @keydown="pushConfigSafe()"
     ref="configTextArea"
-    >Test</div>
+    >{{ exampleConfigText }}</div>
     </div>
 </div>
 </template>
@@ -57,6 +71,9 @@ export default class ConfigEdit extends Vue {
 
     private configText(): string {
         return this.editor.getValue();
+    }
+    private get exampleConfigText(): string {
+        return exampleConfigText;
     }
 
 
@@ -110,7 +127,6 @@ export default class ConfigEdit extends Vue {
         editor.setPrintMarginColumn(-1);
         editor.getSession().setMode('ace/mode/yaml');
         editor.setTheme('ace/theme/monokai');
-        editor.setValue(exampleConfigText);
         const configEdit = this;
         editor.on('focus', () => {
             this.externalChanges = false;
@@ -202,6 +218,33 @@ export default class ConfigEdit extends Vue {
             this.selectedPath = this.$store.state.selectedPath;
             // todo
         }
+    }
+    
+    
+    private undo() {
+        this.editor.undo();
+    }
+    
+    private redo() {
+        this.editor.redo();
+    }
+    
+
+    // not working yet: It seems like Vue does not update those computed properties
+    // probably because it does not track changes of the Editor#session#undomanager object.
+
+    private get canUndo(): boolean {
+        if (!document.getElementById("editor")) {
+            return false;
+        }
+        return this.editor.getSession().getUndoManager().hasUndo();
+    }
+
+    private get canRedo(): boolean {
+        if (!document.getElementById("editor")) {
+            return false;
+        }
+        return this.editor.getSession().getUndoManager().hasRedo();
     }
 
 }
