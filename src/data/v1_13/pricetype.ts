@@ -3,4 +3,4 @@ item
 itemall
 money
 nothing
-points`
+points`;

@@ -37,7 +37,7 @@ shop:
           properties:
             MenuItem:
               type: existing:item
-            RewardType: 
+            RewardType:
               type: existing:rewardtype
             Reward:
               type: dependent
@@ -60,7 +60,7 @@ shop:
                 points: double
                 shop: string
                 shoppage: string
-            PriceType: 
+            PriceType:
               type: existing:pricetype
             Price:
               type: dependent
@@ -78,4 +78,4 @@ shop:
               type: existing:integer
             ExtraPermission:
               type: existing:string
-              optional: true`
+              optional: true`;

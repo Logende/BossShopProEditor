@@ -15,7 +15,30 @@ class ElementTypes {
 
     private elementTypes: Map<string, IElementType> = new Map<string, IElementType>();
 
+    constructor() {
+        //
+        // Init simple ElementTypes
+        //
+        this.register(new ElementTypeSimple("none"));
+        this.register(new ElementTypeSimple("string"));
+        this.register(new ElementTypeSimple("boolean"));
+        this.register(new ElementTypeSimple("double"));
+        this.register(new ElementTypeSimple("integer"));
+        this.register(new ElementTypeSimple("list_string"));
+        this.register(new ElementTypeSimple("item"));
+        // TODO: replace example names by actual lists of data names
 
+        //
+        // Init special ElementTypes
+        //
+        this.register(new ElementTypeComplexList("list_item", this.get("item"),
+        ["type:stone", "amount:1"], (config: object, configKey: string) => "todo"));
+
+        //
+        // Init shop ElementTypes
+        //
+        this.loadElementTypes(YAML.parse(exampleElementTypes));
+    }
 
     public loadElementTypes(config: any, version: string = "v1_13"): IElementType[] {
         let material: string[] = [];
@@ -24,7 +47,7 @@ class ElementTypes {
         let enchantment: string[] = [];
         let potioneffect: string[] = [];
 
-        if (version == "v1_13") {
+        if (version === "v1_13") {
             material = material_1_13.split("\n");
             rewardtype = rewardtype_1_13.split("\n");
             pricetype = pricetype_1_13.split("\n");
@@ -39,16 +62,27 @@ class ElementTypes {
         this.register(new ElementTypeSimpleAutocompleteDependency("pricetype", pricetype, "Price"));
 
 
-        const elementTypes: IElementType[] = [];
+        const localElementTypes: IElementType[] = [];
         for (const key of Object.keys(config)) {
             const elementType = this.loadElementType(_.at(config, [key])[0] as any, key);
             this.register(elementType);
-            elementTypes.push(elementType);
+            localElementTypes.push(elementType);
         }
-        return elementTypes;
+        return localElementTypes;
     }
 
-    private loadElementType(elementTypeConfig: any, key: string) : IElementType {
+    public has(name: string): boolean {
+        return this.elementTypes.has(name.toLowerCase());
+    }
+
+    public get(name: string): IElementType {
+        if (!this.elementTypes.has(name.toLowerCase())) {
+            throw new Error("ElementType with name '" + name + "' not found.");
+        }
+        return this.elementTypes.get(name.toLowerCase())!;
+    }
+
+    private loadElementType(elementTypeConfig: any, key: string): IElementType {
         const type = _.at(elementTypeConfig, ["type"])[0] as string;
 
         if (type === ("complex")) {
@@ -61,10 +95,10 @@ class ElementTypes {
                 const propertyOptional: boolean =  _.has(propertyConfig, ["optional"]) ? _.at(propertyConfig, ["optional"])[0] as boolean : false;
                 const configKey: string =  _.has(propertyConfig, ["configKey"]) ? _.at(propertyConfig, ["configKey"])[0] as string : propertyKey;
                 const property: IElementTypeProperty = {
-                    configKey: configKey,
+                    configKey,
                     optional: propertyOptional,
                     type: propertyElementType
-                }
+                };
                 properties.push(property);
             }
             const name =  _.has(elementTypeConfig, ["name"]) ?  _.at(elementTypeConfig, ["name"])[0] as string : key;
@@ -73,9 +107,9 @@ class ElementTypes {
             return new ElementTypeComplex(name, properties, renameable, deleteable);
 
         } else if (type.startsWith("existing:")) {
-            return this.get(type.split(":")[1])
+            return this.get(type.split(":")[1]);
 
-        } else if (type === ("dependent")) {    
+        } else if (type === ("dependent")) {
             const dependency = _.at(elementTypeConfig, ["dependency"])[0] as string;
             const map: Map<string, string> = new Map<string, string>();
             const mapConfig = _.at(elementTypeConfig, ["map"])[0] as any;
@@ -103,43 +137,6 @@ class ElementTypes {
             return new ElementTypeComplexList(name, elementType, defaultElement, transformationFunction, renameable, deleteable);
         }
         throw Error("Unknown ElementType type: ' " + type + "'.");
-    }
-
-
-    constructor() {
-        //
-        // Init simple ElementTypes
-        //
-        this.register(new ElementTypeSimple("none"));
-        this.register(new ElementTypeSimple("string"));
-        this.register(new ElementTypeSimple("boolean"));
-        this.register(new ElementTypeSimple("double"));
-        this.register(new ElementTypeSimple("integer"));
-        this.register(new ElementTypeSimple("list_string"));
-        this.register(new ElementTypeSimple("item"));
-        // TODO: replace example names by actual lists of data names
-
-        //
-        // Init special ElementTypes
-        //
-        this.register(new ElementTypeComplexList("list_item", this.get("item"),
-        ["type:stone", "amount:1"], (config: object, configKey: string) => "todo"));
-
-        //
-        // Init shop ElementTypes 
-        //
-        this.loadElementTypes(YAML.parse(exampleElementTypes));
-    }
-
-    public has(name: string): boolean {
-        return this.elementTypes.has(name.toLowerCase());
-    }
-
-    public get(name: string): IElementType {
-        if (!this.elementTypes.has(name.toLowerCase())) {
-            throw new Error("ElementType with name '" + name + "' not found.");
-        }
-        return this.elementTypes.get(name.toLowerCase())!;
     }
 
     private register(elementType: IElementType) {
