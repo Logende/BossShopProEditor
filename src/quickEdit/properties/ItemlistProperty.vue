@@ -1,7 +1,9 @@
 <template>
-    <div class="mt-3 mb-3">
-        <h3>{{ name }}</h3>
-        <v-btn outline small color="primary" class="ml-0" @click="addItem">Add Item</v-btn>
+    <div>
+        <v-layout row>
+            <v-flex xs8 align-self-center><h3>{{ name }}</h3></v-flex>
+            <v-flex xs4><v-btn outline small color="primary" class="mr-0" style="float:right;" @click="addItem">Add Item</v-btn></v-flex>
+        </v-layout>
 
         <!-- single item -->
         <v-layout row v-if="isSingleItem">
@@ -23,7 +25,7 @@
             <v-layout row>
                 <v-flex xs8 class="mr-1">
                     <item-property
-                        :name="'Item #' + index"
+                        :name="'Item #' + (index + 1)"
                         :value="item"
                         @input="handleItemInput(index, $event)"
                     ></item-property>

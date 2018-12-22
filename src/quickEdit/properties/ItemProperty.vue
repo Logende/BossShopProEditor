@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn block @click="open = true" color="primary" class="ml-0 mb-4">Edit {{ name }}</v-btn>
+        <v-btn block @click="open = true" color="primary">Edit {{ name }}</v-btn>
         <v-dialog v-model="open" max-width="700px">
 
             <v-card>
