@@ -4,12 +4,15 @@
         <v-btn outline small color="primary" class="ml-0" @click="addItem">Add Item</v-btn>
 
         <!-- single item -->
-        <item-property
-            v-if="isSingleItem"
-            name="Item #1"
-            :value="value"
-            @input="$emit('input', $event)"
-        ></item-property>
+        <v-layout row v-if="isSingleItem">
+            <v-flex xs12>
+                <item-property
+                    name="Item #1"
+                    :value="singleItem"
+                    @input="$emit('input', $event)"
+                ></item-property>
+            </v-flex>
+        </v-layout>
 
         <!-- multiple items -->
         <div
@@ -57,7 +60,11 @@ export default class ItemlistProperty extends Vue {
     value!: any[];
 
     get isSingleItem() {
-        return this.value.some((e) => typeof(e) === "string");
+        return this.value && (this.value.some((e) => typeof(e) === "string") || this.value.length === 1);
+    }
+
+    get singleItem() {
+        return Array.isArray(this.value[0]) ? this.value[0] : this.value;
     }
 
     private listItemType = elementTypes.get("list_item") as ElementTypeComplexList;
@@ -65,8 +72,10 @@ export default class ItemlistProperty extends Vue {
     addItem() {
         const clone = JSON.parse(JSON.stringify(this.listItemType.defaultElement));
         let newValue = this.value;
-        if (this.isSingleItem) {
+        if (this.isSingleItem && newValue && !Array.isArray(newValue[0])) {
             newValue = [newValue];
+        } else if (!newValue) {
+            newValue = [];
         }
         newValue.push(clone);
         this.$emit("input", newValue);

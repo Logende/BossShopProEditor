@@ -10,7 +10,6 @@
                     <v-window v-model="window">
 
                         <v-window-item :value="0">
-                            <v-btn outline class="ml-0 mb-4" @click="window = 1">Choose from available Item Properties</v-btn>
 
                             <v-text-field
                                 v-model="text"
@@ -24,8 +23,7 @@
                                 <v-list-tile v-for="(x, i) in entries" :key="i">
 
                                     <v-list-tile-content>
-                                        <v-list-tile-title>{{ x[0] }}</v-list-tile-title>
-                                        <v-list-tile-sub-title>{{ x[1] }}</v-list-tile-sub-title>
+                                        <v-list-tile-title>{{ x[1] ? `${x[1]}:${x[0]}` : x[0] }}</v-list-tile-title>
                                     </v-list-tile-content>
 
                                     <v-list-tile-action>
@@ -41,10 +39,10 @@
 
                                 </v-list-tile>
                             </v-list>
-                        </v-window-item>
 
-                        <v-window-item :value="1">
+                            <v-divider class="mb-3"></v-divider>
 
+                            <h3 class="mb-1">Available Properties</h3>
                             <v-list three-line>
                                 <v-list-tile
                                     v-for="(p, i) in availableProperties"
@@ -58,10 +56,9 @@
                                 </v-list-tile>
                             </v-list>
 
-                            <v-btn @click="window = 0" flat color="primary">Back</v-btn>
                         </v-window-item>
 
-                        <v-window-item :value="2">
+                        <v-window-item :value="1">
                             <item-property
                                 :key="editingIndex"
                                 :property="selectedProperty[1]"
@@ -94,7 +91,6 @@ const regex = /(.*?):(.*)/;
 
 @Component({
     components: {
-        "string-list": StringlistProperty,
         "item-property": ItemPropertyComponent
     }
 })
@@ -119,7 +115,6 @@ export default class ItemProperty extends Vue {
     availableProperties = itemProperties;
 
     get entries() {
-        console.log(this.value);
         return this.value ?
             this.value.map((s) => {
                 const res = regex.exec(s);
@@ -155,7 +150,7 @@ export default class ItemProperty extends Vue {
     edit(index: number) {
         this.editingIndex = index;
         this.tempValue = this.entries[index][0];
-        this.window = 2;
+        this.window = 1;
     }
 
     save() {
