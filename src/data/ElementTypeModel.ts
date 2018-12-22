@@ -175,8 +175,8 @@ export class ElementTypeComplex implements IElementType {
     public renameable: boolean;
     public deleteable: boolean;
 
-    constructor(name: string, properties: IElementTypeProperty[], renameable: boolean = false, 
-        deleteable: boolean = false) {
+    constructor(name: string, properties: IElementTypeProperty[], renameable: boolean = false,
+                deleteable: boolean = false) {
         this.name = name;
         this.properties = properties;
         this.renameable = renameable;
@@ -193,9 +193,9 @@ export class ElementTypeComplexList implements IElementTypeComplexList {
     public defaultElement: object;
     public elementInfoFunction: (config: object, configKey: string) => string;
 
-    constructor(name: string, type: IElementType, defaultElement: object, 
-        elementInfoFunction: (configSection: object, configKey: string) => string, renameable: boolean = false, 
-        deleteable: boolean = false) {
+    constructor(name: string, type: IElementType, defaultElement: object,
+                elementInfoFunction: (configSection: object, configKey: string) => string, renameable: boolean = false,
+                deleteable: boolean = false) {
         this.name = name;
         this.type = type;
         this.renameable = renameable;
@@ -205,7 +205,7 @@ export class ElementTypeComplexList implements IElementTypeComplexList {
     }
 
     public getElementDisplayInformation(configSection: object, configKey: string): string {
-        return this.elementInfoFunction.call(configSection, configKey);
+        return this.elementInfoFunction(configSection, configKey);
     }
 }
 
@@ -217,8 +217,8 @@ export class ElementTypeDependent implements IElementTypeDependent {
     public dependencyConfigKey: string;
     public dependencyToElementTypeName: Map<string, string>;
 
-    constructor(name: string, dependencyConfigKey: string, dependencyToElementTypeName: Map<string, string>, 
-        renameable: boolean = false, deleteable: boolean = false) {
+    constructor(name: string, dependencyConfigKey: string, dependencyToElementTypeName: Map<string, string>,
+                renameable: boolean = false, deleteable: boolean = false) {
         this.name = name;
         this.renameable = renameable;
         this.deleteable = deleteable;

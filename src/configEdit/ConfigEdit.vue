@@ -219,16 +219,15 @@ export default class ConfigEdit extends Vue {
             // todo
         }
     }
-    
-    
+
     private undo() {
         this.editor.undo();
     }
-    
+
     private redo() {
         this.editor.redo();
     }
-    
+
 
     // not working yet: It seems like Vue does not update those computed properties
     // probably because it does not track changes of the Editor#session#undomanager object.

@@ -1,2 +1,2 @@
 export default `poison
-heal`
+heal`;
