@@ -58,18 +58,14 @@ export default Vue.extend({
                     el = ShopitemlistProperty;
                     break;
                 case "list_item":
-                    if (Array.isArray(value) && value.some((v) => Array.isArray(v))) {
-                        el = ItemlistProperty;
-                    } else {
-                        el = ItemProperty;
-                    }
+                    el = ItemlistProperty;
                     break;
             }
         }
 
         if (el) {
             return h(el, { props: { name, value, ...additionalProps }, on: context.listeners });
-        } else {
+        } else if (type.name !== "none") {
             return h("p", `Property ${name} with type ${type.name} is unsupported.`);
         }
 
