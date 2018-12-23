@@ -121,6 +121,21 @@ export default class ConfigEdit extends Vue {
     private selectionEnd(): number {
         return this.selection().selectionEnd;
     }
+    
+    private getLine(index: number): number {
+        const lines = this.editor.getSession().doc.getAllLines();
+        let lineNumber = 0;
+        let charactersLeft = index;
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.length >= charactersLeft) {
+                return lineNumber;
+            }
+            lineNumber++;
+            charactersLeft -= line.length;
+        }
+        throw new Error("Index out of bounds. Index: " + index + ". Characters left: " + charactersLeft + ". Last line number: " + (lineNumber-1)+".");
+    }
 
 
     private mounted() {
@@ -186,14 +201,8 @@ export default class ConfigEdit extends Vue {
         this.$store.commit("setSelectedPath", this.selectedPath);
     }
 
-    @Watch("$store.state.config", { deep: false })
-    private pullConfigSafeDader() {
-        console.log("config was changed not deep");
-    }
-
     @Watch("$store.state.config", { deep: true })
     private pullConfigSafe() {
-        console.log("config was changed deep");
         this.pullConfig.call(this);
     }
 
@@ -224,7 +233,9 @@ export default class ConfigEdit extends Vue {
         const indexLine = manipulator.getIndex(this.configText(), this.$store.state.selectedPath);
         if (indexLine !== -1) {
             this.selectedPath = this.$store.state.selectedPath;
-            // todo
+            const line = this.getLine(indexLine);
+            this.editor.gotoLine(line);
+            this.editor.setHighlightActiveLine(true);
         }
     }
 
