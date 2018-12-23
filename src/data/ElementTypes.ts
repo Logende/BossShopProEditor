@@ -51,13 +51,13 @@ class ElementTypes {
         let config = {};
 
         if (mcVersion === "1_13") {
-            material = material_1_13.split("\n");
-            enchantment = enchantment_1_13.split("\n");
-            potioneffect = potioneffect_1_13.split("\n");
+            material = material_1_13.split(/[\r\n]+/);
+            enchantment = enchantment_1_13.split(/[\r\n]+/);
+            potioneffect = potioneffect_1_13.split(/[\r\n]+/);
         }
         if (bspVersion === "2_0") {
-            rewardtype = rewardtype_2_0_0.split("\n");
-            pricetype = pricetype_2_0_0.split("\n");
+            rewardtype = rewardtype_2_0_0.split(/[\r\n]+/);
+            pricetype = pricetype_2_0_0.split(/[\r\n]+/);
             config = YAML.parse(elementTypes_2_0_0);
         }
 
