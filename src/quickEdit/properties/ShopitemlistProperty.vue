@@ -75,9 +75,11 @@ export default class ShopitemlistProperty extends Vue {
             // empty slot - create a new item
             // TODO: This might result in duplicate keys
             // if there is already an item with key "position"
+            const defaultElement = this.silType.defaultElement;
+            _.set(defaultElement, "InventoryLocation", position)
             this.$emit("input", {
                 ...this.value,
-                [position.toString()]: this.silType.defaultElement
+                [position.toString()]: defaultElement
             });
             this.$emit("change-path", [position.toString()]);
         } else {
