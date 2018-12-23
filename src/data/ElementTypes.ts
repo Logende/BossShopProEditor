@@ -1,12 +1,14 @@
-import { IElementType, ElementTypeClass, IElementTypeSimple, ElementTypeSimple, ElementTypeSimpleAutocomplete, IElementTypeComplexList, ElementTypeComplex, ElementTypeComplexList, IElementTypeComplex, ElementTypeDependent, ElementTypeSimpleAutocompleteDependency, IElementTypeProperty } from '@/data/ElementTypeModel';
+import { IElementType, ElementTypeSimple, ElementTypeSimpleAutocomplete,
+    ElementTypeComplex, ElementTypeComplexList, ElementTypeDependent,
+    ElementTypeSimpleAutocompleteDependency, IElementTypeProperty } from '@/data/ElementTypeModel';
 import _ from "lodash";
 import YAML from 'yamljs';
-import material_1_13 from '@/data/mc_1_13/material';
-import enchantment_1_13 from '@/data/mc_1_13/enchantment';
-import potioneffect_1_13 from '@/data/mc_1_13/potioneffect';
-import elementTypes_2_0_0 from '@/data/bsp_2_0/elementTypes';
-import rewardtype_2_0_0 from '@/data/bsp_2_0/rewardtype';
-import pricetype_2_0_0 from '@/data/bsp_2_0/pricetype';
+import material_1_13 from '@/data/mc_1_13/material.txt';
+import enchantment_1_13 from '@/data/mc_1_13/enchantment.txt';
+import potioneffect_1_13 from '@/data/mc_1_13/potioneffect.txt';
+import elementTypes_2_0_0 from '@/data/bsp_2_0/elementTypes.yml';
+import rewardtype_2_0_0 from '@/data/bsp_2_0/rewardtype.txt';
+import pricetype_2_0_0 from '@/data/bsp_2_0/pricetype.txt';
 
 class ElementTypes {
 
@@ -49,13 +51,13 @@ class ElementTypes {
         let config = {};
 
         if (mcVersion === "1_13") {
-            material = material_1_13.split("\n");
-            enchantment = enchantment_1_13.split("\n");
-            potioneffect = potioneffect_1_13.split("\n");
+            material = material_1_13.split(/[\r\n]+/);
+            enchantment = enchantment_1_13.split(/[\r\n]+/);
+            potioneffect = potioneffect_1_13.split(/[\r\n]+/);
         }
         if (bspVersion === "2_0") {
-            rewardtype = rewardtype_2_0_0.split("\n");
-            pricetype = pricetype_2_0_0.split("\n");
+            rewardtype = rewardtype_2_0_0.split(/[\r\n]+/);
+            pricetype = pricetype_2_0_0.split(/[\r\n]+/);
             config = YAML.parse(elementTypes_2_0_0);
         }
 

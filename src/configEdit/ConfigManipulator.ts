@@ -224,7 +224,7 @@ class ConfigManipulator {
     private getEntryNeighbourSpecific(configText: string, indexLine: number, directionUp: boolean, specificCheck: (indexLine: number, line: string) => boolean): {indexLine: number, line: string|undefined} {
         let entryNeighbour = this.getEntryNeighbour(configText, indexLine, directionUp);
         while (entryNeighbour.indexLine !== - 1) {
-            if (specificCheck.call(this, entryNeighbour.indexLine, entryNeighbour.line)) {
+            if (specificCheck(entryNeighbour.indexLine, entryNeighbour.line!)) {
                 return entryNeighbour;
             }
             entryNeighbour = this.getEntryNeighbour(configText, entryNeighbour.indexLine, directionUp);

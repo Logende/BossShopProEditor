@@ -1,4 +1,4 @@
-export default `# Existing ElementTypes:
+# Existing ElementTypes:
 # none, string, boolean, double, integer, list_string, item, material, potioneffect, enchantment, list_item, rewardtype, pricetype
 shop:
   type: complex
@@ -78,4 +78,4 @@ shop:
               type: existing:integer
             ExtraPermission:
               type: existing:string
-              optional: true`;
+              optional: true

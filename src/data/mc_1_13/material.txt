@@ -1,4 +1,4 @@
-export default `acacia_boat
+acacia_boat
 acacia_button
 acacia_door
 acacia_fence
@@ -2623,4 +2623,4 @@ record_8
 record_9
 record_10
 record_11
-record_12`;
+record_12

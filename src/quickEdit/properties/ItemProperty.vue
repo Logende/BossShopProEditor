@@ -61,7 +61,7 @@
                         <v-window-item :value="1">
                             <item-property
                                 :key="editingIndex"
-                                :property="selectedProperty[1]"
+                                :property="selectedProperty"
                                 v-model="tempValue"
                             ></item-property>
                             <v-btn class="ml-0" color="primary" @click="save">Save</v-btn>
@@ -78,7 +78,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import itemProperties from "../itemProperties";
+import { itemProperties } from "@/data/ItemProperties";
 import StringlistProperty from "./StringlistProperty.vue";
 import ItemPropertyComponent from "./itemproperties/itemProperty";
 
@@ -112,7 +112,7 @@ export default class ItemProperty extends Vue {
     editingIndex = -1;
     tempValue: any = null;
 
-    availableProperties = itemProperties;
+    availableProperties = itemProperties.values;
 
     get entries() {
         return this.value ?
@@ -127,7 +127,13 @@ export default class ItemProperty extends Vue {
     }
 
     get selectedProperty() {
-        return this.editingIndex >= 0 ? this.entries[this.editingIndex] : ["", ""];
+        if (this.editingIndex >= 0) {
+            const propertyName = this.entries[this.editingIndex][1];
+            if (propertyName) {
+                return this.availableProperties.find((x) => x.key === propertyName);
+            }
+        }
+        return undefined;
     }
 
     addCustomProperty() {
@@ -138,7 +144,8 @@ export default class ItemProperty extends Vue {
 
     async addProperty(i: number) {
         const p = this.availableProperties[i];
-        this.$emit("input", (this.value || []).concat([ `${p.key}:${p.default}` ]));
+        const defaultValue = p.content.map((e) => e.default).join(":");
+        this.$emit("input", (this.value || []).concat([ `${p.key}:${defaultValue}` ]));
         await this.$nextTick();
         if (this.value && this.value.length) {
             this.edit(this.value.length - 1);
