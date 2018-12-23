@@ -10,7 +10,7 @@ signs:
   NeedsPermissionToCreateSign: true
 DisplayName: '&9&l&nExample Shop'
 shop:
-  '1':
+  'STONE':
     RewardType: item
     PriceType: money
     Price: 15
@@ -23,12 +23,12 @@ shop:
     Message: '&aYou''ve purchased &e%reward%&a for &e$%price%'
     InventoryLocation: 1
     ExtraPermission: ''
-  '2':
+  'DIAMOND':
     RewardType: item
     PriceType: money
     Price: 15
     Reward:
-    - type:STONE:1
+    - type:DIAMOND
     - amount:1
     MenuItem:
     - '%rewarditem_1%'

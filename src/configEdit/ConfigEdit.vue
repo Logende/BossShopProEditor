@@ -37,7 +37,7 @@ import Component from 'vue-class-component';
 import _ from 'lodash';
 import { manipulator } from "@/configEdit/ConfigManipulator";
 import { editorData } from '@/data/EditorData';
-import exampleConfigText from '@/data/exampleConfigText';
+import exampleConfigText from '@/data/bsp/config';
 import { Watch } from 'vue-property-decorator';
 
 import * as ace from 'brace';
@@ -46,6 +46,8 @@ import 'brace/theme/monokai';
 
 @Component
 export default class ConfigEdit extends Vue {
+
+    // TODO: WATCH changes of editor#session#undomanager to adapt undo/redo button color
 
     private configObject: object = {};
     private commentLines = new Map<string, string[]>(); // Key: path; Value: Array of comments below that path

@@ -1,12 +1,12 @@
 import { IElementType, ElementTypeClass, IElementTypeSimple, ElementTypeSimple, ElementTypeSimpleAutocomplete, IElementTypeComplexList, ElementTypeComplex, ElementTypeComplexList, IElementTypeComplex, ElementTypeDependent, ElementTypeSimpleAutocompleteDependency, IElementTypeProperty } from '@/data/ElementTypeModel';
 import _ from "lodash";
 import YAML from 'yamljs';
-import exampleElementTypes from '@/data/exampleElementTypes';
-import material_1_13 from '@/data/v1_13/material';
-import rewardtype_1_13 from '@/data/v1_13/rewardtype';
-import pricetype_1_13 from '@/data/v1_13/pricetype';
-import enchantment_1_13 from '@/data/v1_13/enchantment';
-import potioneffect_1_13 from '@/data/v1_13/potioneffect';
+import material_1_13 from '@/data/mc_1_13/material';
+import enchantment_1_13 from '@/data/mc_1_13/enchantment';
+import potioneffect_1_13 from '@/data/mc_1_13/potioneffect';
+import elementTypes_2_0_0 from '@/data/bsp_2_0/elementTypes';
+import rewardtype_2_0_0 from '@/data/bsp_2_0/rewardtype';
+import pricetype_2_0_0 from '@/data/bsp_2_0/pricetype';
 
 class ElementTypes {
 
@@ -37,22 +37,26 @@ class ElementTypes {
         //
         // Init shop ElementTypes
         //
-        this.loadElementTypes(YAML.parse(exampleElementTypes));
+        this.loadElementTypes();
     }
 
-    public loadElementTypes(config: any, version: string = "v1_13"): IElementType[] {
-        let material: string[] = [];
+    public loadElementTypes(bspVersion: string = "2_0", mcVersion: string = "1_13"): IElementType[] {
         let rewardtype: string[] = [];
         let pricetype: string[] = [];
+        let material: string[] = [];
         let enchantment: string[] = [];
         let potioneffect: string[] = [];
+        let config = {};
 
-        if (version === "v1_13") {
+        if (mcVersion === "1_13") {
             material = material_1_13.split("\n");
-            rewardtype = rewardtype_1_13.split("\n");
-            pricetype = pricetype_1_13.split("\n");
             enchantment = enchantment_1_13.split("\n");
             potioneffect = potioneffect_1_13.split("\n");
+        }
+        if (bspVersion === "2_0") {
+            rewardtype = rewardtype_2_0_0.split("\n");
+            pricetype = pricetype_2_0_0.split("\n");
+            config = YAML.parse(elementTypes_2_0_0);
         }
 
         this.register(new ElementTypeSimpleAutocomplete("material", material));

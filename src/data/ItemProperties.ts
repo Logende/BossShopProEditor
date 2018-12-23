@@ -1,6 +1,6 @@
 import _ from "lodash";
 import YAML from 'yamljs';
-import itemProperties_1_13 from '@/data/v1_13/itemProperties';
+import itemProperties_1_13 from '@/data/bsp_2_0/itemProperties';
 import { IItemProperty } from './ItemPropertyModel';
 
 class ItemProperties {
@@ -11,8 +11,8 @@ class ItemProperties {
         this.loadItemProperties();
     }
 
-    public loadItemProperties(version: string = "v1_13") {
-        if (version === "v1_13") {
+    public loadItemProperties(bspVersion: string = "2_0") {
+        if (bspVersion === "2_0") {
             this.itemProperties = YAML.parse(itemProperties_1_13);
         }
     }

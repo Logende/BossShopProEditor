@@ -38,7 +38,6 @@ import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import _ from "lodash";
 import { IElementType, ElementTypeClass, IElementTypeComplex, IElementTypeProperty, IElementTypeSimpleAutocompleteDependency } from "@/data/ElementTypeModel";
 import { elementTypes } from "@/data/ElementTypes";
-import exampleConfig from "@/data/exampleConfig";
 import Property from "./properties/Property";
 import { pathToString } from "@/pathHelper";
 import { editorData } from '@/data/EditorData';
