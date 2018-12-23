@@ -2,6 +2,8 @@ export interface IItemProperty {
     name: string;
     key: string;
     content: IItemPropertyElement[];
+    definition: string;
+    infotext: string;
 }
 
 export interface IItemPropertyElement {

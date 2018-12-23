@@ -1,4 +1,4 @@
-export default `# This is an example BossShopPro shop.
+# This is an example BossShopPro shop.
 # You can use the the ConfigEdit panel to edit the raw configuration text
 # and the QuickEdit panel for helpful features, like material name auto-complete and many more.
 #
@@ -35,4 +35,4 @@ shop:
     - lore:#&eClick to buy for &e$%price%
     Message: '&aYou''ve purchased &e%reward%&a for &e$%price%'
     InventoryLocation: 2
-    ExtraPermission: ''`;
+    ExtraPermission: ''

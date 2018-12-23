@@ -1,6 +1,6 @@
 import _ from "lodash";
 import YAML from 'yamljs';
-import itemProperties_1_13 from '@/data/bsp_2_0/itemProperties';
+import itemProperties_1_13 from '@/data/bsp_2_0/itemProperties.yml';
 import { IItemProperty } from './ItemPropertyModel';
 
 class ItemProperties {
@@ -18,7 +18,7 @@ class ItemProperties {
     }
 
 
-    public values(): IItemProperty[] {
+    public get values(): IItemProperty[] {
         return this.itemProperties;
     }
 

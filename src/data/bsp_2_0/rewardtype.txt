@@ -1,4 +1,4 @@
-export default `bungeecordcommand
+bungeecordcommand
 bungeecordserver
 close
 command
@@ -14,4 +14,4 @@ playercommand
 playercommandop
 points
 shop
-shoppage`;
+shoppage

@@ -37,7 +37,7 @@ import Component from 'vue-class-component';
 import _ from 'lodash';
 import { manipulator } from "@/configEdit/ConfigManipulator";
 import { editorData } from '@/data/EditorData';
-import exampleConfigText from '@/data/bsp/config';
+import exampleConfigText from '@/data/bsp/config.yml';
 import { Watch } from 'vue-property-decorator';
 
 import * as ace from 'brace';

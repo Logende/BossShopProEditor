@@ -16,11 +16,24 @@ export default class NumberProperty extends Vue {
     @Prop({ type: String })
     name!: string;
 
-    @Prop({ type: Number })
-    value!: number;
+    @Prop()
+    value!: any;
 
     @Prop({ type: Boolean })
     floating!: boolean;
+
+    get sanitizedValue() {
+        switch (typeof(this.value)) {
+            case "string":
+                return this.floating ?
+                    Number.parseFloat(this.value) :
+                    Number.parseInt(this.value, 10);
+            case "number":
+                return this.value;
+            default:
+                return 0;
+        }
+    }
 
     input(newValue: string) {
         if (this.floating) {

@@ -1,5 +1,5 @@
 <template>
-    <v-checkbox :label="name" :value="boolValue" @change="$emit('input', !!$event)"></v-checkbox>
+    <v-checkbox :label="name" :input-value="boolValue" @change="$emit('input', !!$event)"></v-checkbox>
 </template>
 
 <script lang="ts">

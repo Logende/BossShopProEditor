@@ -17,6 +17,7 @@ export default Vue.extend({
         const type = context.props.type as IElementType;
         const name = context.props.name as string;
         const value = context.props.value as any;
+        const noCard = context.props.noCard as boolean;
         let el;
         const additionalProps: any = {};
 
@@ -71,7 +72,7 @@ export default Vue.extend({
         }
 
         if (content) {
-            return h("v-card", { class: "mb-3" }, [ h("v-card-text", [ content ]) ]);
+            return noCard ? content : h("v-card", { class: "mb-3" }, [ h("v-card-text", [ content ]) ]);
         }
 
     }
