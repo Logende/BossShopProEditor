@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import YAML from 'yamljs';
+import YAML from 'js-yaml';
 import Component from 'vue-class-component';
 import _ from 'lodash';
 import { manipulator } from "@/configEdit/ConfigManipulator";
@@ -159,7 +159,7 @@ export default class ConfigEdit extends Vue {
             }
 
             // check whether valid yaml
-            this.configObject = YAML.parse(this.configText());
+            this.configObject = YAML.safeLoad(this.configText());
             this.validYaml = true;
             this.errorMessage = "Your shop looks good.";
 
@@ -186,8 +186,14 @@ export default class ConfigEdit extends Vue {
         this.$store.commit("setSelectedPath", this.selectedPath);
     }
 
+    @Watch("$store.state.config", { deep: false })
+    private pullConfigSafeDader() {
+        console.log("config was changed not deep");
+    }
+
     @Watch("$store.state.config", { deep: true })
     private pullConfigSafe() {
+        console.log("config was changed deep");
         this.pullConfig.call(this);
     }
 
@@ -197,7 +203,7 @@ export default class ConfigEdit extends Vue {
         }
         const configObjectCopy = JSON.parse(JSON.stringify(this.$store.state.config));
         this.configObject = configObjectCopy;
-        let configText = YAML.stringify(this.configObject, 100, 2);
+        let configText = YAML.safeDump(this.configObject, {indent: 2, flowLevel: -1});
         configText = configText.substring(0, configText.length - 1);
         if (configText === this.configText()) {
             return;

@@ -28,7 +28,7 @@ class EditorData {
                     const elementTypeDependent = subtreeRoot as IElementTypeDependent;
                     const pathText = pathToString(pathCurrent.slice(0, - 1).concat([elementTypeDependent.dependencyConfigKey])) || "";
                     const dependentString = _.at(config as any, [pathText])[0];
-                    const elementTypeName = elementTypeDependent.dependencyToElementTypeName.get(dependentString);
+                    const elementTypeName = elementTypeDependent.dependencyToElementTypeName.get(dependentString.toLowerCase());
                     if (elementTypeName === undefined) {
                         console.log("elementtype defined in dependency with name " + elementTypeName + " does not exist in schema");
                         return elementTypes.get("none");
