@@ -77,15 +77,7 @@ export default class ShopitemlistProperty extends Vue {
             // if there is already an item with key "position"
             this.$emit("input", {
                 ...this.value,
-                [position.toString()]: {
-                    RewardType: "item",
-                    PriceType: "item",
-                    Reward: ["type:STONE", "amount:1"],
-                    MenuItem: ["%rewarditem_1%", "lore:#&eClick to buy for &e$%price%"],
-                    Message: "&aYou''ve purchased &e%reward%&a for &e$%price%",
-                    InventoryLocation: position,
-                    ExtraPermission: ""
-                }
+                [position.toString()]: this.silType.defaultElement
             });
             this.$emit("change-path", [position.toString()]);
         } else {
