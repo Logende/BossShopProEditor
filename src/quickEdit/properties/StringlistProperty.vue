@@ -11,7 +11,7 @@
             @click:append-outer="add"
         ></v-text-field>
 
-        <v-list class="mb-4" two-line>
+        <v-list two-line>
             <v-list-tile
                 v-for="(x, i) in entries"
                 :key="i"

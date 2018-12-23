@@ -63,10 +63,15 @@ export default Vue.extend({
             }
         }
 
+        let content;
         if (el) {
-            return h(el, { props: { name, value, ...additionalProps }, on: context.listeners });
+            content = h(el, { props: { name, value, ...additionalProps }, on: context.listeners });
         } else if (type.name !== "none") {
-            return h("p", `Property ${name} with type ${type.name} is unsupported.`);
+            content = h("p", `Property ${name} with type ${type.name} is unsupported.`);
+        }
+
+        if (content) {
+            return h("v-card", { class: "mb-3" }, [ h("v-card-text", [ content ]) ]);
         }
 
     }

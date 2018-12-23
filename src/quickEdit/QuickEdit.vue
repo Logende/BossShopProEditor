@@ -16,25 +16,17 @@
 
         <v-divider class="mb-3"></v-divider>
 
-        <v-card v-if="editableProperties.length > 0">
-            <v-card-title>
-                <h3 class="headline mb-0">Properties</h3>
-            </v-card-title>
-            <v-card-text>
-                <v-form>
-                    <qe-property
-                        v-for="p in editableProperties"
-                        :key="p.configKey"
-                        :type="p.resolvedType"
-                        :name="p.configKey"
-                        :value="getValue(p.configKey)"
-                        @input="update(p.configKey, $event)"
-                        @change-path="changePath(p.configKey, $event)"
-                        class="mb-1"
-                    ></qe-property>
-                </v-form>
-            </v-card-text>
-        </v-card>
+        <v-form v-if="editableProperties.length > 0">
+            <qe-property
+                v-for="p in editableProperties"
+                :key="p.configKey"
+                :type="p.resolvedType"
+                :name="p.configKey"
+                :value="getValue(p.configKey)"
+                @input="update(p.configKey, $event)"
+                @change-path="changePath(p.configKey, $event)"
+            ></qe-property>
+        </v-form>
 
         <v-alert v-else :value="true" type="info">This property is not supported.</v-alert>
 

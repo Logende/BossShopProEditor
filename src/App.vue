@@ -21,9 +21,7 @@
         </v-container>
 
         <!-- Error handling -->
-        <v-snackbar
-            :value="true"
-        >I am an error</v-snackbar>
+        <v-snackbar>I am an error</v-snackbar>
 
     </v-app>
 </template>
