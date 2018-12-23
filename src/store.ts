@@ -22,7 +22,8 @@ export default new Vuex.Store({
                 // set the root object
                 state.config = newValue;
             } else {
-                state.config = _.set(state.config, p, newValue);
+                Vue.set(state, "config", _.set(state.config, p, newValue));
+                // state.config = _.set(state.config, p, newValue);
             }
         },
         deleteConfig(state, path: string[]) {
