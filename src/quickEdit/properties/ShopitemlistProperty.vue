@@ -76,7 +76,7 @@ export default class ShopitemlistProperty extends Vue {
             // TODO: This might result in duplicate keys
             // if there is already an item with key "position"
             const defaultElement = JSON.parse(JSON.stringify(this.silType.defaultElement));
-            _.set(defaultElement, "InventoryLocation", position)
+            _.set(defaultElement, "InventoryLocation", position);
             this.$emit("input", {
                 ...this.value,
                 [position.toString()]: defaultElement

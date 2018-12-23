@@ -121,7 +121,7 @@ export default class ConfigEdit extends Vue {
     private selectionEnd(): number {
         return this.selection().selectionEnd;
     }
-    
+
     private getLine(index: number): number {
         const lines = this.editor.getSession().doc.getAllLines();
         let lineNumber = 0;
@@ -134,7 +134,7 @@ export default class ConfigEdit extends Vue {
             lineNumber++;
             charactersLeft -= line.length;
         }
-        throw new Error("Index out of bounds. Index: " + index + ". Characters left: " + charactersLeft + ". Last line number: " + (lineNumber-1)+".");
+        throw new Error("Index out of bounds. Index: " + index + ". Characters left: " + charactersLeft + ". Last line number: " + (lineNumber - 1) + ".");
     }
 
 
