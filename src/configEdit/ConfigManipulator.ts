@@ -23,7 +23,7 @@ class ConfigManipulator {
                 currentCommentLines = [];
             }
 
-            entry = this.getEntryNeighbour(configText, entry.indexLine, false);
+            entry = this.getEntryNeighbour(configText, entry.indexLine, false, true);
         }
         commentLines.set(currentKey, currentCommentLines);
         return commentLines;
@@ -65,7 +65,7 @@ class ConfigManipulator {
                 }
             }
 
-            entry = this.getEntryNeighbour(configText, entry.indexLine, false);
+            entry = this.getEntryNeighbour(configText, entry.indexLine, false, true);
         }
 
         return configText;
@@ -93,7 +93,7 @@ class ConfigManipulator {
 
         // If the line is part of an array, the path of the array is determined and returned
         if (linePathText.startsWith("-")) {
-            const entryAbove = this.getEntryNeighbour(configText, indexLine, true);
+            const entryAbove = this.getEntryNeighbour(configText, indexLine, true, false);
             return this.getPath(configText, entryAbove.indexLine, arrayIndex + 1);
         }
 
@@ -160,30 +160,38 @@ class ConfigManipulator {
             const levelNeighbourLine = this.getLevel(lineNeighbour!);
             return levelNeighbourLine === levelParentLine;
         };
-        return this.getEntryNeighbourSpecific(configText, indexLine, true, specificCheck);
+        return this.getEntryNeighbourSpecific(configText, indexLine, true, false, specificCheck);
     }
 
-    private getEntryNeighbourSpecific(configText: string, indexLine: number, directionUp: boolean, specificCheck: (indexLine: number, line: string) => boolean): {indexLine: number, line: string|undefined} {
-        let entryNeighbour = this.getEntryNeighbour(configText, indexLine, directionUp);
+    private getEntryNeighbourSpecific(configText: string, indexLine: number, directionUp: boolean, includeCommentLines: boolean, specificCheck: (indexLine: number, line: string) => boolean): {indexLine: number, line: string|undefined} {
+        let entryNeighbour = this.getEntryNeighbour(configText, indexLine, directionUp, includeCommentLines);
         while (entryNeighbour.indexLine !== - 1) {
             if (specificCheck(entryNeighbour.indexLine, entryNeighbour.line!)) {
                 return entryNeighbour;
             }
-            entryNeighbour = this.getEntryNeighbour(configText, entryNeighbour.indexLine, directionUp);
+            entryNeighbour = this.getEntryNeighbour(configText, entryNeighbour.indexLine, directionUp, includeCommentLines);
         }
         return {indexLine: -1, line: undefined};
     }
 
-    private getEntryNeighbour(configText: string, indexLine: number, directionUp: boolean): {indexLine: number, line: string|undefined} {
+    private getEntryNeighbour(configText: string, indexLine: number, directionUp: boolean, includeCommentLines: boolean): {indexLine: number, line: string|undefined} {
         if (directionUp) {
             const indexLineNeighbour = configText.substring(0, indexLine).lastIndexOf("\n") - 1;
             if (indexLineNeighbour !== - 1 - 1) {
-                return {indexLine: indexLineNeighbour, line: this.getLine(configText, indexLineNeighbour)};
+                const lineNeighbour = this.getLine(configText, indexLineNeighbour);
+                if (!includeCommentLines && this.isCommentLine(lineNeighbour)) {
+                    return this.getEntryNeighbour(configText, indexLineNeighbour, directionUp, includeCommentLines);
+                }
+                return {indexLine: indexLineNeighbour, line: lineNeighbour};
             }
         } else {
             const indexLineNeighbour = configText.substring(indexLine).indexOf("\n") + indexLine + 1;
             if (indexLineNeighbour !== - 1 + indexLine + 1) {
-                return {indexLine: indexLineNeighbour, line: this.getLine(configText, indexLineNeighbour)};
+                const lineNeighbour = this.getLine(configText, indexLineNeighbour);
+                if (!includeCommentLines && this.isCommentLine(lineNeighbour)) {
+                    return this.getEntryNeighbour(configText, indexLineNeighbour, directionUp, includeCommentLines);
+                }
+                return {indexLine: indexLineNeighbour, line: lineNeighbour};
             }
         }
         return {indexLine: -1, line: undefined};

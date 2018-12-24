@@ -25,7 +25,7 @@ class ConfigManipulatorAce {
 
         // If the line is part of an array, the path of the array is determined and returned
         if (linePathText.startsWith("-")) {
-            const posAbove = this.getPosNeighbour(editor, pos, true);
+            const posAbove = this.getPosNeighbour(editor, pos, true, false);
             return this.getPath(editor, posAbove, arrayIndex + 1);
         }
 
@@ -82,7 +82,7 @@ class ConfigManipulatorAce {
                 }
                 keys.push(key);
             }
-            pos = this.getPosNeighbour(editor, pos, false);
+            pos = this.getPosNeighbour(editor, pos, false, false);
         }
         return undefined;
     }
@@ -121,7 +121,7 @@ class ConfigManipulatorAce {
             const levelNeighbourLine = this.getLevel(lineNeighbour!);
             return levelNeighbourLine === levelParentLine;
         };
-        return this.getPosNeighbourSpecific(editor, pos, true, specificCheck);
+        return this.getPosNeighbourSpecific(editor, pos, true, false, specificCheck);
     }
 
     /**
@@ -139,30 +139,38 @@ class ConfigManipulatorAce {
             const levelNeighbourLine = this.getLevel(lineNeighbour);
             return levelNeighbourLine === levelChildLine && this.cutPathText(lineNeighbour) === pathSection;
         };
-        return this.getPosNeighbourSpecific(editor, pos, false, specificCheck);
+        return this.getPosNeighbourSpecific(editor, pos, false, false, specificCheck);
     }
 
-    private getPosNeighbourSpecific(editor: ace.Editor, pos: ace.Position, directionUp: boolean, specificCheck: (pos: ace.Position) => boolean): ace.Position {
-        let posNeighbour = this.getPosNeighbour(editor, pos, directionUp);
+    private getPosNeighbourSpecific(editor: ace.Editor, pos: ace.Position, directionUp: boolean, includeCommentLines: boolean, specificCheck: (pos: ace.Position) => boolean): ace.Position {
+        let posNeighbour = this.getPosNeighbour(editor, pos, directionUp, includeCommentLines);
         while (posNeighbour.row !== - 1) {
             if (specificCheck(posNeighbour)) {
                 return posNeighbour;
             }
-            posNeighbour = this.getPosNeighbour(editor, posNeighbour, directionUp);
+            posNeighbour = this.getPosNeighbour(editor, posNeighbour, directionUp, includeCommentLines);
         }
         return { row: -1, column: -1 };
     }
 
-    private getPosNeighbour(editor: ace.Editor, pos: ace.Position, directionUp: boolean): ace.Position{
+    private getPosNeighbour(editor: ace.Editor, pos: ace.Position, directionUp: boolean, includeCommentLines: boolean): ace.Position {
         if (directionUp) {
             if (pos.row > 0) {
-                return { row: pos.row - 1, column: 0 };
+                const posNeighbour = { row: pos.row - 1, column: 0 };
+                if (!includeCommentLines && this.isCommentLine(this.getLine(editor, posNeighbour))) {
+                    return this.getPosNeighbour(editor, posNeighbour, directionUp, includeCommentLines);
+                }
+                return posNeighbour;
             } else {
                 return { row: -1, column: -1 };
             }
         } else {
             if (editor.getSession().doc.getLength() > pos.row) {
-                return { row: pos.row + 1, column: 0 };
+                const posNeighbour = { row: pos.row + 1, column: 0 };
+                if (!includeCommentLines && this.isCommentLine(this.getLine(editor, posNeighbour))) {
+                    return this.getPosNeighbour(editor, posNeighbour, directionUp, includeCommentLines);
+                }
+                return posNeighbour;
             } else {
                 return { row: -1, column: -1 };
             }
