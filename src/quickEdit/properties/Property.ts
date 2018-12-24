@@ -1,7 +1,12 @@
 import Vue, { CreateElement, RenderContext } from "vue";
-import { IElementType, ElementTypeClass } from '@/data/ElementTypeModel';
+import { IElementType, ElementTypeClass, IElementTypeSimpleAutocomplete } from '@/data/ElementTypeModel';
+
+import AutocompleteProperty from "./AutocompleteProperty.vue";
 import BooleanProperty from "./BooleanProperty.vue";
 import ComplexProperty from "./ComplexProperty.vue";
+import ItemlistProperty from "./ItemlistProperty.vue";
+import ItemProperty from "./ItemProperty.vue";
+import NumberProperty from "./NumberProperty.vue";
 import StringProperty from "./StringProperty.vue";
 import ShopitemlistProperty from "./ShopitemlistProperty.vue";
 import StringlistProperty from "./StringlistProperty.vue";
@@ -12,7 +17,9 @@ export default Vue.extend({
         const type = context.props.type as IElementType;
         const name = context.props.name as string;
         const value = context.props.value as any;
+        const noCard = context.props.noCard as boolean;
         let el;
+        const additionalProps: any = {};
 
         if (type.class === ElementTypeClass.Simple) {
             switch (type.name) {
@@ -22,12 +29,26 @@ export default Vue.extend({
                 case "boolean":
                     el = BooleanProperty;
                     break;
-            }
-        } else if (type.class === ElementTypeClass.Complex) {
-            switch (type.name) {
+                case "double":
+                    el = NumberProperty;
+                    additionalProps.floating = true;
+                    break;
+                case "integer":
+                    el = NumberProperty;
+                    additionalProps.floating = false;
+                    break;
                 case "list_string":
                     el = StringlistProperty;
                     break;
+                case "item":
+                    el = ItemProperty;
+                    break;
+            }
+        } else if (type.class === ElementTypeClass.Simple_Autocomplete) {
+            el = AutocompleteProperty;
+            additionalProps.possibilities = (type as IElementTypeSimpleAutocomplete).possibilities;
+        } else if (type.class === ElementTypeClass.Complex) {
+            switch (type.name) {
                 default:
                     el = ComplexProperty;
                     break;
@@ -37,13 +58,21 @@ export default Vue.extend({
                 case "shopitemlist":
                     el = ShopitemlistProperty;
                     break;
+                case "list_item":
+                    el = ItemlistProperty;
+                    break;
             }
         }
 
+        let content;
         if (el) {
-            return h(el, { props: { name, value }, on: context.listeners });
-        } else {
-            return h("p", `Property ${name} with type ${type.name} is unsupported.`);
+            content = h(el, { props: { name, value, ...additionalProps }, on: context.listeners });
+        } else if (type.name !== "none") {
+            content = h("p", `Property ${name} with type ${type.name} is unsupported.`);
+        }
+
+        if (content) {
+            return noCard ? content : h("v-card", { class: "mb-3" }, [ h("v-card-text", [ content ]) ]);
         }
 
     }

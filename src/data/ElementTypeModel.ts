@@ -61,6 +61,8 @@ export enum ElementTypeClass {
 export interface IElementType { // Relevant for QuickEdit
     name: string;
     class: ElementTypeClass;
+    renameable: boolean;
+    deleteable: boolean;
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -69,6 +71,10 @@ export interface IElementTypeSimple extends IElementType {
 
 export interface IElementTypeSimpleAutocomplete extends IElementTypeSimple {
     possibilities: string[];
+}
+
+export interface IElementTypeSimpleAutocompleteDependency extends IElementTypeSimpleAutocomplete {
+    dependentConfigKey: string;
 }
 
 export interface IElementTypeProperty {
@@ -132,9 +138,13 @@ export interface IElementTypeDependent extends IElementType {
 export class ElementTypeSimple implements IElementTypeSimple {
     public name: string;
     public class: ElementTypeClass = ElementTypeClass.Simple;
+    public renameable: boolean;
+    public deleteable: boolean;
 
-    constructor(name: string) {
+    constructor(name: string, renameable: boolean = false, deleteable: boolean = false) {
         this.name = name;
+        this.renameable = renameable;
+        this.deleteable = deleteable;
     }
 }
 
@@ -148,45 +158,70 @@ export class ElementTypeSimpleAutocomplete extends ElementTypeSimple implements 
     }
 }
 
+export class ElementTypeSimpleAutocompleteDependency extends ElementTypeSimpleAutocomplete implements IElementTypeSimpleAutocompleteDependency {
+    public dependentConfigKey: string;
+
+    constructor(name: string, possibilities: string[], dependentConfigKey: string) {
+        super(name, possibilities);
+        this.dependentConfigKey = dependentConfigKey;
+    }
+}
+
 
 export class ElementTypeComplex implements IElementType {
     public name: string;
     public properties: IElementTypeProperty[];
     public class: ElementTypeClass = ElementTypeClass.Complex;
+    public renameable: boolean;
+    public deleteable: boolean;
 
-    constructor(name: string, properties: IElementTypeProperty[]) {
+    constructor(name: string, properties: IElementTypeProperty[], renameable: boolean = false,
+                deleteable: boolean = false) {
         this.name = name;
         this.properties = properties;
+        this.renameable = renameable;
+        this.deleteable = deleteable;
     }
 }
 
 export class ElementTypeComplexList implements IElementTypeComplexList {
     public name: string;
     public class: ElementTypeClass = ElementTypeClass.List_Complex;
+    public renameable: boolean;
+    public deleteable: boolean;
     public type: IElementType;
     public defaultElement: object;
     public elementInfoFunction: (config: object, configKey: string) => string;
 
-    constructor(name: string, type: IElementType, defaultElement: object, elementInfoFunction: (configSection: object, configKey: string) => string) {
+    constructor(name: string, type: IElementType, defaultElement: object,
+                elementInfoFunction: (configSection: object, configKey: string) => string, renameable: boolean = false,
+                deleteable: boolean = false) {
         this.name = name;
         this.type = type;
+        this.renameable = renameable;
+        this.deleteable = deleteable;
         this.defaultElement = defaultElement;
         this.elementInfoFunction = elementInfoFunction;
     }
 
     public getElementDisplayInformation(configSection: object, configKey: string): string {
-        return this.elementInfoFunction.call(configSection, configKey);
+        return this.elementInfoFunction(configSection, configKey);
     }
 }
 
 export class ElementTypeDependent implements IElementTypeDependent {
     public name: string;
     public class: ElementTypeClass = ElementTypeClass.Dependent;
+    public renameable: boolean;
+    public deleteable: boolean;
     public dependencyConfigKey: string;
     public dependencyToElementTypeName: Map<string, string>;
 
-    constructor(name: string, dependencyConfigKey: string, dependencyToElementTypeName: Map<string, string>) {
+    constructor(name: string, dependencyConfigKey: string, dependencyToElementTypeName: Map<string, string>,
+                renameable: boolean = false, deleteable: boolean = false) {
         this.name = name;
+        this.renameable = renameable;
+        this.deleteable = deleteable;
         this.dependencyConfigKey = dependencyConfigKey;
         this.dependencyToElementTypeName = dependencyToElementTypeName;
     }

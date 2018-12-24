@@ -1,7 +1,7 @@
 <template>
-    <v-app>
+    <v-app dark>
 
-        <v-toolbar dark>
+        <v-toolbar>
             <v-toolbar-title>BossShopPro Editor</v-toolbar-title>
         </v-toolbar>
 
@@ -11,16 +11,17 @@
                 <v-flex xs6>
                     <config-edit></config-edit>
                 </v-flex>
-                <v-flex xs6>
+                <v-flex xs1>
+                    <v-divider vertical style="margin-left:50%;margin-right:50%;"></v-divider>
+                </v-flex>
+                <v-flex xs5>
                     <quick-edit></quick-edit>
                 </v-flex>
             </v-layout>
         </v-container>
 
         <!-- Error handling -->
-        <v-snackbar
-            :value="true"
-        >I am an error</v-snackbar>
+        <v-snackbar>I am an error</v-snackbar>
 
     </v-app>
 </template>

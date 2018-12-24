@@ -17,18 +17,22 @@ class EditorData {
         // If the last step of the path is reached: Return the selected ElementType
         if (pathNext.length === 0) {
 
-            switch(subtreeRoot.class){
+            switch (subtreeRoot.class) {
                 case ElementTypeClass.Simple:
                 case ElementTypeClass.Simple_Autocomplete:
                 case ElementTypeClass.Complex:
                 case ElementTypeClass.List_Complex:
                     return subtreeRoot;
 
-                case ElementTypeClass.Dependent:                
+                case ElementTypeClass.Dependent:
                     const elementTypeDependent = subtreeRoot as IElementTypeDependent;
                     const pathText = pathToString(pathCurrent.slice(0, - 1).concat([elementTypeDependent.dependencyConfigKey])) || "";
                     const dependentString = _.at(config as any, [pathText])[0];
-                    const elementTypeName = elementTypeDependent.dependencyToElementTypeName.get(dependentString);
+                    if (dependentString === undefined) {
+                        console.log("dependency of elementtpe dependent missing.");
+                        return elementTypes.get("none");
+                    }
+                    const elementTypeName = elementTypeDependent.dependencyToElementTypeName.get(dependentString.toLowerCase());
                     if (elementTypeName === undefined) {
                         console.log("elementtype defined in dependency with name " + elementTypeName + " does not exist in schema");
                         return elementTypes.get("none");
@@ -78,7 +82,8 @@ class EditorData {
             case ElementTypeClass.Dependent:
         }
 
-        throw new Error("Unknown ElementTypeClass: '" + subtreeRoot.class + "'.");
+        console.log("Unknown ElementType. Probably Array element.");
+        return elementTypes.get("none");
     }
 
 }

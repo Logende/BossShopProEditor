@@ -1,18 +1,90 @@
-import { IElementType, ElementTypeClass, IElementTypeComplex, IElementTypeProperty, IElementTypeComplexList } from '@/data/ElementTypeModel';
-import { elementTypes } from '@/data/ElementTypes';
-import { editorData } from '@/data/EditorData';
+import { pathToString } from "@/pathHelper";
 
 class ConfigManipulator {
 
-    public getPath(configText: string, indexLine: number): Array<string|number> {
+
+
+    public readCommentLines(configText: string): Map<string, string[]> {
+        const commentLines = new Map<string, string[]>();
+
+        let entry: {indexLine: number, line: string|undefined} = {indexLine: 0, line: this.getLine(configText, 0)};
+        let currentKey = "$firstLine";
+        let currentCommentLines: string[] = [];
+        while (entry.indexLine > -1) {
+
+            if (this.isCommentLine(entry.line!)) {
+                // Is comment line -> store comment
+                currentCommentLines.push(entry.line!);
+            } else {
+                // Is config line -> push comment array and start with new comment array
+                commentLines.set(currentKey, currentCommentLines);
+                const path = this.getPath(configText, entry.indexLine);
+                currentKey = pathToString(path)!;
+                currentCommentLines = [];
+            }
+
+            entry = this.getEntryNeighbour(configText, entry.indexLine, false, true);
+        }
+        commentLines.set(currentKey, currentCommentLines);
+        return commentLines;
+    }
+
+    /**
+     * Adds the previously stored comments to the config text. Assumes there are no comments existing yet.
+     * @param configText Config text.
+     * @param commentLines Comments to add.
+     */
+    public writeCommentLines(configText: string, commentLines: Map<string, string[]>): string {
+        let firstIndexLine = 0;
+        // add comments above first path
+        let comments = commentLines.get("$firstLine")!;
+        if (comments.length > 0) {
+            const commentsString = comments.join("\n");
+            configText = commentsString + "\n" + configText;
+            firstIndexLine = commentsString.length;
+        }
+
+        // add comments below path
+        let entry: {indexLine: number, line: string|undefined} = {indexLine: firstIndexLine, line: this.getLine(configText, 0)};
+        while (entry.indexLine > -1) {
+
+            const path = this.getPath(configText, entry.indexLine);
+            const currentKey = pathToString(path)!;
+
+            if (commentLines.has(currentKey)) {
+                comments = commentLines.get(currentKey)!;
+                if (comments.length > 0) {
+                    // Currently having a line selected which have comments to be added below the line -> find end of line and add comments there
+                    let endPosition = configText.indexOf("\n", entry.indexLine);
+                    if (endPosition === - 1) {
+                        endPosition = configText.length;
+                    }
+                    const commentsString = comments.join("\n");
+                    entry.indexLine += commentsString.length;
+                    configText = configText.substring(0, endPosition) + "\n" + commentsString + configText.substring(endPosition);
+                }
+            }
+
+            entry = this.getEntryNeighbour(configText, entry.indexLine, false, true);
+        }
+
+        return configText;
+    }
+
+
+    public getPath(configText: string, indexLine: number, arrayIndex: number = -1): Array<string|number> {
         if (indexLine === undefined) {
             throw new Error("Unable to get path: indexLine undefined.");
         }
 
         const line = this.getLine(configText, indexLine);
-
         // If empty line is selected no path is returned.
         if (line.length === 0) {
+            return [];
+        }
+
+        // If comment line is selected no path is returned.
+        if (this.isCommentLine(line)) {
             return [];
         }
 
@@ -21,9 +93,8 @@ class ConfigManipulator {
 
         // If the line is part of an array, the path of the array is determined and returned
         if (linePathText.startsWith("-")) {
-            const entryAbove = this.getEntryNeighbour(configText, indexLine, true);
-            return this.getPath(configText, entryAbove.indexLine);
-            // TODO: allow directly selecting an array element (maybe only in the case of an array which contains elements of type array)
+            const entryAbove = this.getEntryNeighbour(configText, indexLine, true, false);
+            return this.getPath(configText, entryAbove.indexLine, arrayIndex + 1);
         }
 
         // If the selected line does not have parents: Directly return it
@@ -38,23 +109,11 @@ class ConfigManipulator {
             }
             const path = this.getPath(configText, entryParent.indexLine);
             path.push(linePathText);
+            if (arrayIndex > -1) {
+                path.push(arrayIndex);
+            }
             return path;
         }
-    }
-
-    public getIndex(configText: string, path: Array<string|number>, indexLineCurrent: number = -1): number {
-        if (path.length === 0) {
-            return indexLineCurrent;
-        }
-        // Try every possible path until a child is found or the last path tried
-        for (let i = 0; i < path.length; i++) {
-            const pathSection = path.slice(0, i + 1).join(".");
-            const entryChild = this.getEntryChild(configText, indexLineCurrent, pathSection);
-            if (entryChild.indexLine !== - 1) { // child with given pathSection was found
-                return this.getIndex(configText, path.slice(i + 1), entryChild.indexLine);
-            }
-        }
-        return -1;
     }
 
     private getLine(configText: string, indexLine: number): string {
@@ -90,64 +149,56 @@ class ConfigManipulator {
      * @param configText Raw config text.
      * @param indexLine Index of the selected line to search the parent from.
      */
-    private getEntryParent(configText: string, indexLine: number): {indexLine: number, line: string|null} {
+    private getEntryParent(configText: string, indexLine: number): {indexLine: number, line: string|undefined} {
         const line = this.getLine(configText, indexLine);
         const levelLine = this.getLevel(line);
         const levelParentLine = levelLine - 1;
         if (levelParentLine < 0) { // invalid parent line level
-            return {indexLine: - 1, line: null};
+            return {indexLine: - 1, line: undefined};
         }
         const specificCheck: (indexLine: number, line: string|null) => boolean = (indexNeighbourLine, lineNeighbour) => {
             const levelNeighbourLine = this.getLevel(lineNeighbour!);
             return levelNeighbourLine === levelParentLine;
         };
-        return this.getEntryNeighbourSpecific(configText, indexLine, true, specificCheck);
+        return this.getEntryNeighbourSpecific(configText, indexLine, true, false, specificCheck);
     }
 
-    /**
-     * Returns the first child which matches the given config key.
-     * @param configText Raw config text.
-     * @param indexLine Index of the current line to search the child of. Use -1 if there is no line selected yet and a root element is searched.
-     * @param pathSection Configuration path section (key) of the child to find.
-     */
-    private getEntryChild(configText: string, indexLine: number, pathSection: string): {indexLine: number, line: string|null} {
-        let levelChildLine = 0;
-        if (indexLine !== - 1) {
-            const line = this.getLine(configText, indexLine);
-            const levelLine = this.getLevel(line);
-            levelChildLine = levelLine + 1;
-        }
-        const specificCheck = (indexNeighbourLine: number, lineNeighbour: string) => {
-            const levelNeighbourLine = this.getLevel(lineNeighbour!);
-            return levelNeighbourLine === levelChildLine && this.cutPathText(lineNeighbour) === pathSection;
-        };
-        return this.getEntryNeighbourSpecific(configText, indexLine, false, specificCheck);
-    }
-
-    private getEntryNeighbourSpecific(configText: string, indexLine: number, directionUp: boolean, specificCheck: (indexLine: number, line: string) => boolean): {indexLine: number, line: string|null} {
-        let entryNeighbour = this.getEntryNeighbour(configText, indexLine, directionUp);
+    private getEntryNeighbourSpecific(configText: string, indexLine: number, directionUp: boolean, includeCommentLines: boolean, specificCheck: (indexLine: number, line: string) => boolean): {indexLine: number, line: string|undefined} {
+        let entryNeighbour = this.getEntryNeighbour(configText, indexLine, directionUp, includeCommentLines);
         while (entryNeighbour.indexLine !== - 1) {
-            if (specificCheck.call(this, entryNeighbour.indexLine, entryNeighbour.line)) {
+            if (specificCheck(entryNeighbour.indexLine, entryNeighbour.line!)) {
                 return entryNeighbour;
             }
-            entryNeighbour = this.getEntryNeighbour(configText, entryNeighbour.indexLine, directionUp);
+            entryNeighbour = this.getEntryNeighbour(configText, entryNeighbour.indexLine, directionUp, includeCommentLines);
         }
-        return {indexLine: -1, line: null};
+        return {indexLine: -1, line: undefined};
     }
 
-    private getEntryNeighbour(configText: string, indexLine: number, directionUp: boolean): {indexLine: number, line: string|null} {
+    private getEntryNeighbour(configText: string, indexLine: number, directionUp: boolean, includeCommentLines: boolean): {indexLine: number, line: string|undefined} {
         if (directionUp) {
             const indexLineNeighbour = configText.substring(0, indexLine).lastIndexOf("\n") - 1;
             if (indexLineNeighbour !== - 1 - 1) {
-                return {indexLine: indexLineNeighbour, line: this.getLine(configText, indexLineNeighbour)};
+                const lineNeighbour = this.getLine(configText, indexLineNeighbour);
+                if (!includeCommentLines && this.isCommentLine(lineNeighbour)) {
+                    return this.getEntryNeighbour(configText, indexLineNeighbour, directionUp, includeCommentLines);
+                }
+                return {indexLine: indexLineNeighbour, line: lineNeighbour};
             }
         } else {
             const indexLineNeighbour = configText.substring(indexLine).indexOf("\n") + indexLine + 1;
             if (indexLineNeighbour !== - 1 + indexLine + 1) {
-                return {indexLine: indexLineNeighbour, line: this.getLine(configText, indexLineNeighbour)};
+                const lineNeighbour = this.getLine(configText, indexLineNeighbour);
+                if (!includeCommentLines && this.isCommentLine(lineNeighbour)) {
+                    return this.getEntryNeighbour(configText, indexLineNeighbour, directionUp, includeCommentLines);
+                }
+                return {indexLine: indexLineNeighbour, line: lineNeighbour};
             }
         }
-        return {indexLine: -1, line: null};
+        return {indexLine: -1, line: undefined};
+    }
+
+    private isCommentLine(line: string): boolean {
+        return (line.replace(/\s/g, "").length === 0 || line.replace(/\s/g, "").startsWith("#"));
     }
 
 }

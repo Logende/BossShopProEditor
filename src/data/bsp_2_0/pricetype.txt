@@ -1,0 +1,6 @@
+exp
+item
+itemall
+money
+nothing
+points
