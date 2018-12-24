@@ -116,44 +116,6 @@ class ConfigManipulator {
         }
     }
 
-    public getIndex(configText: string, path: Array<string|number>, indexLineCurrent: number = -1): number {
-        if (path.length === 0) {
-            return indexLineCurrent;
-        }
-        // Try every possible path until a child is found or the last path tried
-        for (let i = 0; i < path.length; i++) {
-            const pathSection = path.slice(0, i + 1).join(".");
-            const entryChild = this.getEntryChild(configText, indexLineCurrent, pathSection);
-            if (entryChild.indexLine !== - 1) { // child with given pathSection was found
-                return this.getIndex(configText, path.slice(i + 1), entryChild.indexLine);
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Returns the first duplicated path name (name of a path that exists multiple times) found and undefined else.
-     * @param configText Configuration text
-     */
-    public getPathDuplicate(configText: string): string|undefined {
-        const keys = [];
-        let entry: {indexLine: number, line: string|undefined} = {indexLine: 0, line: this.getLine(configText, 0)};
-
-        while (entry.indexLine > -1) {
-
-            if (!this.isCommentLine(entry.line!)) {
-                const path = this.getPath(configText, entry.indexLine);
-                const key: string = pathToString(path)!;
-                if (keys.indexOf(key) > -1) {
-                    return key;
-                }
-                keys.push(key);
-            }
-            entry = this.getEntryNeighbour(configText, entry.indexLine, false);
-        }
-        return undefined;
-    }
-
     private getLine(configText: string, indexLine: number): string {
         let startPosition = configText.substring(0, indexLine).lastIndexOf("\n");
         if (startPosition === - 1) {
@@ -199,26 +161,6 @@ class ConfigManipulator {
             return levelNeighbourLine === levelParentLine;
         };
         return this.getEntryNeighbourSpecific(configText, indexLine, true, specificCheck);
-    }
-
-    /**
-     * Returns the first child which matches the given config key.
-     * @param configText Raw config text.
-     * @param indexLine Index of the current line to search the child of. Use -1 if there is no line selected yet and a root element is searched.
-     * @param pathSection Configuration path section (key) of the child to find.
-     */
-    private getEntryChild(configText: string, indexLine: number, pathSection: string): {indexLine: number, line: string|undefined} {
-        let levelChildLine = 0;
-        if (indexLine !== - 1) {
-            const line = this.getLine(configText, indexLine);
-            const levelLine = this.getLevel(line);
-            levelChildLine = levelLine + 1;
-        }
-        const specificCheck = (indexNeighbourLine: number, lineNeighbour: string) => {
-            const levelNeighbourLine = this.getLevel(lineNeighbour!);
-            return levelNeighbourLine === levelChildLine && this.cutPathText(lineNeighbour) === pathSection;
-        };
-        return this.getEntryNeighbourSpecific(configText, indexLine, false, specificCheck);
     }
 
     private getEntryNeighbourSpecific(configText: string, indexLine: number, directionUp: boolean, specificCheck: (indexLine: number, line: string) => boolean): {indexLine: number, line: string|undefined} {

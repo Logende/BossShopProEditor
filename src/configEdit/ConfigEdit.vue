@@ -36,6 +36,7 @@ import YAML from 'js-yaml';
 import Component from 'vue-class-component';
 import _ from 'lodash';
 import { manipulator } from "@/configEdit/ConfigManipulator";
+import { manipulatorAce } from "@/configEdit/ConfigManipulatorAce";
 import { editorData } from '@/data/EditorData';
 import exampleConfigText from '@/data/bsp/config.yml';
 import { Watch } from 'vue-property-decorator';
@@ -79,63 +80,6 @@ export default class ConfigEdit extends Vue {
     }
 
 
-    /**
-     * Due to the use of Ace editor, methods to access the current text selection need to be manually provided
-     * because BSP Editor works with character indices as selection start and end, while Ace editor works with rows and columns.
-     *
-     * Computed properties (Vue get) do not work here because they are never updated. Probably because of Ace magic?
-     *
-     * TODO: Adapt ConfigManipulator and ConfigEdit to the row/column system of Ace.
-     */
-    private selection(): {selectionStart: number, selectionEnd: number} {
-        const lines = this.editor.getSession().doc.getAllLines();
-        const range = this.editor.getSelectionRange();
-        let i: number;
-        let n1: number;
-        let n2: number;
-        let selectionStart = 0;
-        let selectionEnd = 0;
-
-        for (i = 0, n1 = lines.length, n2 = range.end.row; i < n1 && i <= n2; ++i ) {
-            // Selection Start
-            if ( i === range.start.row ) {
-                selectionStart += range.start.column;
-            } else {
-                selectionStart += lines[i].length + 1;
-            }
-            // Selection End
-            if ( i === range.end.row ) {
-                selectionEnd += range.end.column;
-            } else {
-                selectionEnd += lines[i].length + 1;
-            }
-        }
-        return {
-            selectionStart,
-            selectionEnd
-        };
-    }
-    private selectionStart(): number {
-        return this.selection().selectionStart;
-    }
-    private selectionEnd(): number {
-        return this.selection().selectionEnd;
-    }
-
-    private getLine(index: number): number {
-        const lines = this.editor.getSession().doc.getAllLines();
-        let lineNumber = 0;
-        let charactersLeft = index;
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            if (line.length >= charactersLeft) {
-                return lineNumber;
-            }
-            lineNumber++;
-            charactersLeft -= line.length;
-        }
-        throw new Error("Index out of bounds. Index: " + index + ". Characters left: " + charactersLeft + ". Last line number: " + (lineNumber - 1) + ".");
-    }
 
 
     private mounted() {
@@ -166,7 +110,7 @@ export default class ConfigEdit extends Vue {
     private pushConfig() {
         try {
             // check whether path duplicates exist
-            const pathDuplicate = manipulator.getPathDuplicate(this.configText());
+            const pathDuplicate = manipulatorAce.getPathDuplicate(this.editor);
             if (pathDuplicate !== undefined) {
                 this.errorMessage = "Duplicate config keys: '" + pathDuplicate + "'.";
                 this.validYaml = false;
@@ -180,7 +124,7 @@ export default class ConfigEdit extends Vue {
 
             // copy, commit and push
             const configObjectCopy = JSON.parse(JSON.stringify(this.configObject));
-            this.commentLines = manipulator.readCommentLines(this.configText());
+            this.commentLines = manipulator.readCommentLines(this.editor.getValue());
             this.$store.commit("applyConfig", { path: [], newValue: configObjectCopy });
             this.pushSelection();
         } catch (error) {
@@ -197,7 +141,7 @@ export default class ConfigEdit extends Vue {
     }
 
     private pushSelection() {
-        this.selectedPath = manipulator.getPath(this.configText(), this.selectionEnd());
+        this.selectedPath = manipulatorAce.getPath(this.editor, this.editor.getCursorPosition());
         this.$store.commit("setSelectedPath", this.selectedPath);
     }
 
@@ -230,11 +174,9 @@ export default class ConfigEdit extends Vue {
         if (this.$store.state.selectedPath === this.selectedPath) {
             return;
         }
-        const indexLine = manipulator.getIndex(this.configText(), this.$store.state.selectedPath);
-        if (indexLine !== -1) {
-            this.selectedPath = this.$store.state.selectedPath;
-            const line = this.getLine(indexLine);
-            this.editor.gotoLine(line);
+        const pos = manipulatorAce.getPos(this.editor, this.$store.state.selectedPath);
+        if (pos.row !== -1) {
+            this.editor.gotoLine(pos.row + 1);
             this.editor.setHighlightActiveLine(true);
         }
     }
