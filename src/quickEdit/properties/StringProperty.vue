@@ -1,6 +1,6 @@
 <template>
     <v-layout>
-        <v-flex shrink align-self-center>
+        <v-flex v-if="formatted" shrink align-self-center>
             <v-tooltip :disabled="!value" top color="black" :open-delay="0">
                 <v-icon slot="activator" class="mr-3" style="cursor:pointer;">visibility</v-icon>
                 <mc-text :text="value"></mc-text>
@@ -32,6 +32,9 @@ export default class StringProperty extends Vue {
 
     @Prop({ type: String })
     value!: string;
+
+    @Prop({ type: Boolean, default: false })
+    formatted!: boolean;
 
 }
 </script>
