@@ -6,11 +6,11 @@ shop:
     ShopName:
       type: existing:string
     DisplayName:
-      type: existing:string
+      type: existing:string_formatted
     Command:
       type: existing:string
     'signs.text':
-      type: existing:string
+      type: existing:string_formatted
     'signs.NeedsPermissionToCreateSign':
       type: existing:boolean
     shopitemlist:
@@ -73,7 +73,7 @@ shop:
                 nothing: none
                 points: double
             Message:
-              type: existing:string
+              type: existing:string_formatted
             InventoryLocation:
               type: existing:integer
             ExtraPermission:

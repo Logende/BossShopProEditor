@@ -26,7 +26,7 @@
   key: name
   content:
   - displayname: Displayname
-    type: string
+    type: string_formatted
     default: EpicPotato
   definition: name:<name>
   infotext: The displayed name of the item.
@@ -34,7 +34,7 @@
   key: lore
   content:
   - displayname: Lore
-    type: string
+    type: string_formatted
     default: Line1#Line2 blabla#Line3
   definition: lore:<line1#line2#line3>
   infotext: This is the lore of the item. You can use color codes like &4 (=DARK_RED) or &l (= BOLD). You can 'switch' to the next line using '#'.
@@ -135,10 +135,10 @@
   key: book
   content:
   - displayname: Title
-    type: string
+    type: string_formatted
     default: My awesome Book
   - displayname: Author
-    type: string
+    type: string_formatted
     default: Unknown Player
   definition: book:<title>#<author>
   infotext: Adds title and author name to a written book. Supports color codes and symbols.
@@ -149,7 +149,7 @@
     type: integer
     default: '1'
   - displayname: Text
-    type: string
+    type: string_formatted
     default: This is some text.
   definition: bookpage:<page>#<text>
   infotext: Adds text to the given book page. Can be used multiple times per page in order to force a new line.

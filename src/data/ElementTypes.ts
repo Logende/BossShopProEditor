@@ -23,6 +23,7 @@ class ElementTypes {
         //
         this.register(new ElementTypeSimple("none"));
         this.register(new ElementTypeSimple("string"));
+        this.register(new ElementTypeSimple("string_formatted"));
         this.register(new ElementTypeSimple("boolean"));
         this.register(new ElementTypeSimple("double"));
         this.register(new ElementTypeSimple("integer"));
