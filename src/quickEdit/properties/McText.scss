@@ -1,0 +1,23 @@
+$mc-colors: (
+    "0": "000000", "1": "0000AA", "2": "00AA00", "3": "00AAAA",
+    "4": "AA0000", "5": "AA00AA", "6": "FFAA00", "7": "AAAAAA",
+    "8": "555555", "9": "5555FF", "a": "55FF55", "b": "55FFFF",
+    "c": "FF5555", "d": "FF55FF", "e": "FFFF55", "f": "FFFFFF"
+);
+
+@each $code, $color in $mc-colors {
+    .mc-#{$code} {
+        color: unquote("#" + $color);
+    }
+}
+
+.mc-l { font-weight: bold; }
+.mc-m { text-decoration: line-through; }
+.mc-n { text-decoration: underline; }
+.mc-o { font-style: italic; }
+
+.mc-preview {
+    font-family: monospace;
+    font-size: 1.3rem;
+    color: white;
+}

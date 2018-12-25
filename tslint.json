@@ -19,6 +19,7 @@
     "max-line-length": false,
     "max-classes-per-file": false,
     "no-console": false,
-    "member-access": false
+    "member-access": false,
+    "no-conditional-assignment": false
   }
 }
