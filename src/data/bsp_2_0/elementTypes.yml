@@ -79,3 +79,34 @@ shop:
             ExtraPermission:
               type: existing:string
               optional: true
+    itemshopitemlist:
+      configKey: itemshop
+      type: complexlist
+      default:  
+        stone:
+          Worth: 3.0
+          Item:
+            - type:STONE
+            - amount:64
+      elements:
+        item:
+          type: complex
+          deleteable: true
+          renameable: true
+          properties:
+            Worth:
+              type: existing:double
+            Item:
+              type: existing:item
+            PriceBuy:
+              type: existing:double
+              optional: true
+            RewardSell:
+              type: existing:double
+              optional: true
+            AllowSell:
+              type: existing:boolean
+              optional: true
+            AllowBuy:
+              type: existing:boolean
+              optional: true
