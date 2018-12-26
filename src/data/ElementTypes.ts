@@ -2,96 +2,55 @@ import { IElementType, ElementTypeSimple, ElementTypeSimpleAutocomplete,
     ElementTypeComplex, ElementTypeComplexList, ElementTypeDependent,
     ElementTypeSimpleAutocompleteDependency, IElementTypeProperty } from '@/data/ElementTypeModel';
 import _ from "lodash";
-import YAML from 'yamljs';
-import material_1_13 from '@/data/mc_1_13/material.txt';
-import enchantment_1_13 from '@/data/mc_1_13/enchantment.txt';
-import potioneffect_1_13 from '@/data/mc_1_13/potioneffect.txt';
-import elementTypes_2_0_0 from '@/data/bsp_2_0/elementTypes.yml';
-import rewardtype_2_0_0 from '@/data/bsp_2_0/rewardtype.txt';
-import pricetype_2_0_0 from '@/data/bsp_2_0/pricetype.txt';
+import { enums } from './Enums';
+import { data } from './Data';
 
 class ElementTypes {
 
     // element types which should get custom QuickEdit support
     public elementTypeSpecialNames = ["item", "shopitemlist"];
+    private m: Map<string, IElementType> = new Map<string, IElementType>();
 
-    private elementTypes: Map<string, IElementType> = new Map<string, IElementType>();
-    private autocompletePossibilities: Map<string, string[]> = new Map<string, string[]>();
 
-    constructor() {
-        /**
-         * Known simple ElementTypes:
-         * - none
-         * - string
-         * - string_formatted
-         * - boolean
-         * - double
-         * - integer
-         * - list_string
-         * - item
-         * 
-         * Known complex lists:
-         * - list_item
-         */
-        this.loadElementTypes();
-    }
 
-    public loadElementTypes(bspVersion: string = "2_0", mcVersion: string = "1_13"): IElementType[] {
-        let rewardtype: string[] = [];
-        let pricetype: string[] = [];
-        let material: string[] = [];
-        let enchantment: string[] = [];
-        let potioneffect: string[] = [];
-        let config = {};
-
-        if (mcVersion === "1_13") {
-            material = material_1_13.split(/[\r\n]+/);
-            enchantment = enchantment_1_13.split(/[\r\n]+/);
-            potioneffect = potioneffect_1_13.split(/[\r\n]+/);
+    public get map(): Map<string, IElementType> {
+        if (!data.wasUpdatedElementTypes(true)) {
+            return this.m;
         }
-        if (bspVersion === "2_0") {
-            rewardtype = rewardtype_2_0_0.split(/[\r\n]+/);
-            pricetype = pricetype_2_0_0.split(/[\r\n]+/);
-            config = YAML.parse(elementTypes_2_0_0);
-        }
+        console.log("generating new element types.");
 
-        // TODO: Move those possibilities to external files and load them via external configg
-        this.autocompletePossibilities.set("material", material);
-        this.autocompletePossibilities.set("potioneffect", potioneffect);
-        this.autocompletePossibilities.set("enchantment", enchantment);
-        this.autocompletePossibilities.set("rewardtype", rewardtype);
-        this.autocompletePossibilities.set("pricetype", pricetype);
-
+        const config = data.elementTypesConfig;
 
         const localElementTypes: IElementType[] = [];
+        this.m.clear();
         for (const key of Object.keys(config)) {
-            const elementType = this.loadElementType(_.at(config, [key])[0] as any, key);
-            this.register(elementType);
+            const elementType = this.loadElementType(_.at(config, [key])[0] as any, key, this.m);
+            this.m.set(elementType.name.toLowerCase(), elementType);
             localElementTypes.push(elementType);
         }
-        return localElementTypes;
+        return this.m;
     }
 
     public has(name: string): boolean {
-        return this.elementTypes.has(name.toLowerCase());
+        return this.map.has(name.toLowerCase());
     }
 
     public get(name: string): IElementType {
-        if (!this.elementTypes.has(name.toLowerCase())) {
+        if (!this.map.has(name.toLowerCase())) {
             throw new Error("ElementType with name '" + name + "' not found.");
         }
-        return this.elementTypes.get(name.toLowerCase())!;
+        return this.map.get(name.toLowerCase())!;
     }
 
-    private loadElementType(elementTypeConfig: any, key: string): IElementType {
+    private loadElementType(elementTypeConfig: any, key: string, elementTypes: Map<string, IElementType>): IElementType {
         const type = _.at(elementTypeConfig, ["type"])[0] as string;
 
         if (type === ("complex")) {
             const properties: IElementTypeProperty[] = [];
             const propertiesConfig = _.at(elementTypeConfig, ["properties"])[0] as any;
             for (const propertyKey of Object.keys(propertiesConfig)) {
-                const propertyElementType = this.loadElementType(_.at(propertiesConfig, [propertyKey])[0] as any, propertyKey);
-                this.register(propertyElementType);
+                const propertyElementType = this.loadElementType(_.at(propertiesConfig, [propertyKey])[0] as any, propertyKey, elementTypes);
+                elementTypes.set(propertyElementType.name.toLowerCase(), propertyElementType);
                 const propertyConfig = _.at(propertiesConfig, [propertyKey])[0] as any;
                 const propertyOptional: boolean =  _.has(propertyConfig, ["optional"]) ? _.at(propertyConfig, ["optional"])[0] as boolean : false;
                 const configKey: string =  _.has(propertyConfig, ["configKey"]) ? _.at(propertyConfig, ["configKey"])[0] as string : propertyKey;
@@ -118,7 +77,7 @@ class ElementTypes {
             const simpleType = type.split(":")[1];
             const description = _.at(elementTypeConfig, ["description"])[0] as string;
             const autocomplete = _.at(elementTypeConfig, ["autocomplete"])[0] as string;
-            const possibilities = this.autocompletePossibilities.get(autocomplete)!;
+            const possibilities = enums.get(autocomplete)!;
             const elementType = new ElementTypeSimpleAutocomplete(simpleType, description, possibilities);
             return elementType;
 
@@ -126,7 +85,7 @@ class ElementTypes {
             const simpleType = type.split(":")[1];
             const description = _.at(elementTypeConfig, ["description"])[0] as string;
             const autocomplete = _.at(elementTypeConfig, ["autocomplete"])[0] as string;
-            const possibilities = this.autocompletePossibilities.get(autocomplete)!;
+            const possibilities = enums.get(autocomplete)!;
             const dependent = _.at(elementTypeConfig, ["dependent"])[0] as string;
             const elementType = new ElementTypeSimpleAutocompleteDependency(simpleType, description, possibilities, dependent);
             return elementType;
@@ -140,8 +99,8 @@ class ElementTypes {
             const mapConfig = _.at(elementTypeConfig, ["map"])[0] as any;
             for (const mapKey of Object.keys(mapConfig)) {
                 const propertyConfig =  _.at(mapConfig, [mapKey])[0] as any;
-                const mapElementType = this.loadElementType(propertyConfig, mapKey);
-                this.register(mapElementType);
+                const mapElementType = this.loadElementType(propertyConfig, mapKey, elementTypes);
+                elementTypes.set(mapElementType.name.toLowerCase(), mapElementType);
                 map.set(mapKey, mapElementType);
             }
             const name =  _.has(elementTypeConfig, ["name"]) ?  _.at(elementTypeConfig, ["name"])[0] as string : key;
@@ -153,8 +112,8 @@ class ElementTypes {
         } else if (type === ("complexlist")) {
             const elementsConfig = _.at(elementTypeConfig, ["elements"])[0] as any;
             const elementTypeKey: string = Object.keys(elementsConfig)[0];
-            const elementType = this.loadElementType(_.at(elementsConfig, [elementTypeKey])[0] as any, elementTypeKey);
-            this.register(elementType);
+            const elementType = this.loadElementType(_.at(elementsConfig, [elementTypeKey])[0] as any, elementTypeKey, elementTypes);
+            elementTypes.set(elementType.name.toLowerCase(), elementType);
             const transformationFunction = (config: object, configKey: string) => {
                 return configKey; // Note: just a temporary solution to have something displayed
             };
@@ -166,10 +125,6 @@ class ElementTypes {
             return new ElementTypeComplexList(name, description, elementType, defaultElement, transformationFunction, renameable, deleteable);
         }
         throw Error("Unknown ElementType type: ' " + type + "'.");
-    }
-
-    private register(elementType: IElementType) {
-        this.elementTypes.set(elementType.name.toLowerCase(), elementType);
     }
 
 }

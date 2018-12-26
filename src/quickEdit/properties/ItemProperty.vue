@@ -82,9 +82,6 @@ import { itemProperties } from "@/data/ItemProperties";
 import StringlistProperty from "./StringlistProperty.vue";
 import ItemPropertyComponent from "./itemproperties/itemProperty";
 
-// TODO: Maybe download available items from here?
-// https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
-
 const regex = /(.*?):(.*)/;
 
 // TODO: Check why v-checkbox isn't working properly

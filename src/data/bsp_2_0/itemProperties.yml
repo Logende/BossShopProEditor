@@ -12,7 +12,7 @@
   key: amount
   content:
   - displayname: Item amount
-    type: integer
+    type: simple:integer
     description: ToDo
     default: '1'
   definition: amount:<number>
@@ -21,7 +21,7 @@
   key: durability
   content:
   - displayname: Durability/Damage
-    type: integer
+    type: simple:integer
     description: ToDo
     default: '5'
   definition: durability:<number>
@@ -30,7 +30,7 @@
   key: name
   content:
   - displayname: Displayname
-    type: string_formatted
+    type: simple:string_formatted
     description: ToDo
     default: EpicPotato
   definition: name:<name>
@@ -39,7 +39,7 @@
   key: lore
   content:
   - displayname: Lore
-    type: string_formatted
+    type: simple:string_formatted
     description: ToDo
     default: Line1#Line2 blabla#Line3
   definition: lore:<line1#line2#line3>
@@ -53,7 +53,7 @@
     description: ToDo
     default: DAMAGE_ALL
   - displayname: Level
-    type: integer
+    type: simple:integer
     default: '3'
   definition: enchantment:<enchantment name>#<level>
   infotext: 'Use this attribute to enchant your item. Example: ''enchantment:damage_all#5'' <- This would add Sharpness V to your item.'
@@ -61,15 +61,15 @@
   key: color
   content:
   - displayname: R
-    type: integer
+    type: simple:integer
     description: ToDo
     default: '64'
   - displayname: G
-    type: integer
+    type: simple:integer
     description: ToDo
     default: '128'
   - displayname: B
-    type: integer
+    type: simple:integer
     description: ToDo
     default: '255'
   definition: color:<red number>#<green number>#<blue number>
@@ -84,11 +84,11 @@
     description: ToDo
     default: MUNDANE
   - displayname: Extended
-    type: boolean
+    type: simple:boolean
     description: ToDo
     default: 'true'
   - displayname: Upgraded
-    type: boolean
+    type: simple:boolean
     description: ToDo
     default: 'false'
   definition: potion:<potion name>#<extended? true/false>#<upgraded? <true/false>
@@ -103,11 +103,11 @@
     description: ToDo
     default: STRENGTH
   - displayname: Level
-    type: integer
+    type: simple:integer
     description: ToDo
     default: '1'
   - displayname: Duration in seconds
-    type: integer
+    type: simple:integer
     description: ToDo
     default: '600'
   definition: potioneffect:<potion name>#<level>#<time in seconds>
@@ -116,7 +116,7 @@
   key: playerhead
   content:
   - displayname: Player name
-    type: string
+    type: simple:string
     description: ToDo
     default: Herobrine
   definition: playerhead:<name>
@@ -125,7 +125,7 @@
   key: customskull
   content:
   - displayname: Texture/mojang skin url
-    type: string
+    type: simple:string
     description: ToDo
     default: URL
   definition: customskull:<texture/mojang skin url>
@@ -134,7 +134,7 @@
   key: mobspawner
   content:
   - displayname: Mob name
-    type: string
+    type: simple:string
     description: ToDo
     default: BLAZE
   definition: mobspawner:<mob name>
@@ -143,7 +143,7 @@
   key: monsteregg
   content:
   - displayname: Mob name
-    type: string
+    type: simple:string
     description: ToDo
     default: BLAZE
   definition: monsteregg:<mob name>
@@ -152,7 +152,7 @@
   key: hideflags
   content:
   - displayname: Flags
-    type: string
+    type: simple:string
     description: ToDo
     default: HIDE_ATTRIBUTES#HIDE_ENCHANTS
   definition: hideflags:<flag1#flag2#flag3>
@@ -161,11 +161,11 @@
   key: book
   content:
   - displayname: Title
-    type: string_formatted
+    type: simple:string_formatted
     description: ToDo
     default: My awesome Book
   - displayname: Author
-    type: string_formatted
+    type: simple:string_formatted
     description: ToDo
     default: Unknown Player
   definition: book:<title>#<author>
@@ -174,11 +174,11 @@
   key: bookpage
   content:
   - displayname: Page
-    type: integer
+    type: simple:integer
     description: ToDo
     default: '1'
   - displayname: Text
-    type: string_formatted
+    type: simple:string_formatted
     description: ToDo
     default: This is some text.
   definition: bookpage:<page>#<text>
