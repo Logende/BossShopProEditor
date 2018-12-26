@@ -29,7 +29,7 @@ class EditorData {
                     const pathText = pathToString(pathCurrent.slice(0, - 1).concat([elementTypeDependent.dependencyConfigKey])) || "";
                     const dependentString = _.at(config as any, [pathText])[0];
                     if (dependentString === undefined) {
-                        console.log("dependency of elementtpe dependent missing.");
+                        console.log("dependency of elementtpe dependent missing, having pathText " + pathText + ".");
                         return elementTypes.get("none");
                     }
                     return elementTypeDependent.dependencyToElementType.get(dependentString.toLowerCase())!;

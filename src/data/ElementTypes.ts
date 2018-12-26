@@ -148,7 +148,7 @@ class ElementTypes {
             const description = _.at(elementTypeConfig, ["description"])[0] as string;
             const renameable =  _.has(elementTypeConfig, ["renameable"]) ?  _.at(elementTypeConfig, ["renamable"])[0] as boolean : false;
             const deleteable =  _.has(elementTypeConfig, ["deleteable"]) ?  _.at(elementTypeConfig, ["deleteable"])[0] as boolean : false;
-            return new ElementTypeDependent(name, dependency, description, map, renameable, deleteable);
+            return new ElementTypeDependent(name, description, dependency, map, renameable, deleteable);
 
         } else if (type === ("complexlist")) {
             const elementsConfig = _.at(elementTypeConfig, ["elements"])[0] as any;

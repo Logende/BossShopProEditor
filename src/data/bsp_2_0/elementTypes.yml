@@ -52,7 +52,7 @@ shop:
             RewardType:
               type: simple_autocomplete_dependency:rewardtype
               autocomplete: rewardtype
-              dependent: Price
+              dependent: Reward
               description: Type of reward the player will receive by clicking this shopitem. For example "ITEM".
             Reward:
               type: dependent
@@ -81,6 +81,7 @@ shop:
                   type: simple:integer
                   description: EXP level to be added to the player.
                 item:
+                  name: list_item
                   type: complexlist
                   description: List of items the player will receive.
                   default:
