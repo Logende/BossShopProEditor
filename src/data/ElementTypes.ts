@@ -16,30 +16,23 @@ class ElementTypes {
     public elementTypeSpecialNames = ["item", "shopitemlist"];
 
     private elementTypes: Map<string, IElementType> = new Map<string, IElementType>();
+    private autocompletePossibilities: Map<string, string[]> = new Map<string, string[]>();
 
     constructor() {
-        //
-        // Init simple ElementTypes
-        //
-        this.register(new ElementTypeSimple("none"));
-        this.register(new ElementTypeSimple("string"));
-        this.register(new ElementTypeSimple("string_formatted"));
-        this.register(new ElementTypeSimple("boolean"));
-        this.register(new ElementTypeSimple("double"));
-        this.register(new ElementTypeSimple("integer"));
-        this.register(new ElementTypeSimple("list_string"));
-        this.register(new ElementTypeSimple("item"));
-        // TODO: replace example names by actual lists of data names
-
-        //
-        // Init special ElementTypes
-        //
-        this.register(new ElementTypeComplexList("list_item", this.get("item"),
-        ["type:stone", "amount:1"], (config: object, configKey: string) => "todo"));
-
-        //
-        // Init shop ElementTypes
-        //
+        /**
+         * Known simple ElementTypes:
+         * - none
+         * - string
+         * - string_formatted
+         * - boolean
+         * - double
+         * - integer
+         * - list_string
+         * - item
+         * 
+         * Known complex lists:
+         * - list_item
+         */
         this.loadElementTypes();
     }
 
@@ -62,11 +55,12 @@ class ElementTypes {
             config = YAML.parse(elementTypes_2_0_0);
         }
 
-        this.register(new ElementTypeSimpleAutocomplete("material", material));
-        this.register(new ElementTypeSimpleAutocomplete("potioneffect", potioneffect));
-        this.register(new ElementTypeSimpleAutocomplete("enchantment", enchantment));
-        this.register(new ElementTypeSimpleAutocompleteDependency("rewardtype", rewardtype, "Reward"));
-        this.register(new ElementTypeSimpleAutocompleteDependency("pricetype", pricetype, "Price"));
+        // TODO: Move those possibilities to external files and load them via external configg
+        this.autocompletePossibilities.set("material", material);
+        this.autocompletePossibilities.set("potioneffect", potioneffect);
+        this.autocompletePossibilities.set("enchantment", enchantment);
+        this.autocompletePossibilities.set("rewardtype", rewardtype);
+        this.autocompletePossibilities.set("pricetype", pricetype);
 
 
         const localElementTypes: IElementType[] = [];
@@ -109,25 +103,52 @@ class ElementTypes {
                 properties.push(property);
             }
             const name =  _.has(elementTypeConfig, ["name"]) ?  _.at(elementTypeConfig, ["name"])[0] as string : key;
+            const description = _.at(elementTypeConfig, ["description"])[0] as string;
             const renameable =  _.has(elementTypeConfig, ["renameable"]) ?  _.at(elementTypeConfig, ["renamable"])[0] as boolean : false;
             const deleteable =  _.has(elementTypeConfig, ["deleteable"]) ?  _.at(elementTypeConfig, ["deleteable"])[0] as boolean : false;
-            return new ElementTypeComplex(name, properties, renameable, deleteable);
+            return new ElementTypeComplex(name, description, properties, renameable, deleteable);
+
+        } else if (type.startsWith("simple:")) {
+            const simpleType = type.split(":")[1];
+            const description = _.at(elementTypeConfig, ["description"])[0] as string;
+            const elementType = new ElementTypeSimple(simpleType, description);
+            return elementType;
+
+        } else if (type.startsWith("simple_autocomplete:")) {
+            const simpleType = type.split(":")[1];
+            const description = _.at(elementTypeConfig, ["description"])[0] as string;
+            const autocomplete = _.at(elementTypeConfig, ["autocomplete"])[0] as string;
+            const possibilities = this.autocompletePossibilities.get(autocomplete)!;
+            const elementType = new ElementTypeSimpleAutocomplete(simpleType, description, possibilities);
+            return elementType;
+
+        } else if (type.startsWith("simple_autocomplete_dependency:")) {
+            const simpleType = type.split(":")[1];
+            const description = _.at(elementTypeConfig, ["description"])[0] as string;
+            const autocomplete = _.at(elementTypeConfig, ["autocomplete"])[0] as string;
+            const possibilities = this.autocompletePossibilities.get(autocomplete)!;
+            const dependent = _.at(elementTypeConfig, ["dependent"])[0] as string;
+            const elementType = new ElementTypeSimpleAutocompleteDependency(simpleType, description, possibilities, dependent);
+            return elementType;
 
         } else if (type.startsWith("existing:")) {
             return this.get(type.split(":")[1]);
 
         } else if (type === ("dependent")) {
             const dependency = _.at(elementTypeConfig, ["dependency"])[0] as string;
-            const map: Map<string, string> = new Map<string, string>();
+            const map: Map<string, IElementType> = new Map<string, IElementType>();
             const mapConfig = _.at(elementTypeConfig, ["map"])[0] as any;
             for (const mapKey of Object.keys(mapConfig)) {
-                const value =  _.at(mapConfig, [mapKey])[0] as string;
-                map.set(mapKey, value);
+                const propertyConfig =  _.at(mapConfig, [mapKey])[0] as any;
+                const mapElementType = this.loadElementType(propertyConfig, mapKey);
+                this.register(mapElementType);
+                map.set(mapKey, mapElementType);
             }
             const name =  _.has(elementTypeConfig, ["name"]) ?  _.at(elementTypeConfig, ["name"])[0] as string : key;
+            const description = _.at(elementTypeConfig, ["description"])[0] as string;
             const renameable =  _.has(elementTypeConfig, ["renameable"]) ?  _.at(elementTypeConfig, ["renamable"])[0] as boolean : false;
             const deleteable =  _.has(elementTypeConfig, ["deleteable"]) ?  _.at(elementTypeConfig, ["deleteable"])[0] as boolean : false;
-            return new ElementTypeDependent(name, dependency, map, renameable, deleteable);
+            return new ElementTypeDependent(name, dependency, description, map, renameable, deleteable);
 
         } else if (type === ("complexlist")) {
             const elementsConfig = _.at(elementTypeConfig, ["elements"])[0] as any;
@@ -138,10 +159,11 @@ class ElementTypes {
                 return configKey; // Note: just a temporary solution to have something displayed
             };
             const name =  _.has(elementTypeConfig, ["name"]) ?  _.at(elementTypeConfig, ["name"])[0] as string : key;
+            const description = _.at(elementTypeConfig, ["description"])[0] as string;
             const renameable =  _.has(elementTypeConfig, ["renameable"]) ?  _.at(elementTypeConfig, ["renamable"])[0] as boolean : false;
             const deleteable =  _.has(elementTypeConfig, ["deleteable"]) ?  _.at(elementTypeConfig, ["deleteable"])[0] as boolean : false;
             const defaultElement = _.at(elementTypeConfig, ["default"])[0] as any;
-            return new ElementTypeComplexList(name, elementType, defaultElement, transformationFunction, renameable, deleteable);
+            return new ElementTypeComplexList(name, description, elementType, defaultElement, transformationFunction, renameable, deleteable);
         }
         throw Error("Unknown ElementType type: ' " + type + "'.");
     }

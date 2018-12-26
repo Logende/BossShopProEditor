@@ -32,16 +32,7 @@ class EditorData {
                         console.log("dependency of elementtpe dependent missing.");
                         return elementTypes.get("none");
                     }
-                    const elementTypeName = elementTypeDependent.dependencyToElementTypeName.get(dependentString.toLowerCase());
-                    if (elementTypeName === undefined) {
-                        console.log("elementtype defined in dependency with name " + elementTypeName + " does not exist in schema");
-                        return elementTypes.get("none");
-                    }
-                    if (! elementTypes.has(elementTypeName)) {
-                        console.log("elementtype defined in dependency with name " + elementTypeName + " does exist in schema but is not a known elementtype");
-                        return elementTypes.get("none");
-                    }
-                    return elementTypes.get(elementTypeName);
+                    return elementTypeDependent.dependencyToElementType.get(dependentString.toLowerCase())!;
 
 
             }
