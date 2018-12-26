@@ -26,6 +26,10 @@ export default Vue.extend({
                 case "string":
                     el = StringProperty;
                     break;
+                case "string_formatted":
+                    el = StringProperty;
+                    additionalProps.formatted = true;
+                    break;
                 case "boolean":
                     el = BooleanProperty;
                     break;
