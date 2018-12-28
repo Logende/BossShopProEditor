@@ -22,6 +22,7 @@ export default new Vuex.Store({
                 // set the root object
                 state.config = newValue;
             } else {
+                // TODO: Replace this way of updating the config with a deep Vue.set function
                 const newConfig = JSON.parse(JSON.stringify(state.config));
                 _.set(newConfig, p, newValue);
                 Vue.set(state, "config", newConfig);
