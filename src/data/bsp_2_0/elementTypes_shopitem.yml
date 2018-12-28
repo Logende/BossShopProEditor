@@ -1,27 +1,3 @@
-# Existing ElementTypes:
-# none, string, boolean, double, integer, list_string, item, material, potioneffect, enchantment, list_item, rewardtype, pricetype
-shop:
-  type: complex
-  description: Your shop
-  properties:
-    ShopName:
-      type: simple:string
-      description: Name/id of the shop.
-    DisplayName:
-      type: simple:string_formatted
-      description: Display name/title of the shop shown in the GUI.
-    Command:
-      type: simple:string
-      optional: true
-      description: 'Zero, one or more commands (separated by colon), which allow players with the corresponding permissions to directly open this shop. You can leave this empty. Examples: "warp" or "warp:warps"'
-    'signs.text':
-      type: simple:string_formatted
-      optional: true
-      description: "If you want players to be able to open this shop via signs, this is the text the first line of a sign needs to end with. Otherwise remove this setting from the config file."
-    'signs.NeedsPermissionToCreateSign':
-      type: simple:boolean
-      optional: true
-      description: "Set this to true, if only players with the proper permissions should be able to create signs that open this shop."
     shopitemlist:
       configKey: shop
       type: complexlist
@@ -38,7 +14,6 @@ shop:
           - 'lore:#&eClick to buy for &e$%price%'
         Message: '&aYou''ve purchased &e%reward%&a for &e$%price%'
         InventoryLocation: 1
-        ExtraPermission: ""
       elements:
         shopitem:
           type: complex
@@ -159,7 +134,3 @@ shop:
             InventoryLocation:
               type: simple:integer
               description: The inventory slot this shop item should be put into. Set this to "1" for the first slot and to "54" for the last slot of one GUI inventory page. Higher slots are possible too, resulting in the shop item being put into the next page of the GUI menu. Set this to "0" if you want the shop item to be put into the first empty slot.
-            ExtraPermission:
-              type: simple:string
-              optional: true
-              description: 'This property is optional. If set to a permission, players will require the permission in order to be able to successfully purchase the reward when clicking the item. Otherwise a "no permission" message will be sent to the player.'

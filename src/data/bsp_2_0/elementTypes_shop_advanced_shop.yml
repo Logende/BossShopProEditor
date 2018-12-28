@@ -1,0 +1,4 @@
+    InventoryRows:
+      type: simple:integer
+      optional: true
+      description: 'This property is optional. This setting allows increasing the size of an inventory without needing to add a shopitem to the bottom row.'

@@ -1,0 +1,8 @@
+            ForceInput:
+              type: simple_autocomplete:inputtype
+              optional: true
+              description: 'This property is optional. You can force players to input their own text or to select an online player. The input is stored and can be accessed using the "%input%" placeholder.'
+            ForceInputMessage:
+              type: simple:string
+              optional: true
+              description: 'If you force input from the player, this is the message sent to the player, before he has to enter input.'

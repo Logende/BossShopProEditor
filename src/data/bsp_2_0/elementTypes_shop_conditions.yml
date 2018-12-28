@@ -1,0 +1,4 @@
+            Condition:
+              type: simple:list_string
+              optional: true
+              description: 'This property is optional. View following page for more information: https://www.spigotmc.org/wiki/bossshoppro-conditions/.'
