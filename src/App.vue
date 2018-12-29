@@ -1,6 +1,8 @@
 <template>
     <v-app dark>
 
+        <settings></settings>
+
         <v-toolbar>
             <v-toolbar-title>BossShopPro Editor</v-toolbar-title>
         </v-toolbar>
@@ -30,12 +32,14 @@
 import { Component, Vue } from "vue-property-decorator";
 import QuickEdit from "./quickEdit/QuickEdit.vue";
 import ConfigEdit from "./configEdit/ConfigEdit.vue";
+import Settings from "./settings/Settings.vue";
 import { IElementType } from '@/data/ElementTypeModel';
 
 @Component({
     components: {
         "quick-edit": QuickEdit,
-        "config-edit": ConfigEdit
+        "config-edit": ConfigEdit,
+        "settings": Settings
     }
 })
 export default class App extends Vue {

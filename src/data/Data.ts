@@ -18,35 +18,35 @@ import e_2_0_mc from '@/data/bsp_2_0/enums_mc.yml';
 
 class Data {
 
-    private etItemshop: boolean = true;
-    private etItemshopAdv: boolean = true;
-    private etShopAdvShop: boolean = true;
-    private etShopAdvShopItem: boolean = true;
-    private etConditions: boolean = true;
-    private etClickTypes: boolean = true;
-    private etPlayerInput: boolean = true;
-    private etSoundsShop: boolean = true;
-    private etSoundsShopItem: boolean = true;
+    public etItemshop: boolean = true;
+    public etItemshopAdv: boolean = true;
+    public etShopAdvShop: boolean = true;
+    public etShopAdvShopItem: boolean = true;
+    public etConditions: boolean = true;
+    public etClickTypes: boolean = true;
+    public etPlayerInput: boolean = true;
+    public etSoundsShop: boolean = true;
+    public etSoundsShopItem: boolean = true;
 
-    private dataEtShop = etShop_2_0;
-    private dataEtShopItem = etShopitem_2_0;
-    private dataEtShopConditions = etShopConditions_2_0;
-    private dataEtShopPlayerInput = etShopPlayerInput_2_0;
-    private dataEtShopClickTypes = etShopClickTypes_2_0;
-    private dataEtShopAdvShopItem = etShopAdvShopItem_2_0;
-    private dataEtShopSoundsShopItem = etShopSoundsShopItem_2_0;
-    private dataEtShopAdvShop = etShopAdvShop_2_0;
-    private dataEtShopSoundsShop = etShopSoundsShop_2_0;
-    private dataEtItemShop = etItemShop_2_0;
-    private dataEtItemShopAdv = etItemShopAdv_2_0;
+    public dataEtShop = etShop_2_0;
+    public dataEtShopItem = etShopitem_2_0;
+    public dataEtShopConditions = etShopConditions_2_0;
+    public dataEtShopPlayerInput = etShopPlayerInput_2_0;
+    public dataEtShopClickTypes = etShopClickTypes_2_0;
+    public dataEtShopAdvShopItem = etShopAdvShopItem_2_0;
+    public dataEtShopSoundsShopItem = etShopSoundsShopItem_2_0;
+    public dataEtShopAdvShop = etShopAdvShop_2_0;
+    public dataEtShopSoundsShop = etShopSoundsShop_2_0;
+    public dataEtItemShop = etItemShop_2_0;
+    public dataEtItemShopAdv = etItemShopAdv_2_0;
 
-    private dataItemProperties = itemproperties_2_0;
-    private dataEnBsp = e_2_0_bsp;
-    private dataEnMc = e_2_0_mc;
+    public dataItemProperties = itemproperties_2_0;
+    public dataEnBsp = e_2_0_bsp;
+    public dataEnMc = e_2_0_mc;
 
-    private updatedElementTypes: boolean = true;
-    private updatedItemProperties: boolean = true;
-    private updatedEnums: boolean = true;
+    public updatedElementTypes: boolean = true;
+    public updatedItemProperties: boolean = true;
+    public updatedEnums: boolean = true;
 
     public update() {
         this.updatedElementTypes = true;
@@ -105,10 +105,11 @@ class Data {
         }
         if (this.etItemshop) {
             configParts.push(this.dataEtItemShop);
+            if (this.etItemshopAdv) {
+                configParts.push(this.dataEtItemShopAdv);
+            }
         }
-        if (this.etItemshopAdv) {
-            configParts.push(this.dataEtItemShopAdv);
-        }
+        console.log("generating elementTypes with itemshop " + this.etItemshop);
 
         return YAML.parse(configParts.join("\r\n"));
     }
