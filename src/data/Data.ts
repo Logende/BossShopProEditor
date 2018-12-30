@@ -18,15 +18,15 @@ import e_2_0_mc from '@/data/bsp_2_0/enums_mc.yml';
 
 class Data {
 
-    private etItemshop: boolean = true;
-    private etItemshopAdv: boolean = true;
-    private etShopAdvShop: boolean = true;
-    private etShopAdvShopItem: boolean = true;
+    private etItemshop: boolean = false;
+    private etItemshopAdv: boolean = false;
+    private etShopAdvShop: boolean = false;
+    private etShopAdvShopItem: boolean = false;
     private etConditions: boolean = true;
-    private etClickTypes: boolean = true;
-    private etPlayerInput: boolean = true;
-    private etSoundsShop: boolean = true;
-    private etSoundsShopItem: boolean = true;
+    private etClickTypes: boolean = false;
+    private etPlayerInput: boolean = false;
+    private etSoundsShop: boolean = false;
+    private etSoundsShopItem: boolean = false;
 
     private dataEtShop = etShop_2_0;
     private dataEtShopItem = etShopitem_2_0;
