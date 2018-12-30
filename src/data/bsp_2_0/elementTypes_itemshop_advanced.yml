@@ -1,0 +1,12 @@
+            PriceBuy:
+              type: existing:double
+              optional: true
+            RewardSell:
+              type: existing:double
+              optional: true
+            AllowSell:
+              type: existing:boolean
+              optional: true
+            AllowBuy:
+              type: existing:boolean
+              optional: true

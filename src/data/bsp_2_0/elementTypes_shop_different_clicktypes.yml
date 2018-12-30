@@ -1,0 +1,312 @@
+            RewardType_right:
+              type: simple_autocomplete_dependency:rewardtype_right
+              autocomplete: rewardtype
+              dependent: Reward_right
+              description: Type of reward the player will receive by clicking this shopitem. For example "ITEM".
+            Reward_right:
+              type: dependent
+              dependency: RewardType_right
+              description: The actual reward. If your RewardType is "ITEM" the reward could be for example one diamond pickaxe.
+              map:
+                bungeecordcommand:
+                  type: simple:list_string
+                  description: List of commands executed by the BungeeCord server. Requires BungeeCord and a copy of BSP being run as BungeeCord plugin.
+                bungeecordserver:
+                  type: simple:string
+                  description: Name of the BungeeCord server to send the player to. Requires BungeeCord.
+                close: 
+                  type: simple:none
+                  description: The shop will be closed. No Reward required.
+                command:
+                  type: simple:list_string
+                  description: 'List of commands executed by the console. Tip: You can use placeholders, like "%player%" for the player name.'
+                custom:
+                  type: simple:none
+                  description: Custom Reward using BossShopPro API.
+                enchantment:
+                  type: simple:string
+                  description: Enchantment which will be added to the item in the players main hand.
+                exp:
+                  type: simple:integer
+                  description: EXP level to be added to the player.
+                item:
+                  name: list_item
+                  type: complexlist
+                  description: List of items the player will receive.
+                  default:
+                    - type:STONE
+                    - amount:16
+                  elements:
+                    item:
+                      type: simple:item
+                      description: One item.
+                itemall:
+                  type: simple:item
+                  description: When clicking this shop item the player will fill his inventory with items of this type. He will pay the defined price for every item.
+                money:
+                  type: simple:double
+                  description: The amount of money the player will receive.
+                nothing:
+                  type: simple:none
+                  description: 'Nothing: No reward will be given to the player.'
+                permission:
+                  type: simple:list_string
+                  description: List of permissions that will be given to the player.
+                playercommand:
+                  type: simple:list_string
+                  description: List of commands that will be executed in the name of the player with the permissions of the player.
+                playercommandop:
+                  type: simple:list_string
+                  description: List of commands that will be executed in the name of the player with the permissions of an Op.
+                points:
+                  type: simple:double
+                  description: Amount of points the player will receive.
+                shop:
+                  type: simple:string
+                  description: The BossShopPro shop the player will be sent to.
+                shoppage:
+                  type: simple:string
+                  description: 'The page of the shop which will be opened. Possible values: <Any page number>, next, previous'
+            PriceType_right:
+              type: simple_autocomplete_dependency:pricetype_right
+              autocomplete: pricetype_right
+              dependent: Price_right
+              description: Type of price the player will pay when clicking this shopitem, to receive the reward. For example "MONEY".
+            Price_right:
+              type: dependent
+              dependency: PriceType_right
+              description: The actual price. If your PriceType is "MONEY" the price could be for example "100".
+              map:
+                exp:
+                  type: simple:integer
+                  description: EXP level to be taken from the player.
+                item:
+                  type: complexlist
+                  description: List of items the player will pay.
+                  default:
+                    - type:STONE
+                    - amount:16
+                  elements:
+                    item:
+                      type: simple:item
+                      description: One item.
+                itemall:
+                  type: simple:item
+                  description: When clicking this shop item the player will sell all his items of this type. He will receive the defined reward for every item sold.
+                money:
+                  type: simple:double
+                  description: The amount of money the player will pay.
+                nothing:
+                  type: simple:none
+                  description: 'Nothing: No price will be taken from the player.'
+                points:
+                  type: simple:double
+                  description: Amount of points the player will pay.
+            RewardType_left:
+              type: simple_autocomplete_dependency:rewardtype_left
+              autocomplete: rewardtype
+              dependent: Reward_left
+              description: Type of reward the player will receive by clicking this shopitem. For example "ITEM".
+            Reward_left:
+              type: dependent
+              dependency: RewardType_left
+              description: The actual reward. If your RewardType is "ITEM" the reward could be for example one diamond pickaxe.
+              map:
+                bungeecordcommand:
+                  type: simple:list_string
+                  description: List of commands executed by the BungeeCord server. Requires BungeeCord and a copy of BSP being run as BungeeCord plugin.
+                bungeecordserver:
+                  type: simple:string
+                  description: Name of the BungeeCord server to send the player to. Requires BungeeCord.
+                close: 
+                  type: simple:none
+                  description: The shop will be closed. No Reward required.
+                command:
+                  type: simple:list_string
+                  description: 'List of commands executed by the console. Tip: You can use placeholders, like "%player%" for the player name.'
+                custom:
+                  type: simple:none
+                  description: Custom Reward using BossShopPro API.
+                enchantment:
+                  type: simple:string
+                  description: Enchantment which will be added to the item in the players main hand.
+                exp:
+                  type: simple:integer
+                  description: EXP level to be added to the player.
+                item:
+                  name: list_item
+                  type: complexlist
+                  description: List of items the player will receive.
+                  default:
+                    - type:STONE
+                    - amount:16
+                  elements:
+                    item:
+                      type: simple:item
+                      description: One item.
+                itemall:
+                  type: simple:item
+                  description: When clicking this shop item the player will fill his inventory with items of this type. He will pay the defined price for every item.
+                money:
+                  type: simple:double
+                  description: The amount of money the player will receive.
+                nothing:
+                  type: simple:none
+                  description: 'Nothing: No reward will be given to the player.'
+                permission:
+                  type: simple:list_string
+                  description: List of permissions that will be given to the player.
+                playercommand:
+                  type: simple:list_string
+                  description: List of commands that will be executed in the name of the player with the permissions of the player.
+                playercommandop:
+                  type: simple:list_string
+                  description: List of commands that will be executed in the name of the player with the permissions of an Op.
+                points:
+                  type: simple:double
+                  description: Amount of points the player will receive.
+                shop:
+                  type: simple:string
+                  description: The BossShopPro shop the player will be sent to.
+                shoppage:
+                  type: simple:string
+                  description: 'The page of the shop which will be opened. Possible values: <Any page number>, next, previous'
+            PriceType_left:
+              type: simple_autocomplete_dependency:pricetype_left
+              autocomplete: pricetype_left
+              dependent: Price_left
+              description: Type of price the player will pay when clicking this shopitem, to receive the reward. For example "MONEY".
+            Price_left:
+              type: dependent
+              dependency: PriceType_left
+              description: The actual price. If your PriceType is "MONEY" the price could be for example "100".
+              map:
+                exp:
+                  type: simple:integer
+                  description: EXP level to be taken from the player.
+                item:
+                  type: complexlist
+                  description: List of items the player will pay.
+                  default:
+                    - type:STONE
+                    - amount:16
+                  elements:
+                    item:
+                      type: simple:item
+                      description: One item.
+                itemall:
+                  type: simple:item
+                  description: When clicking this shop item the player will sell all his items of this type. He will receive the defined reward for every item sold.
+                money:
+                  type: simple:double
+                  description: The amount of money the player will pay.
+                nothing:
+                  type: simple:none
+                  description: 'Nothing: No price will be taken from the player.'
+                points:
+                  type: simple:double
+                  description: Amount of points the player will pay.
+            RewardType_middle:
+              type: simple_autocomplete_dependency:rewardtype_middle
+              autocomplete: rewardtype
+              dependent: Reward_middle
+              description: Type of reward the player will receive by clicking this shopitem. For example "ITEM".
+            Reward_middle:
+              type: dependent
+              dependency: RewardType_middle
+              description: The actual reward. If your RewardType is "ITEM" the reward could be for example one diamond pickaxe.
+              map:
+                bungeecordcommand:
+                  type: simple:list_string
+                  description: List of commands executed by the BungeeCord server. Requires BungeeCord and a copy of BSP being run as BungeeCord plugin.
+                bungeecordserver:
+                  type: simple:string
+                  description: Name of the BungeeCord server to send the player to. Requires BungeeCord.
+                close: 
+                  type: simple:none
+                  description: The shop will be closed. No Reward required.
+                command:
+                  type: simple:list_string
+                  description: 'List of commands executed by the console. Tip: You can use placeholders, like "%player%" for the player name.'
+                custom:
+                  type: simple:none
+                  description: Custom Reward using BossShopPro API.
+                enchantment:
+                  type: simple:string
+                  description: Enchantment which will be added to the item in the players main hand.
+                exp:
+                  type: simple:integer
+                  description: EXP level to be added to the player.
+                item:
+                  name: list_item
+                  type: complexlist
+                  description: List of items the player will receive.
+                  default:
+                    - type:STONE
+                    - amount:16
+                  elements:
+                    item:
+                      type: simple:item
+                      description: One item.
+                itemall:
+                  type: simple:item
+                  description: When clicking this shop item the player will fill his inventory with items of this type. He will pay the defined price for every item.
+                money:
+                  type: simple:double
+                  description: The amount of money the player will receive.
+                nothing:
+                  type: simple:none
+                  description: 'Nothing: No reward will be given to the player.'
+                permission:
+                  type: simple:list_string
+                  description: List of permissions that will be given to the player.
+                playercommand:
+                  type: simple:list_string
+                  description: List of commands that will be executed in the name of the player with the permissions of the player.
+                playercommandop:
+                  type: simple:list_string
+                  description: List of commands that will be executed in the name of the player with the permissions of an Op.
+                points:
+                  type: simple:double
+                  description: Amount of points the player will receive.
+                shop:
+                  type: simple:string
+                  description: The BossShopPro shop the player will be sent to.
+                shoppage:
+                  type: simple:string
+                  description: 'The page of the shop which will be opened. Possible values: <Any page number>, next, previous'
+            PriceType_middle:
+              type: simple_autocomplete_dependency:pricetype_middle
+              autocomplete: pricetype_middle
+              dependent: Price_middle
+              description: Type of price the player will pay when clicking this shopitem, to receive the reward. For example "MONEY".
+            Price_middle:
+              type: dependent
+              dependency: PriceType_middle
+              description: The actual price. If your PriceType is "MONEY" the price could be for example "100".
+              map:
+                exp:
+                  type: simple:integer
+                  description: EXP level to be taken from the player.
+                item:
+                  type: complexlist
+                  description: List of items the player will pay.
+                  default:
+                    - type:STONE
+                    - amount:16
+                  elements:
+                    item:
+                      type: simple:item
+                      description: One item.
+                itemall:
+                  type: simple:item
+                  description: When clicking this shop item the player will sell all his items of this type. He will receive the defined reward for every item sold.
+                money:
+                  type: simple:double
+                  description: The amount of money the player will pay.
+                nothing:
+                  type: simple:none
+                  description: 'Nothing: No price will be taken from the player.'
+                points:
+                  type: simple:double
+                  description: Amount of points the player will pay.

@@ -1,0 +1,24 @@
+# Existing ElementTypes:
+# none, string, boolean, double, integer, list_string, item, material, potioneffect, enchantment, list_item, rewardtype, pricetype
+shop:
+  type: complex
+  description: Your shop
+  properties:
+    ShopName:
+      type: simple:string
+      description: Name/id of the shop.
+    DisplayName:
+      type: simple:string_formatted
+      description: Display name/title of the shop shown in the GUI.
+    Command:
+      type: simple:string
+      optional: true
+      description: 'Zero, one or more commands (separated by colon), which allow players with the corresponding permissions to directly open this shop. You can leave this empty. Examples: "warp" or "warp:warps"'
+    'signs.text':
+      type: simple:string_formatted
+      optional: true
+      description: "If you want players to be able to open this shop via signs, this is the text the first line of a sign needs to end with. Otherwise remove this setting from the config file."
+    'signs.NeedsPermissionToCreateSign':
+      type: simple:boolean
+      optional: true
+      description: "Set this to true, if only players with the proper permissions should be able to create signs that open this shop."

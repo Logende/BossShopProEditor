@@ -1,0 +1,20 @@
+            ExtraPermission:
+              type: simple:string
+              optional: true
+              description: 'This property is optional. If set to a permission, players will require the permission in order to be able to successfully purchase the reward when clicking the item. Otherwise a "no permission" message will be sent to the player.'
+            HideItemsPlayersDoNotHavePermissionsFor:
+              type: simple:boolean
+              optional: true
+              description: 'This property is optional. If enabled, items with "ExtraPermission" set to a permission will be hidden from the player, if the player does not have the required permission. The same effect can be achieved using conditions, which always hide the item if the conditions are not met.'
+            AllowUnsafeEnchantments:
+              type: simple:boolean
+              optional: true
+              description: 'This property is optional. If enabled players can use every Enchantment reward on any item.'
+            CanPlayersSellItemsWithGreaterEnchants:
+              type: simple:boolean
+              optional: true
+              description: 'This property is optional. If enabled players can sell items with greater enchants than needed to a shop that allows to sell items. That might be helpful when dealing with items with bad enchants, but also might lead to accidently selling items below their worth.'
+            CloseShopAfterPurchase:
+              type: simple:boolean
+              optional: true
+              description: 'This property is optional. If enabled the inventory GUI will be closed after a successful purchase.'

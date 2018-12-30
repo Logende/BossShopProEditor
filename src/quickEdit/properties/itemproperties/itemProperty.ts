@@ -40,7 +40,7 @@ export default class ItemProperty extends Vue {
 
             const children = p.content.map((c, i) => {
                 try {
-                    const type = elementTypes.get(c.type);
+                    const type = c.type;
                     if (!type) { throw new Error(); }
                     return h(Property, {
                         props: {

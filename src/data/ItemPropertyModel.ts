@@ -1,3 +1,5 @@
+import { IElementType } from './ElementTypeModel';
+
 export interface IItemProperty {
     name: string;
     key: string;
@@ -8,6 +10,7 @@ export interface IItemProperty {
 
 export interface IItemPropertyElement {
     displayname: string;
-    type: string;
+    type: IElementType;
     default: string;
+    description: string;
 }

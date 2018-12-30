@@ -1,0 +1,32 @@
+    "Sound.Shop.Click":
+      type: simple:string
+      optional: true
+      description: 'This property is optional. It allows overwriting the sound effect of the shop, which is played, when a shop item is clicked.'
+    "Sound.Shop.Purchase":
+      type: simple:string
+      optional: true
+      description: 'This property is optional. It allows overwriting the sound effect of the shop, which is played, when a shop item is purchased.'
+    "Sound.Shop.NoPermission":
+      type: simple:string
+      optional: true
+      description: 'This property is optional. It allows overwriting the sound effect of the shop, which is played, when a shop item is clicked, but the player does not have enough permissions for it.'
+    "Sound.Shop.NotEnoughMoney":
+      type: simple:string
+      optional: true
+      description: 'This property is optional. It allows overwriting the sound effect of the shop, which is played, when a shop item is clicked, but the player cannot afford paying the price.'
+    "Sound.Shop.ChangePage":
+      type: simple:string
+      optional: true
+      description: 'This property is optional. It allows overwriting the sound effect of the shop, which is played, when the page of the shop is changed.'
+    "Sound.Shop.ChangeShop":
+      type: simple:string
+      optional: true
+      description: 'This property is optional. It allows overwriting the sound effect of the shop, which is played, when the shop is left and an other shop opened.'
+    "Sound.Shop.Open":
+      type: simple:string
+      optional: true
+      description: 'This property is optional. It allows overwriting the sound effect of the shop, which is played, when the shop is opened.'
+    "Sound.Shop.Close":
+      type: simple:string
+      optional: true
+      description: 'This property is optional. It allows overwriting the sound effect of the shop, which is played, when the shop is closed.'

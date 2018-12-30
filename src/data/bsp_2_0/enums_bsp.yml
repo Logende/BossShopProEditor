@@ -1,0 +1,28 @@
+pricetype:
+  - exp
+  - item
+  - itemall
+  - money
+  - nothing
+  - points
+rewardtype:
+  - bungeecordcommand
+  - bungeecordserver
+  - close
+  - command
+  - custom
+  - enchantment
+  - exp
+  - item
+  - itemall
+  - money
+  - nothing
+  - permission
+  - playercommand
+  - playercommandop
+  - points
+  - shop
+  - shoppage
+inputtype:
+  - PLAYER
+  - TEXT
