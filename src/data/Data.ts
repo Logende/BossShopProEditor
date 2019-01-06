@@ -18,7 +18,7 @@ import e_2_0_mc from '@/data/bsp_2_0/enums_mc.yml';
 
 class Data {
 
-    private etItemshop: boolean = false;
+    private etItemshop: boolean = true;
     private etItemshopAdv: boolean = false;
     private etShopAdvShop: boolean = false;
     private etShopAdvShopItem: boolean = false;
