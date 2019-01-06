@@ -3,6 +3,7 @@ import { IElementType, ElementTypeClass, IElementTypeSimpleAutocomplete } from '
 
 import AutocompleteProperty from "./AutocompleteProperty.vue";
 import BooleanProperty from "./BooleanProperty.vue";
+import ComplexListProperty from "./ComplexListProperty.vue";
 import ComplexProperty from "./ComplexProperty.vue";
 import ItemlistProperty from "./ItemlistProperty.vue";
 import ItemProperty from "./ItemProperty.vue";
@@ -64,6 +65,10 @@ export default Vue.extend({
                     break;
                 case "list_item":
                     el = ItemlistProperty;
+                    break;
+                default:
+                    el = ComplexListProperty;
+                    additionalProps.type = type;
                     break;
             }
         }
