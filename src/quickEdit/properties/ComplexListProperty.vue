@@ -60,7 +60,7 @@ export default class ComplexListProperty extends Vue {
         do {
             name = "NewItem" + (counter || "");
             counter++;
-        } while (this.value[name]);
+        } while ((this.value || {})[name]);
         this.$emit("input", {
             ...this.value,
             [name]: JSON.parse(JSON.stringify(this.type.defaultElement))
