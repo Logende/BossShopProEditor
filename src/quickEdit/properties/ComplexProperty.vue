@@ -1,5 +1,5 @@
 <template>
-    <p><v-btn block @click="$emit('change-path')" flat color="primary">{{ name }}</v-btn></p>
+    <v-btn block @click="$emit('change-path')" flat color="primary">{{ name }}</v-btn>
 </template>
 
 <script lang="ts">
