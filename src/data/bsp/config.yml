@@ -1,32 +1,38 @@
-ShopName: CombinedShop
-DisplayName: '&8CombinedShop (%page%/%maxpage%)'
-Command: combinedshop
+# This is an example BossShopPro shop.
+# You can use the the ConfigEdit panel to edit the raw configuration text
+# and the QuickEdit panel for helpful features, like material name auto-complete and many more.
+#
+# Wiki: https://www.spigotmc.org/wiki/bossshoppro/
+#
+ShopName: shop
 signs:
-  text: '[CShop]'
-  NeedPermissionToCreateSign: true
-itemshop:
-  stone:
-    Worth: 3.0
-    Item:
-    - type:STONE
-    - amount:64
-  granite:
-    Worth: 3.0
-    Item:
-    - type:STONE
-    - durability:1
-    - amount:64
+  text: '[shop]'
+  NeedsPermissionToCreateSign: true
+DisplayName: '&9&l&nExample Shop'
 shop:
-  Back:
-    MenuItem:
-    - lore:&8Back to Menu
-    - name:&cBack
+  'STONE':
+    RewardType: item
+    PriceType: money
+    Price: 15
+    Reward:
+    - type:STONE
     - amount:1
-    - type:REDSTONE
-    RewardType: SHOP
-    Reward: shop
-    PriceType: NOTHING
-    Price: 10.0
-    Message: ''
+    MenuItem:
+    - '%rewarditem_1%'
+    - lore:#&eClick to buy for &e$%price%
+    Message: '&aYou''ve purchased &e%reward%&a for &e$%price%'
+    InventoryLocation: 1
     ExtraPermission: ''
-    InventoryLocation: 9
+  'DIAMOND':
+    RewardType: item
+    PriceType: money
+    Price: 15
+    Reward:
+    - type:DIAMOND
+    - amount:1
+    MenuItem:
+    - '%rewarditem_1%'
+    - lore:#&eClick to buy for &e$%price%
+    Message: '&aYou''ve purchased &e%reward%&a for &e$%price%'
+    InventoryLocation: 2
+    ExtraPermission: ''
