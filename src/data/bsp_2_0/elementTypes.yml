@@ -83,11 +83,10 @@ shop:
       configKey: itemshop
       type: complexlist
       default:  
-        stone:
-          Worth: 3.0
-          Item:
-            - type:STONE
-            - amount:64
+        Worth: 3.0
+        Item:
+          - type:STONE
+          - amount:64
       elements:
         item:
           type: complex
