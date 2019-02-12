@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="mb-3">QuickEdit Section</h1>
+        <h1 class="mb-3">Configuration Assistant</h1>
 
         <v-breadcrumbs :items="breadcrumbsItems" class="pl-0">
             <v-icon slot="divider">chevron_right</v-icon>
