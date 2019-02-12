@@ -1,12 +1,16 @@
             PriceBuy:
               type: existing:double
               optional: true
+              description: 'Optional. Overwrites the price players pay for the item, instead of using "<priceMultiplier>*<worth>".'
             RewardSell:
               type: existing:double
               optional: true
+              description: 'Optional. Overwrites the reward players get for selling the item, instead of using "<rewardMultiplier>*<worth>".'
             AllowSell:
               type: existing:boolean
               optional: true
+              description: 'Optional. Default is "true". Allows disabling the "sell" option for the item.'
             AllowBuy:
               type: existing:boolean
               optional: true
+              description: 'Optional. Default is "true". Allows disabling the "buy" option for the item.'

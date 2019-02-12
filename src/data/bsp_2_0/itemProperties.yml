@@ -4,7 +4,6 @@
   - displayname: Material name
     type: simple_autocomplete:material
     autocomplete: material
-    description: ToDo 
     default: STONE
   definition: type:<type>
   infotext: This defines the material of the item. You can for example use 'type:1' or 'type:stone' in order to make your item stone.
@@ -13,7 +12,6 @@
   content:
   - displayname: Item amount
     type: simple:integer
-    description: ToDo
     default: '1'
   definition: amount:<number>
   infotext: The amount of items to receive
@@ -22,7 +20,6 @@
   content:
   - displayname: Durability/Damage
     type: simple:integer
-    description: ToDo
     default: '5'
   definition: durability:<number>
   infotext: Durability does different things. For example it defines the damage of Armor/Weapons/Tools and it defines the color of wool.
@@ -31,7 +28,6 @@
   content:
   - displayname: Displayname
     type: simple:string_formatted
-    description: ToDo
     default: EpicPotato
   definition: name:<name>
   infotext: The displayed name of the item.
@@ -40,7 +36,6 @@
   content:
   - displayname: Lore
     type: simple:string_formatted
-    description: ToDo
     default: Line1#Line2 blabla#Line3
   definition: lore:<line1#line2#line3>
   infotext: This is the lore of the item. You can use color codes like &4 (=DARK_RED) or &l (= BOLD). You can 'switch' to the next line using '#'.
@@ -50,7 +45,6 @@
   - displayname: Enchantment Name
     type: simple_autocomplete:enchantment
     autocomplete: enchantment
-    description: ToDo
     default: DAMAGE_ALL
   - displayname: Level
     type: simple:integer
@@ -62,15 +56,15 @@
   content:
   - displayname: R
     type: simple:integer
-    description: ToDo
+    description: Red color value
     default: '64'
   - displayname: G
     type: simple:integer
-    description: ToDo
+    description: Green color value
     default: '128'
   - displayname: B
     type: simple:integer
-    description: ToDo
+    description: Blue color value
     default: '255'
   definition: color:<red number>#<green number>#<blue number>
   infotext: Use this attribute to dye your item (works with leather armor).
@@ -79,17 +73,15 @@
   content:
   - displayname: Potion name
     type: simple_autocomplete:potion
-    description: ToDo
     autocomplete: potion
-    description: ToDo
     default: MUNDANE
   - displayname: Extended
     type: simple:boolean
-    description: ToDo
+    description: Whether the potion should have an extended duration.
     default: 'true'
   - displayname: Upgraded
     type: simple:boolean
-    description: ToDo
+    description: Whether the potion should be upgraded and therefor have a stronger effect.
     default: 'false'
   definition: potion:<potion name>#<extended? true/false>#<upgraded? <true/false>
   infotext: This allows you to add vanilla potion effects to items. Can only be used on items which support potioneffects!
@@ -98,17 +90,13 @@
   content:
   - displayname: Potioneffect name
     type: simple_autocomplete:potioneffect
-    description: ToDo
     autocomplete: potioneffect
-    description: ToDo
     default: STRENGTH
   - displayname: Level
     type: simple:integer
-    description: ToDo
     default: '1'
   - displayname: Duration in seconds
     type: simple:integer
-    description: ToDo
     default: '600'
   definition: potioneffect:<potion name>#<level>#<time in seconds>
   infotext: This allows you to add custom potion effects to items. Can only be used on items which support potioneffects!
@@ -117,7 +105,6 @@
   content:
   - displayname: Player name
     type: simple:string
-    description: ToDo
     default: Herobrine
   definition: playerhead:<name>
   infotext: 'This allows you to set the name of skulls. IMPORTANT: You can only use this attribute on skulls (''type:PLAYER_HEAD'').'
@@ -126,7 +113,6 @@
   content:
   - displayname: Texture/mojang skin url
     type: simple:string
-    description: ToDo
     default: URL
   definition: customskull:<texture/mojang skin url>
   infotext: This allows you to give skulls custom and fix textures which do not change when a player changes his skin.
@@ -135,7 +121,6 @@
   content:
   - displayname: Mob name
     type: simple:string
-    description: ToDo
     default: BLAZE
   definition: mobspawner:<mob name>
   infotext: Allows you to make your item a working mobpawner with a pre-set mobtype. Requires the plugin SilkSpawners or EpicSpawners. If you use EpicSpawners use the spawner identifier (defined in your EpicSpawners/spawners.yml file) instead of the Spigot mob name.
@@ -144,7 +129,6 @@
   content:
   - displayname: Mob name
     type: simple:string
-    description: ToDo
     default: BLAZE
   definition: monsteregg:<mob name>
   infotext: Allows making items a working monsteregg with a pre-set mobtype. Requires the plugin SilkSpawners.
@@ -153,7 +137,6 @@
   content:
   - displayname: Flags
     type: simple:string
-    description: ToDo
     default: HIDE_ATTRIBUTES#HIDE_ENCHANTS
   definition: hideflags:<flag1#flag2#flag3>
   infotext: Fast way to hide flags.
@@ -162,11 +145,9 @@
   content:
   - displayname: Title
     type: simple:string_formatted
-    description: ToDo
     default: My awesome Book
   - displayname: Author
     type: simple:string_formatted
-    description: ToDo
     default: Unknown Player
   definition: book:<title>#<author>
   infotext: Adds title and author name to a written book. Supports color codes and symbols.
@@ -175,11 +156,9 @@
   content:
   - displayname: Page
     type: simple:integer
-    description: ToDo
     default: '1'
   - displayname: Text
     type: simple:string_formatted
-    description: ToDo
     default: This is some text.
   definition: bookpage:<page>#<text>
   infotext: Adds text to the given book page. Can be used multiple times per page in order to force a new line.
