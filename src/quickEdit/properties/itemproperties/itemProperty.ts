@@ -17,7 +17,7 @@ export default class ItemProperty extends Vue {
 
     get splitValue() {
         if (!this.property) { return []; }
-        const splitValue = (this.value as string || "").split(":");
+        const splitValue = (this.value as string || "").split("#");
         for (let i = 0; i < this.property.content.length; i++) {
             splitValue[i] = splitValue[i] || "";
         }
@@ -27,7 +27,7 @@ export default class ItemProperty extends Vue {
     updateListener(index: number, newValue: any) {
         const copy = this.splitValue.slice();
         copy[index] = "" + newValue;
-        this.$emit("input", copy.join(":"));
+        this.$emit("input", copy.join("#"));
     }
 
     render(h: CreateElement) {

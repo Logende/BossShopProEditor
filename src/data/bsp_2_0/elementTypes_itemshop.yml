@@ -1,6 +1,7 @@
     itemshopitemlist:
       configKey: itemshop
       type: complexlist
+      description: 'List of items for the ItemShop addon.'
       default:  
         Worth: 3.0
         Item:
@@ -11,20 +12,11 @@
           type: complex
           deleteable: true
           renameable: true
+          description: 'ItemShop Item.'
           properties:
             Worth:
               type: existing:double
+              description: 'The worth of the item. By default when players buy the item they pay "<priceMultiplier>*<worth>" and when they sell the item they get "<rewardMultiplier>*<worth>".'
             Item:
               type: existing:item
-            PriceBuy:
-              type: existing:double
-              optional: true
-            RewardSell:
-              type: existing:double
-              optional: true
-            AllowSell:
-              type: existing:boolean
-              optional: true
-            AllowBuy:
-              type: existing:boolean
-              optional: true
+              description: 'The item players can buy/sell.'

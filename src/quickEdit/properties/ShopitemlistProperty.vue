@@ -5,7 +5,7 @@
             <v-card>
                 <v-card-title primary-title class="headline">ShopItemList</v-card-title>
                 <v-card-text>
-                    <v-layout v-for="row in 4" :key="row" row>
+                    <v-layout v-for="row in 6" :key="row" row>
                         <v-layout align-center justify-center>
                             <v-card
                                 v-for="x in 9"
