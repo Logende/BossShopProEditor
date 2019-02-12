@@ -1,6 +1,8 @@
 import Vue, { CreateElement, RenderContext } from "vue";
 import { IElementType, ElementTypeClass, IElementTypeSimpleAutocomplete } from '@/data/ElementTypeModel';
 
+import PropertyDescription from "./PropertyDescription.vue";
+
 import AutocompleteProperty from "./AutocompleteProperty.vue";
 import BooleanProperty from "./BooleanProperty.vue";
 import ComplexListProperty from "./ComplexListProperty.vue";
@@ -76,6 +78,14 @@ export default Vue.extend({
         let content;
         if (el) {
             content = h(el, { props: { name, value, ...additionalProps }, on: context.listeners });
+            if (type.description) {
+                content = h("v-layout", [
+                    h("v-flex", { attrs: { grow: true } }, [content]),
+                    h("v-flex", { attrs: { "shrink": true, "align-self-center": true } }, [
+                        h(PropertyDescription, { props: { description: type.description } })
+                    ])
+                ]);
+            }
         } else if (type.name !== "none") {
             content = h("p", `Property ${name} with type ${type.name} is unsupported.`);
         }
