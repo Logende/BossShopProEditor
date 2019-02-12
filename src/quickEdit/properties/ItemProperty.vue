@@ -141,7 +141,7 @@ export default class ItemProperty extends Vue {
 
     async addProperty(i: number) {
         const p = this.availableProperties[i];
-        const defaultValue = p.content.map((e) => e.default).join(":");
+        const defaultValue = p.content.map((e) => e.default).join("#");
         this.$emit("input", (this.value || []).concat([ `${p.key}:${defaultValue}` ]));
         await this.$nextTick();
         if (this.value && this.value.length) {
