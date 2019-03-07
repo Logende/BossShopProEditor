@@ -45,12 +45,12 @@
   - displayname: Enchantment Name
     type: simple_autocomplete:enchantment
     autocomplete: enchantment
-    default: DAMAGE_ALL
+    default: SHARPNESS
   - displayname: Level
     type: simple:integer
     default: '3'
   definition: enchantment:<enchantment name>#<level>
-  infotext: 'Use this attribute to enchant your item. Example: ''enchantment:damage_all#5'' <- This would add Sharpness V to your item.'
+  infotext: 'Use this attribute to enchant your item. Example: ''enchantment:sharpness#5'' <- This would add Sharpness V to your item.'
 - name: Color
   key: color
   content:
