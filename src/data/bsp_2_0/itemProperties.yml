@@ -36,7 +36,7 @@
   content:
   - displayname: Lore
     type: simple:string_formatted
-    default: Line1#Line2 blabla#Line3
+    default: Line1
   definition: lore:<line1#line2#line3>
   infotext: This is the lore of the item. You can use color codes like &4 (=DARK_RED) or &l (= BOLD). You can 'switch' to the next line using '#'.
 - name: Enchantment
