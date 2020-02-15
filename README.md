@@ -1,5 +1,7 @@
 # BossShopProEditor
 
+Link to the running BossShopProEditor website: https://logende.github.io/BossShopProEditor/
+
 ## Store
 
 The Vuex store is used as a single source of truth. Its state is defined as follows:
